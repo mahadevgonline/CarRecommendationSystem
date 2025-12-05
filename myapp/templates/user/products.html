@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Parts Shop</title>
+
+    <link rel="stylesheet" href="{% static 'index/source/bootstrap-3.3.6-dist/css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'index/source/font-awesome-4.5.0/css/font-awesome.css' %}">
+
+    <style>
+        body {
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background: #1f2833;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .filter-bar {
+            background: #ffffff;
+            padding: 20px;
+            margin: 20px auto;
+            width: 90%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border-radius: 6px;
+        }
+
+        .product-grid {
+            width: 90%;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .price {
+            color: #008000;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .stock {
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .btn-buy {
+            background: #1f2833;
+            color: #fff;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .btn-buy:hover {
+            background: #0b0c10;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <i class="fa fa-cogs"></i> Car Parts Store
+    </div>
+
+    <!-- Filter & Search -->
+    <div class="filter-bar">
+        <form method="GET">
+            <div class="row">
+
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Search by name..."
+                           value="{{ request.GET.search }}">
+                </div>
+
+                <div class="col-md-4">
+                    <select name="category" class="form-control">
+                        <option value="">All Categories</option>
+
+                        {% for c in categories %}
+                        <option value="{{ c }}" {% if request.GET.category == c %}selected{% endif %}>
+                            {{ c }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-primary btn-block" type="submit">Filter</button>
+                </div>
+
+                <div class="col-md-2">
+                    <a href="/products/" class="btn btn-default btn-block">Reset</a>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- Product Listing -->
+    <div class="product-grid row">
+
+        {% for part in parts %}
+        <div class="col-md-4 col-sm-6">
+            <div class="product-card">
+
+                {% if part.image %}
+                <img src="{{ part.image.url }}" alt="{{ part.name }}">
+                {% else %}
+                <img src="{% static 'no-image.png' %}" alt="No Image">
+                {% endif %}
+
+                <div class="product-title">{{ part.name }}</div>
+                <div class="price">₹{{ part.price }}</div>
+                <div class="stock">Stock: {{ part.stock }}</div>
+
+                <p style="height:60px; overflow:hidden; color:#666;">
+                    {{ part.description }}
+                </p>
+
+                <a href="{% url 'add_to_cart' part.id %}">
+                    <button class="btn-buy">
+                        <i class="fa fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </a>
+
+            </div>
+        </div>
+        {% empty %}
+        <h3 style="text-align:center; margin-top:50px;">No products found.</h3>
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>

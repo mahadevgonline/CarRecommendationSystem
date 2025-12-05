@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AutoSelect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: #e74c3c;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #e74c3c;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: #e74c3c;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Login Section */
+        .login-section {
+            padding: 80px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+        }
+
+        .login-container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-info {
+            flex: 1;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            color: white;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-info::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            top: -50px;
+            left: -50px;
+        }
+
+        .login-info::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .login-info-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-info h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .login-info p {
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .client {
+            display: flex;
+            align-items: center;
+        }
+
+        .client img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #e74c3c;
+        }
+
+        .client-info h4 {
+            margin-bottom: 5px;
+        }
+
+        .client-info p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .login-form {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+            outline: none;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember input {
+            margin-right: 8px;
+        }
+
+        .remember label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .forgot-password {
+            color: #e74c3c;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #7f8c8d;
+        }
+
+        .register-link a {
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            position: relative;
+            margin: 25px 0;
+            color: #7f8c8d;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 45%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            width: 45%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .social-login {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .social-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+        }
+
+        .social-btn.google {
+            color: #db4437;
+        }
+
+        .social-btn.facebook {
+            color: #4267B2;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: #e74c3c;
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-column p {
+            color: #bdc3c7;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #e74c3c;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #e74c3c;
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-info {
+                padding: 30px;
+            }
+
+            .login-form {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .social-login {
+                flex-direction: column;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-car"></i>
+                    <h1>Auto<span>Select</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Car Brands</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-info">
+                    <div class="login-info-content">
+                        <h2>Welcome Back!</h2>
+                        <p>Sign in to your AutoSelect account to access personalized car recommendations, save your favorites, and compare vehicles.</p>
+
+                        <div class="testimonial">
+                            <p>"AutoSelect helped me find the perfect family SUV within my budget. The recommendations were spot on!"</p>
+                            <div class="client">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+                                <div class="client-info">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>AutoSelect User</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="login-form">
+                    <div class="form-header">
+                        <h2>Sign In</h2>
+                        <p>Access your personalized car recommendations</p>
+                    </div>
+
+                    <div class="social-login">
+                        <button class="social-btn google">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button class="social-btn facebook">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </button>
+                    </div>
+
+                    <div class="divider">Or sign in with email</div>
+
+                    <form id="loginForm" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                                <span class="password-toggle" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="remember-forgot">
+                            <div class="remember">
+                                <input type="checkbox" id="rememberMe">
+                                <label for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                    </form>
+
+                    <div class="register-link">
+                        Don't have an account? <a href="/register/">Create Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About AutoSelect</h3>
+                    <p>AutoSelect is an intelligent car recommendation system that helps you find the perfect vehicle based on your unique needs, preferences, and budget.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Car Brands</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Popular Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Family Cars</a></li>
+                        <li><a href="#">Luxury Vehicles</a></li>
+                        <li><a href="#">Fuel-Efficient Cars</a></li>
+                        <li><a href="#">SUVs & Crossovers</a></li>
+                        <li><a href="#">Electric Vehicles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Auto Street, Detroit, MI</li>
+                        <li><i class="fas fa-phone"></i> (555) 123-4567</li>
+                        <li><i class="fas fa-envelope"></i> info@autoselect.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 AutoSelect Car Recommendation System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Form submission
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // In a real application, you would submit the form data to a server
+            // For this example, we'll just show a success message
+
+            // Reset form
+            loginForm.submit();
+        });
+
+        // Add some interactivity to form inputs
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            // Add focus effect
+            control.addEventListener('focus', function() {
+                this.parentElement.parentElement.classList.add('focused');
+            });
+
+            control.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentElement.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+{% if msg %}
+<script>alert('Invalid email or password');</script>
+{% endif %}
+</body>
+</html>

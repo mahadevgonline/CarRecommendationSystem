@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toyota Camry - AutoSelect Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --secondary: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--primary);
+            color: white;
+            transition: var(--transition);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header i {
+            font-size: 1.8rem;
+            color: var(--secondary);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-header span {
+            color: var(--secondary);
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--secondary);
+        }
+
+        .menu-item i {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-item.active i {
+            color: var(--secondary);
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left h1 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .user-menu:hover {
+            background: #f5f5f5;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .notification:hover {
+            background: #f5f5f5;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--secondary);
+            border: 1px solid var(--secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Car Details Container */
+        .car-details-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .car-details-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Car Images Section */
+        .car-images {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .main-image {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .gallery-thumb {
+            height: 80px;
+            border-radius: 5px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .gallery-thumb:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-thumb.active {
+            border: 2px solid var(--secondary);
+        }
+
+        /* Car Info Section */
+        .car-info {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .car-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .car-title h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .car-meta {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .car-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .status-badge.active {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+
+        .status-badge.featured {
+            background: rgba(243, 156, 18, 0.2);
+            color: var(--warning);
+        }
+
+        .car-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .stat-info h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .car-description {
+            margin-bottom: 25px;
+        }
+
+        .car-description h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .car-description p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        .car-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        /* Specifications Section */
+        .specs-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-size: 1.3rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h3 i {
+            color: var(--secondary);
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .spec-item:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .spec-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            background: #e9ecef;
+        }
+
+        .feature-item i {
+            color: var(--success);
+            font-size: 1rem;
+        }
+
+        /* Performance Metrics */
+        .metrics-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Activity Section */
+        .activity-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .activity-icon.view {
+            background: var(--info);
+        }
+
+        .activity-icon.recommendation {
+            background: var(--success);
+        }
+
+        .activity-icon.favorite {
+            background: var(--warning);
+        }
+
+        .activity-details h4 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .activity-details p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            margin-left: auto;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-header h2, .menu-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .menu-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .car-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 0 15px;
+            }
+
+            .search-box input {
+                width: 150px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .page-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .car-actions {
+                flex-direction: column;
+            }
+
+            .image-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content {
+                padding: 15px;
+            }
+
+            .search-box {
+                display: none;
+            }
+
+            .car-images, .car-info, .specs-section, .features-section, .metrics-section, .activity-section {
+                padding: 20px;
+            }
+
+            .features-grid, .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-car"></i>
+                <h2>Auto<span>Select</span></h2>
+            </div>
+            <div class="sidebar-menu">
+                <a href="/adminp/" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/cars/" class="menu-item active">
+                    <i class="fas fa-car"></i>
+                    <span>Cars</span>
+                </a>
+                <a href="/add-car/" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Add Car</span>
+                </a>
+                <a href="/add-car/" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Add Product</span>
+                <a href="/add-product/" class="menu-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <h1>Car Details</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="notification">
+                        <i class="fas fa-bell"></i>
+                        <div class="notification-badge">3</div>
+                    </div>
+                    <div class="user-menu">
+                        <div class="user-avatar">AJ</div>
+                        <div class="user-name">Admin User</div>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <div class="page-title">
+                    <div>
+                        <h2>Toyota Camry</h2>
+                        <p>Detailed view of the car and its performance metrics</p>
+                    </div>
+                    <a href="/cars/" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back to Cars
+                    </a>
+                </div>
+
+                <!-- Car Details -->
+                <div class="car-details-container">
+                    <!-- Car Images -->
+                    <div class="car-images">
+                        <div class="main-image">
+                            <img src="{{car.image.url}}" alt="Toyota Camry" id="mainImage">
+                        </div>
+
+                    </div>
+
+                    <!-- Car Information -->
+                    <div class="car-info">
+                        <div class="car-header">
+                            <div class="car-title">
+                                <h1>{{car.make}} {{car.model}} <span class="status-badge active">Active</span></h1>
+                                <p class="car-meta">{{car.year}} • {{car.category}} • {{car.fuel_type}}</p>
+                            </div>
+                            <div class="car-price">${{car.price}}</div>
+                        </div>
+
+                        <div class="car-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>{{car.horse_power}} HP</h4>
+                                    <p>Horsepower</p>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-gas-pump"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>{{car.mpg_city}} MPG</h4>
+                                    <p>Combined Fuel Economy</p>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-cogs"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>{{car.transmission}}</h4>
+                                    <p>Transmission</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="car-description">
+                            <h3>Description</h3>
+                            <p>{{car.description}}</p>
+                        </div>
+
+                        <div class="car-actions">
+                            <button class="btn btn-primary" onclick="window.location.href='/edit-car/{{car.id}}/'">
+                                <i class="fas fa-edit"></i> Edit Car
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specifications Section -->
+                <div class="specs-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-cogs"></i> Technical Specifications</h3>
+                    </div>
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <span class="spec-label">Engine</span>
+                            <span class="spec-value">2.5L 4-Cylinder</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Horsepower</span>
+                            <span class="spec-value">203 hp</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Torque</span>
+                            <span class="spec-value">184 lb-ft</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Transmission</span>
+                            <span class="spec-value">8-Speed Automatic</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Drivetrain</span>
+                            <span class="spec-value">Front-Wheel Drive</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Fuel Economy (City)</span>
+                            <span class="spec-value">28 mpg</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Fuel Economy (Highway)</span>
+                            <span class="spec-value">39 mpg</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Seating Capacity</span>
+                            <span class="spec-value">5</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Cargo Volume</span>
+                            <span class="spec-value">15.1 cu ft</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Wheelbase</span>
+                            <span class="spec-value">111.2 in</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Length</span>
+                            <span class="spec-value">192.1 in</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Width</span>
+                            <span class="spec-value">72.4 in</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features Section -->
+                <div class="features-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-star"></i> Features & Amenities</h3>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Apple CarPlay</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Android Auto</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Bluetooth Connectivity</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Backup Camera</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Lane Departure Warning</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Adaptive Cruise Control</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Automatic Emergency Braking</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Dual-Zone Climate Control</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Heated Front Seats</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Power Moonroof</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Keyless Entry</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Push Button Start</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Metrics -->
+                <div class="metrics-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-chart-line"></i> Performance Metrics</h3>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="metric-value">1,247</div>
+                            <div class="metric-label">Total Views</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="metric-value">342</div>
+                            <div class="metric-label">User Favorites</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div class="metric-value">89%</div>
+                            <div class="metric-label">Match Rate</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="metric-value">4.7</div>
+                            <div class="metric-label">User Rating</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="activity-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                    </div>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon view">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Car Viewed</h4>
+                                <p>User viewed this car details page</p>
+                            </div>
+                            <div class="activity-time">2 hours ago</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon recommendation">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Recommendation Generated</h4>
+                                <p>Car was recommended to 3 users</p>
+                            </div>
+                            <div class="activity-time">5 hours ago</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon favorite">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Added to Favorites</h4>
+                                <p>User added this car to their favorites</p>
+                            </div>
+                            <div class="activity-time">1 day ago</div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon view">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Car Viewed</h4>
+                                <p>User viewed this car details page</p>
+                            </div>
+                            <div class="activity-time">2 days ago</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
