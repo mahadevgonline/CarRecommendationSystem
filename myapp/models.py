@@ -9,6 +9,16 @@ class Register(models.Model):
     def __str__(self):
         return self.name
 
+class Seller(models.Model):
+    name=models.CharField(max_length=100)
+    email=models.EmailField()
+    phone=models.IntegerField()
+    address=models.CharField(max_length=100)
+    password=models.CharField(max_length=100)
+    rights=models.CharField(max_length=100,default='New Seller')
+    def __str__(self):
+        return self.name
+
 class Car(models.Model):
     make=models.CharField(max_length=100)
     model=models.CharField(max_length=100)
@@ -33,14 +43,51 @@ class Favorite(models.Model):
     def __str__(self):
         return self.user.name
 
-class CarParts(models.Model):
-    name = models.CharField(max_length=100)
-    stock = models.CharField(max_length=100)
-    price = models.IntegerField()
-    category = models.CharField(max_length=100)
-    description = models.TextField()
-    suitable_car = models.CharField(max_length=100, default="All Cars")
-    image = models.ImageField(upload_to="images/")
-
+class VehiclePart(models.Model):
+    seller=models.ForeignKey(Seller, on_delete=models.CASCADE,null=True)
+    name=models.CharField(max_length=100)
+    number=models.CharField(max_length=100)
+    brand=models.CharField(max_length=100)
+    category=models.CharField(max_length=100)
+    price=models.IntegerField()
+    stock=models.IntegerField()
+    condition=models.CharField(max_length=100)
+    vehicle=models.ForeignKey(Car,on_delete=models.CASCADE)
+    description=models.TextField()
+    image=models.ImageField(upload_to="images/")
     def __str__(self):
         return self.name
+
+class Cart(models.Model):
+    user=models.ForeignKey(Register, on_delete=models.CASCADE)
+    part=models.ForeignKey(VehiclePart,on_delete=models.CASCADE)
+    quantity=models.IntegerField(default=1)
+    def __str__(self):
+        return self.user.name
+    @property
+    def total_price(self):
+        return self.quantity * self.part.price
+
+class Order(models.Model):
+    user=models.ForeignKey(Register, on_delete=models.CASCADE)
+    fname=models.CharField(max_length=100)
+    lname=models.CharField(max_length=100)
+    email=models.EmailField()
+    phone=models.IntegerField()
+    address=models.CharField(max_length=100)
+    city=models.CharField(max_length=100)
+    state=models.CharField(max_length=100)
+    zip=models.CharField(max_length=100)
+    country=models.CharField(max_length=100)
+    date=models.DateField(auto_now_add=True,null=True)
+    status=models.CharField(max_length=100,default='Processing',null=True)
+    def __str__(self):
+        return self.user.name
+
+class OrderItems(models.Model):
+    order=models.ForeignKey(Order,on_delete=models.CASCADE)
+    item=models.ForeignKey(VehiclePart,on_delete=models.CASCADE)
+    quantity=models.IntegerField()
+    @property
+    def total_price(self):
+        return self.quantity * self.item.price

@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassicAuto Parts Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vintage-dark: #3e2723;
+            --vintage-brown: #5d4037;
+            --vintage-light: #d7ccc8;
+            --vintage-gold: #c9a96e;
+            --vintage-cream: #f5f1e6;
+            --vintage-red: #8b4513;
+            --vintage-green: #2e4c3a;
+            --transition: all 0.4s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            color: var(--vintage-dark);
+            background-color: var(--vintage-cream);
+            line-height: 1.6;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--vintage-brown);
+            color: var(--vintage-cream);
+            border: none;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--vintage-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .btn-gold {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .btn-gold:hover {
+            background: #b89446;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--vintage-gold);
+            color: var(--vintage-gold);
+        }
+
+        .btn-outline:hover {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid var(--vintage-gold);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+        }
+
+        .logo i {
+            color: var(--vintage-gold);
+            font-size: 2.2rem;
+        }
+
+        .logo h1 {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--vintage-gold);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--vintage-cream);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding: 5px 10px;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--vintage-gold);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--vintage-gold);
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Hero Section */
+        .parts-hero {
+            background: linear-gradient(rgba(62, 39, 35, 0.85), rgba(62, 39, 35, 0.85)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--vintage-cream);
+            padding: 100px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .parts-hero:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23c9a96e' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        .parts-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .parts-hero h1 {
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .parts-hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-style: italic;
+            color: var(--vintage-light);
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 25px 18px 60px;
+            border: 2px solid var(--vintage-gold);
+            border-radius: 2px;
+            font-family: 'Lora', serif;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--vintage-dark);
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.3);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--vintage-gold);
+            font-size: 1.3rem;
+        }
+
+        /* Section Header */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-header:after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: var(--vintage-gold);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--vintage-dark);
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--vintage-brown);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: var(--vintage-light);
+            padding: 25px;
+            border-radius: 2px;
+            margin-bottom: 40px;
+            border: 1px solid var(--vintage-brown);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            font-family: 'Lora', serif;
+            background: var(--vintage-cream);
+            color: var(--vintage-dark);
+            min-width: 180px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--vintage-gold);
+        }
+
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Parts Grid */
+        .parts-section {
+            padding: 80px 0;
+            background: var(--vintage-cream);
+        }
+
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .part-card {
+            background: white;
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            border: 1px solid var(--vintage-light);
+            position: relative;
+        }
+
+        .part-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .part-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .part-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 15px;
+            border-radius: 2px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 2;
+            text-transform: uppercase;
+        }
+
+        .badge-new {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .badge-used {
+            background: var(--vintage-brown);
+            color: var(--vintage-cream);
+        }
+
+        .badge-refurbished {
+            background: var(--vintage-green);
+            color: var(--vintage-cream);
+        }
+
+        .badge-sale {
+            background: var(--vintage-red);
+            color: var(--vintage-cream);
+        }
+
+        .seller-info {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(62, 39, 35, 0.8);
+            padding: 8px 12px;
+            border-radius: 2px;
+            color: var(--vintage-cream);
+            font-size: 0.9rem;
+        }
+
+        .seller-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--vintage-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vintage-dark);
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .part-content {
+            padding: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .part-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .part-title h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: var(--vintage-dark);
+        }
+
+        .part-title p {
+            color: var(--vintage-brown);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .part-price {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--vintage-gold);
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: var(--vintage-brown);
+            font-size: 1rem;
+            margin-left: 5px;
+        }
+
+        .part-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .spec {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--vintage-brown);
+            font-size: 0.9rem;
+        }
+
+        .spec i {
+            color: var(--vintage-gold);
+        }
+
+        .part-description {
+            margin-bottom: 20px;
+            color: var(--vintage-brown);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .part-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .stock-status {
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 2px;
+            font-size: 0.9rem;
+        }
+
+        .in-stock {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+
+        .low-stock {
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+
+        .out-of-stock {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 50px;
+        }
+
+        .pagination-btn {
+            padding: 10px 15px;
+            border: 1px solid var(--vintage-brown);
+            background: white;
+            color: var(--vintage-dark);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+        }
+
+        .pagination-btn:hover {
+            background: var(--vintage-gold);
+            border-color: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .pagination-btn.active {
+            background: var(--vintage-gold);
+            border-color: var(--vintage-gold);
+            color: var(--vintage-dark);
+            font-weight: 600;
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 80px 0;
+            background: var(--vintage-light);
+            border-top: 3px solid var(--vintage-gold);
+            border-bottom: 3px solid var(--vintage-gold);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .category-card {
+            background: white;
+            padding: 30px;
+            border-radius: 2px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            border: 1px solid var(--vintage-brown);
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            background: var(--vintage-gold);
+        }
+
+        .category-card:hover .category-icon {
+            background: var(--vintage-dark);
+            color: var(--vintage-gold);
+        }
+
+        .category-card:hover h3 {
+            color: var(--vintage-dark);
+        }
+
+        .category-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.8rem;
+            border: 2px solid var(--vintage-brown);
+            transition: var(--transition);
+        }
+
+        .category-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--vintage-dark);
+            transition: var(--transition);
+        }
+
+        .category-count {
+            color: var(--vintage-brown);
+            font-size: 0.9rem;
+        }
+
+        /* Cart Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--vintage-cream);
+            border-radius: 2px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 2px solid var(--vintage-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--vintage-cream);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--vintage-cream);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--vintage-gold);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .cart-items {
+            margin-bottom: 30px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-bottom: 1px solid var(--vintage-light);
+        }
+
+        .cart-item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 2px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--vintage-light);
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-details h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--vintage-dark);
+        }
+
+        .cart-item-price {
+            color: var(--vintage-gold);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: var(--vintage-light);
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quantity-btn:hover {
+            background: var(--vintage-gold);
+        }
+
+        .cart-item-remove {
+            color: var(--vintage-red);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .cart-item-remove:hover {
+            color: #c0392b;
+        }
+
+        .cart-summary {
+            background: var(--vintage-light);
+            padding: 25px;
+            border-radius: 2px;
+            border: 1px solid var(--vintage-brown);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--vintage-brown);
+        }
+
+        .summary-total {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--vintage-dark);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 70px 0 30px;
+            border-top: 3px solid var(--vintage-gold);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--vintage-gold);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-column p {
+            color: var(--vintage-light);
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--vintage-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-links a:hover {
+            color: var(--vintage-gold);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(201, 169, 110, 0.2);
+            border-radius: 50%;
+            color: var(--vintage-cream);
+            transition: var(--transition);
+            border: 1px solid var(--vintage-gold);
+        }
+
+        .social-links a:hover {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+            color: var(--vintage-light);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .parts-hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .header-content {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .filter-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .sort-options {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .parts-hero h1 {
+                font-size: 2.3rem;
+            }
+
+            .parts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .part-actions {
+                flex-direction: column;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .filter-options {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+
+            .parts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-car-side"></i>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/collections/">Collection</a></li>
+                        <li><a href="/compare/">Compare</a></li>
+                        <li><a href="/favorites/">Favorite</a></li>
+                        <li><a href="/vehicle-parts/">Parts</a></li>
+                        <li><a href="/orders/">Orders</a></li>
+                        <li><a href="/profile/">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <div class="cart-icon" onclick="window.location.href='/cart/'">
+                        <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
+                    </div>
+                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Browse by Category</h2>
+                <p>Find exactly what you need from our curated collection of vintage auto parts</p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card" onclick="filterByCategory('engine')">
+                    <div class="category-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3>Engine Parts</h3>
+                    <div class="category-count">{{ engine_count }} parts</div>
+                </div>
+
+                <div class="category-card" onclick="filterByCategory('braking')">
+                    <div class="category-icon">
+                        <i class="fas fa-stop-circle"></i>
+                    </div>
+                    <h3>Braking System</h3>
+                    <div class="category-count">{{ braking_count }} parts</div>
+                </div>
+
+                <div class="category-card" onclick="filterByCategory('suspension')">
+                    <div class="category-icon">
+                        <i class="fas fa-car-side"></i>
+                    </div>
+                    <h3>Suspension</h3>
+                    <div class="category-count">{{ suspension_count }} parts</div>
+                </div>
+
+                <div class="category-card" onclick="filterByCategory('electrical')">
+                    <div class="category-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Electrical</h3>
+                    <div class="category-count">{{ electrical_count }} parts</div>
+                </div>
+
+                <div class="category-card" onclick="filterByCategory('body')">
+                    <div class="category-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>Body Parts</h3>
+                    <div class="category-count">{{ body_count }} parts</div>
+                </div>
+
+                <div class="category-card" onclick="filterByCategory('interior')">
+                    <div class="category-icon">
+                        <i class="fas fa-chair"></i>
+                    </div>
+                    <h3>Interior</h3>
+                    <div class="category-count">{{ interior_count }} parts</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parts Listing Section -->
+    <section class="parts-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Available Parts</h2>
+                <p>Browse our collection of authentic vintage auto parts for sale</p>
+            </div>
+
+            <div class="filter-bar">
+                <div class="filter-content">
+                    <div class="filter-options">
+                        <select class="filter-select" id="categoryFilter">
+                            <option value="">All Categories</option>
+                            <option value="engine">Engine Parts</option>
+                            <option value="braking">Braking System</option>
+                            <option value="suspension">Suspension</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="exhaust">Exhaust System</option>
+                            <option value="body">Body Parts</option>
+                            <option value="interior">Interior</option>
+                            <option value="lighting">Lighting</option>
+                        </select>
+
+                        <select class="filter-select" id="conditionFilter">
+                            <option value="">All Conditions</option>
+                            <option value="new">New</option>
+                            <option value="excellent">Excellent</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                        </select>
+
+                        <select class="filter-select" id="vehicleFilter">
+                            <option value="">All Vehicles</option>
+                            {% for car in vehicles %}
+                            <option value="{{ car.id }}">{{ car.year }} {{ car.make }} {{ car.model }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="sort-options">
+                        <label for="sortSelect" style="color: var(--vintage-dark); font-weight: 500;">Sort by:</label>
+                        <select class="filter-select" id="sortSelect">
+                            <option value="newest">Newest First</option>
+                            <option value="price_low">Price: Low to High</option>
+                            <option value="price_high">Price: High to Low</option>
+                            <option value="popular">Most Popular</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="parts-grid" id="partsGrid">
+                {% for part in parts %}
+                <div class="part-card" data-category="{{ part.category|lower }}" data-condition="{{ part.condition|lower }}" data-vehicle="{{ part.vehicle.id }}">
+                    <div class="part-image" style="background-image: url('{{ part.image.url }}')">
+                        <div class="part-badge badge-{{ part.condition|lower }}">
+                            {{ part.condition }}
+                        </div>
+                        {% if part.on_sale %}
+                        <div class="part-badge badge-sale" style="top: 45px; background: var(--vintage-red);">
+                            Sale
+                        </div>
+                        {% endif %}
+                        <div class="seller-info">
+                            <div class="seller-avatar">
+                                {{ part.seller.username|first|upper }}
+                            </div>
+                            <span>{{ part.seller.username }}</span>
+                        </div>
+                    </div>
+                    <div class="part-content">
+                        <div class="part-header">
+                            <div class="part-title">
+                                <h3>{{ part.name }}</h3>
+                                <p>{{ part.brand }}</p>
+                            </div>
+                            <div class="part-price">
+                                ${{ part.price }}
+                                {% if part.price %}
+                                <span class="old-price">${{ part.price }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="part-specs">
+                            <div class="spec"><i class="fas fa-car"></i> {{ part.vehicle }}</div>
+                            <div class="spec"><i class="fas fa-tag"></i> {{ part.category }}</div>
+                            <div class="spec"><i class="fas fa-box"></i> {{ part.stock }} left</div>
+                        </div>
+
+                        <p class="part-description">
+                            {{ part.description|truncatechars:120 }}
+                        </p>
+
+                        <div class="part-actions">
+                            <div class="stock-status {% if part.quantity > 10 %}in-stock{% elif part.quantity > 0 %}low-stock{% else %}out-of-stock{% endif %}">
+                                {% if part.stock > 10 %}
+                                <i class="fas fa-check"></i> In Stock
+                                {% elif part.stock > 0 %}
+                                <i class="fas fa-exclamation-triangle"></i> Low Stock
+                                {% else %}
+                                <i class="fas fa-times"></i> Out of Stock
+                                {% endif %}
+                            </div>
+                            <div>
+                                <button class="btn btn-sm" onclick="viewPartDetails('{{ part.id }}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-gold btn-sm" onclick="window.location.href='/add-cart/{{part.id}}/'">
+                                    <i class="fas fa-cart-plus"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--vintage-brown);">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 20px; color: var(--vintage-gold);"></i>
+                    <h3>No Parts Found</h3>
+                    <p>Try adjusting your filters or check back later for new listings.</p>
+                    <a href="/sell-part/" class="btn btn-gold" style="margin-top: 20px;">
+                        <i class="fas fa-plus"></i> List Your Part
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn" onclick="changePage(-1)">« Previous</button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn" onclick="changePage(2)">2</button>
+                <button class="pagination-btn" onclick="changePage(3)">3</button>
+                <span>...</span>
+                <button class="pagination-btn" onclick="changePage(10)">10</button>
+                <button class="pagination-btn" onclick="changePage(1)">Next »</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-shopping-cart"></i> Your Shopping Cart</h3>
+                <button class="modal-close" onclick="closeCart()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cart-items" id="cartItems">
+                    <!-- Cart items will be dynamically inserted here -->
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="cartSubtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span id="cartShipping">$9.99</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span id="cartTax">$0.00</span>
+                    </div>
+                    <div class="summary-row summary-total">
+                        <span>Total</span>
+                        <span id="cartTotal">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeCart()">Continue Shopping</button>
+                    <button class="btn btn-gold" onclick="checkout()">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ClassicParts</h3>
+                    <p>ClassicParts is the premier marketplace for vintage auto parts, connecting enthusiasts and collectors worldwide.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/marketplace/">Browse Parts</a></li>
+                        <li><a href="/sell-part/">Sell Parts</a></li>
+                        <li><a href="/collections/">My Collection</a></li>
+                        <li><a href="/compare/">Compare Cars</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Engine Parts</a></li>
+                        <li><a href="#">Braking System</a></li>
+                        <li><a href="#">Suspension</a></li>
+                        <li><a href="#">Electrical</a></li>
+                        <li><a href="#">Body Parts</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Heritage Drive, Auburn, IN</li>
+                        <li><i class="fas fa-phone"></i> (555) 321-PARTS</li>
+                        <li><i class="fas fa-envelope"></i> parts@classicauto.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 9AM-6PM EST</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ClassicAuto Parts Marketplace. Connecting Vintage Auto Enthusiasts Worldwide.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Shopping Cart
+        let cart = JSON.parse(localStorage.getItem('classicPartsCart')) || [];
+        const cartModal = document.getElementById('cartModal');
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        function addToCart(partId, name, price, image) {
+            const existingItem = cart.find(item => item.id === partId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: partId,
+                    name: name,
+                    price: price,
+                    image: image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('classicPartsCart', JSON.stringify(cart));
+            updateCartCount();
+
+            // Show success message
+            showNotification(`${name} added to cart!`, 'success');
+        }
+
+        function removeFromCart(partId) {
+            cart = cart.filter(item => item.id !== partId);
+            localStorage.setItem('classicPartsCart', JSON.stringify(cart));
+            updateCartCount();
+            updateCartModal();
+        }
+
+        function updateQuantity(partId, change) {
+            const item = cart.find(item => item.id === partId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity < 1) {
+                    removeFromCart(partId);
+                } else {
+                    localStorage.setItem('classicPartsCart', JSON.stringify(cart));
+                    updateCartCount();
+                    updateCartModal();
+                }
+            }
+        }
+
+        function openCart() {
+            updateCartModal();
+            cartModal.style.display = 'flex';
+        }
+
+        function closeCart() {
+            cartModal.style.display = 'none';
+        }
+
+        function updateCartModal() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSubtotal = document.getElementById('cartSubtotal');
+            const cartTax = document.getElementById('cartTax');
+            const cartTotal = document.getElementById('cartTotal');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--vintage-brown);">
+                        <i class="fas fa-shopping-cart" style="font-size: 3rem; margin-bottom: 20px; color: var(--vintage-gold);"></i>
+                        <h4>Your cart is empty</h4>
+                        <p>Add some vintage parts to get started!</p>
+                    </div>
+                `;
+                cartSubtotal.textContent = '$0.00';
+                cartTax.textContent = '$0.00';
+                cartTotal.textContent = '$0.00';
+                return;
+            }
+
+            let subtotal = 0;
+            let html = '';
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-image" style="background-image: url('${item.image}')"></div>
+                        <div class="cart-item-details">
+                            <h4>${item.name}</h4>
+                            <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+                            <div class="cart-item-quantity">
+                                <div class="quantity-btn" onclick="updateQuantity('${item.id}', -1)">-</div>
+                                <span>${item.quantity}</span>
+                                <div class="quantity-btn" onclick="updateQuantity('${item.id}', 1)">+</div>
+                                <span style="margin-left: 20px;">$${itemTotal.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart('${item.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+
+            const shipping = 9.99;
+            const tax = subtotal * 0.08; // 8% tax
+            const total = subtotal + shipping + tax;
+
+            cartItems.innerHTML = html;
+            cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+            cartTax.textContent = `$${tax.toFixed(2)}`;
+            cartTotal.textContent = `$${total.toFixed(2)}`;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                showNotification('Your cart is empty!', 'warning');
+                return;
+            }
+            window.location.href = '/checkout/';
+        }
+
+        // Filtering and Search
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const conditionFilter = document.getElementById('conditionFilter');
+        const vehicleFilter = document.getElementById('vehicleFilter');
+        const sortSelect = document.getElementById('sortSelect');
+        const partsGrid = document.getElementById('partsGrid');
+
+        function filterParts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            const condition = conditionFilter.value;
+            const vehicle = vehicleFilter.value;
+            const sort = sortSelect.value;
+
+            const partCards = document.querySelectorAll('.part-card');
+
+            partCards.forEach(card => {
+                const partName = card.querySelector('.part-title h3').textContent.toLowerCase();
+                const partBrand = card.querySelector('.part-title p').textContent.toLowerCase();
+                const partDesc = card.querySelector('.part-description').textContent.toLowerCase();
+                const partCategory = card.dataset.category;
+                const partCondition = card.dataset.condition;
+                const partVehicle = card.dataset.vehicle;
+
+                const matchesSearch = !searchTerm ||
+                    partName.includes(searchTerm) ||
+                    partBrand.includes(searchTerm) ||
+                    partDesc.includes(searchTerm);
+
+                const matchesCategory = !category || partCategory.includes(category);
+                const matchesCondition = !condition || partCondition === condition;
+                const matchesVehicle = !vehicle || partVehicle === vehicle;
+
+                if (matchesSearch && matchesCategory && matchesCondition && matchesVehicle) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByCategory(category) {
+            categoryFilter.value = category;
+            filterParts();
+        }
+
+        function changePage(page) {
+            // In a real application, this would load new page data
+            console.log(`Loading page ${page}`);
+            showNotification(`Loading page ${page}...`, 'info');
+        }
+
+        function viewPartDetails(partId) {
+            window.location.href = `/part-detail/${partId}/`;
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${type === 'success' ? 'var(--vintage-green)' : type === 'warning' ? 'var(--vintage-red)' : 'var(--vintage-gold)'};
+                color: var(--vintage-cream);
+                border-radius: 2px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 4000;
+                animation: slideIn 0.3s ease;
+                font-family: 'Lora', serif;
+                border-left: 4px solid var(--vintage-gold);
+            `;
+
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            notification.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+
+            document.body.appendChild(notification);
+
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize cart count
+        updateCartCount();
+
+        // Add event listeners for filtering
+        searchInput.addEventListener('input', filterParts);
+        categoryFilter.addEventListener('change', filterParts);
+        conditionFilter.addEventListener('change', filterParts);
+        vehicleFilter.addEventListener('change', filterParts);
+        sortSelect.addEventListener('change', filterParts);
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === cartModal) {
+                closeCart();
+            }
+        });
+
+        // Add CSS for notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

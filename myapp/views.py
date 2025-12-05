@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from .models import *
+from django.db.models import F
 
 def index(request):
     return render(request, "index.html")
@@ -15,12 +16,25 @@ def register(request):
         return redirect('/login/')
     return render(request, "register.html")
 
+def seller_register(request):
+    if request.method == "POST":
+        name=request.POST.get("name")
+        email=request.POST.get("email")
+        phone=request.POST.get("phone")
+        address=request.POST.get("address")
+        password=request.POST.get("password")
+        reg=Seller(name=name,email=email,phone=phone,address=address,password=password)
+        reg.save()
+        return redirect('/login/')
+    return render(request, "seller_register.html")
+
 def login(request):
-    msg=False
+    msg=''
     if request.method == "POST":
         email=request.POST.get("email")
         password=request.POST.get("password")
         log=Register.objects.filter(email=email,password=password)
+        sell=Seller.objects.filter(email=email,password=password)
         if log:
             for i in log:
                 if i.rights == 'User':
@@ -28,8 +42,15 @@ def login(request):
                     return redirect('/user/')
                 elif i.rights == 'Admin':
                     return redirect('/adminp/')
+        elif sell:
+            for i in sell:
+                if i.rights=='Seller':
+                    request.session['sid']=i.id
+                    return redirect('/seller/')
+                elif i.rights=='New Seller':
+                    msg='New Seller'
         else:
-            msg=True
+            msg='Invalid'
     return render(request, "login.html",{'msg':msg})
 
 def user(request):
@@ -38,6 +59,9 @@ def user(request):
 
 def admin(request):
     return render(request, "admin/admin.html")
+
+def seller(request):
+    return render(request, "seller/seller.html")
 
 def add_car(request):
     msg=False
@@ -144,29 +168,150 @@ def profile(request):
         return redirect('/profile/')
     return render(request, "user/profile.html",{'reg':reg})
 
-def products(request):
-    cars=Car.objects.all()
-    if request.method == "POST":
+def add_parts(request):
+    sid=request.session['sid']
+    sell=Seller.objects.get(id=sid)
+    car=Car.objects.all()
+    if request.method=="POST":
         name=request.POST.get("name")
-        stock=request.POST.get("stock")
-        price=request.POST.get("price")
+        number=request.POST.get("number")
+        brand=request.POST.get("brand")
         category=request.POST.get("category")
+        price=request.POST.get("price")
+        stock=request.POST.get("stock")
+        condition=request.POST.get("condition")
+        vid=request.POST.get("vehicle")
         description=request.POST.get("description")
-        suitable_car=request.POST.get("suitable_name")
-        Car.objects.filter(id=id).update(name=name, stock=stock, suitable_car=suitable_car, price=price, category=category,description=description)
-    return render(request, "user/products.html", {'cars': cars})
+        image=request.FILES.get("image")
+        veh=Car.objects.get(id=vid)
+        part=VehiclePart(seller=sell,name=name,number=number,brand=brand,category=category,price=price,stock=stock,condition=condition,description=description,vehicle=veh,image=image)
+        part.save()
+        return redirect('/add-parts/')
+    return render(request, "seller/add-parts.html",{'car':car})
 
-def add_product(request):
-    msg = False
-    if request.method == "POST":
+def parts(request):
+    sid = request.session['sid']
+    sell = Seller.objects.get(id=sid)
+    parts= VehiclePart.objects.filter(seller=sell)
+    return render(request, "seller/parts.html",{'parts':parts})
+
+def edit_part(request,id):
+    part=VehiclePart.objects.get(id=id)
+    if request.method=="POST":
         name=request.POST.get("name")
-        stock=request.POST.get("stock")
-        price=request.POST.get("price")
+        number=request.POST.get("number")
+        brand=request.POST.get("brand")
         category=request.POST.get("category")
+        price=request.POST.get("price")
+        stock=request.POST.get("stock")
+        condition=request.POST.get("condition")
+        vid=request.POST.get("vehicle")
         description=request.POST.get("description")
-        suitable_car=request.POST.get("suitable_car")
-        pro=CarParts(name=name,stock=stock,price=price,category=category,description=description,suitable_car=suitable_car)
-        pro.save()
-        return redirect('/add-product/')
-        msg = True
-    return render(request, "admin/add-product.html", {'msg': msg})
+        veh = Car.objects.get(id=vid)
+        VehiclePart.objects.filter(id=id).update(name=name, number=number, brand=brand, category=category, price=price, stock=stock,
+                           condition=condition, description=description, vehicle=veh)
+        return redirect(f'/edit-part/{id}/')
+    return render(request, "seller/edit-part.html",{'part':part})
+
+def delete_part(request,id):
+    VehiclePart.objects.filter(id=id).delete()
+    return redirect('/parts/')
+
+def vehicle_parts(request):
+    parts= VehiclePart.objects.all()
+    cars=Car.objects.all()
+    return render(request, "user/vehicle-parts.html",{'parts':parts,'vehicles':cars})
+
+def part_details(request,id):
+    part=VehiclePart.objects.get(id=id)
+    return render(request, "user/part-details.html",{'part':part})
+
+def cart(request):
+    uid=request.session['uid']
+    reg=Register.objects.get(id=uid)
+    cart=Cart.objects.filter(user=reg)
+    total=0
+    for i in cart:
+        total+=i.total_price
+    if request.method=="POST":
+        qn=request.POST.get("quantity")
+        cid=request.POST.get("cid")
+        Cart.objects.filter(id=cid).update(quantity=qn)
+        return redirect('/cart/')
+    return render(request, "user/cart.html",{'cart':cart,'total':total})
+
+def add_cart(request,id):
+    uid = request.session['uid']
+    reg = Register.objects.get(id=uid)
+    part=VehiclePart.objects.get(id=id)
+    ct=Cart.objects.filter(user=reg,part=part)
+    if ct:
+        ct.update(quantity=F('quantity') + 1)
+    else:
+        cart=Cart(user=reg,part=part)
+        cart.save()
+    return redirect('/cart/')
+
+def remove_cart(request,id):
+    Cart.objects.filter(id=id).delete()
+    return redirect('/cart/')
+
+def checkout(request):
+    uid=request.session['uid']
+    reg=Register.objects.get(id=uid)
+    cart=Cart.objects.filter(user=reg)
+    total = 0
+    for i in cart:
+        total += i.total_price
+    if request.method=="POST":
+        fname=request.POST.get("fname")
+        lname=request.POST.get("lname")
+        email=request.POST.get("email")
+        phone=request.POST.get("phone")
+        address=request.POST.get("address")
+        city=request.POST.get("city")
+        state=request.POST.get("state")
+        zip=request.POST.get("zip")
+        country=request.POST.get("country")
+        ord = Order.objects.create(user=reg, fname=fname, lname=lname, email=email, phone=phone, address=address,
+                                   city=city,
+                                   state=state, zip=zip, country=country)
+        for i in cart:
+            op=OrderItems(order=ord, item=i.part,quantity=i.quantity)
+            op.save()
+        cart.delete()
+        return redirect('/success/')
+    return render(request, "user/checkout.html",{'cart':cart,'total':total})
+
+def success(request):
+    return render(request, "user/success.html")
+
+def orders(request):
+    uid=request.session['uid']
+    reg=Register.objects.get(id=uid)
+    ord=Order.objects.filter(user=reg)
+    return render(request, "user/orders.html",{'ord':ord})
+
+def view_orders(request):
+    ord=Order.objects.all()
+    return render(request, "seller/orders.html",{'ord':ord})
+
+def ship_item(request,id):
+    Order.objects.filter(id=id).update(status='Shipped')
+    return redirect('/view-orders/')
+
+def new_sellers(request):
+    sell=Seller.objects.filter(rights='New Seller')
+    return render(request, "admin/new-sellers.html",{'sell':sell})
+
+def approve_seller(request,id):
+    Seller.objects.filter(id=id).update(rights='Seller')
+    return redirect('/new-sellers/')
+
+def reject_seller(request,id):
+    Seller.objects.filter(id=id).update(rights='Rejected')
+    return redirect('/new-sellers/')
+
+def sellers(request):
+    sell=Seller.objects.filter(rights='Seller')
+    return render(request, "admin/sellers.html",{'sell':sell})

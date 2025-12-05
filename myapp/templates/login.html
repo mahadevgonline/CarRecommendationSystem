@@ -710,8 +710,10 @@
             });
         });
     </script>
-{% if msg %}
+{% if msg == 'Invalid' %}
 <script>alert('Invalid email or password');</script>
+    {% elif msg == 'New Seller' %}
+    <script>alert('Kindly wait for the approval from the admin!');</script>
 {% endif %}
 </body>
 </html>

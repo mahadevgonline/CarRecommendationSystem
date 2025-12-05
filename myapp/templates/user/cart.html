@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - ClassicAuto Parts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vintage-dark: #3e2723;
+            --vintage-brown: #5d4037;
+            --vintage-light: #d7ccc8;
+            --vintage-gold: #c9a96e;
+            --vintage-cream: #f5f1e6;
+            --vintage-red: #8b4513;
+            --vintage-green: #2e4c3a;
+            --transition: all 0.4s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            color: var(--vintage-dark);
+            background-color: var(--vintage-cream);
+            line-height: 1.6;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--vintage-brown);
+            color: var(--vintage-cream);
+            border: none;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--vintage-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .btn-gold {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .btn-gold:hover {
+            background: #b89446;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--vintage-gold);
+            color: var(--vintage-gold);
+        }
+
+        .btn-outline:hover {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid var(--vintage-gold);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+        }
+
+        .logo i {
+            color: var(--vintage-gold);
+            font-size: 2.2rem;
+        }
+
+        .logo h1 {
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--vintage-gold);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: var(--vintage-cream);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding: 5px 10px;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--vintage-gold);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--vintage-gold);
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 20px 0;
+            background: var(--vintage-light);
+            border-bottom: 1px solid var(--vintage-brown);
+        }
+
+        .breadcrumb-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .breadcrumb-links a {
+            color: var(--vintage-brown);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .breadcrumb-links a:hover {
+            color: var(--vintage-gold);
+        }
+
+        .breadcrumb-links i {
+            color: var(--vintage-gold);
+            font-size: 0.8rem;
+        }
+
+        /* Cart Section */
+        .cart-section {
+            padding: 60px 0;
+            background: var(--vintage-cream);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-header:after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: var(--vintage-gold);
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--vintage-dark);
+            margin-bottom: 15px;
+        }
+
+        .section-header p {
+            color: var(--vintage-brown);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        /* Cart Container */
+        .cart-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+        }
+
+        @media (max-width: 992px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cart Items */
+        .cart-items {
+            background: white;
+            border-radius: 2px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--vintage-light);
+        }
+
+        .cart-header {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr 0.5fr;
+            padding: 15px 0;
+            border-bottom: 2px solid var(--vintage-gold);
+            font-weight: 600;
+            color: var(--vintage-dark);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr 0.5fr;
+            align-items: center;
+            padding: 25px 0;
+            border-bottom: 1px solid var(--vintage-light);
+            transition: var(--transition);
+        }
+
+        .cart-item:hover {
+            background: rgba(201, 169, 110, 0.05);
+        }
+
+        /* Product Info */
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .product-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid var(--vintage-light);
+            background: var(--vintage-cream);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--vintage-dark);
+        }
+
+        .product-details p {
+            color: var(--vintage-brown);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .product-specs {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .spec {
+            font-size: 0.8rem;
+            color: var(--vintage-brown);
+            background: var(--vintage-cream);
+            padding: 3px 8px;
+            border-radius: 2px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            background: var(--vintage-cream);
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+
+        .quantity-btn:hover {
+            background: var(--vintage-gold);
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 35px;
+            text-align: center;
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            background: var(--vintage-cream);
+            color: var(--vintage-dark);
+        }
+
+        /* Price */
+        .unit-price, .item-total {
+            font-weight: 600;
+            color: var(--vintage-dark);
+            font-size: 1.1rem;
+        }
+
+        .unit-price span, .item-total span {
+            color: var(--vintage-gold);
+        }
+
+        /* Remove Button */
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--vintage-red);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 80px 30px;
+        }
+
+        .empty-cart i {
+            font-size: 4rem;
+            color: var(--vintage-gold);
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--vintage-dark);
+        }
+
+        .empty-cart p {
+            color: var(--vintage-brown);
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: white;
+            border-radius: 2px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--vintage-light);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--vintage-gold);
+        }
+
+        .summary-header h3 {
+            font-size: 1.5rem;
+            color: var(--vintage-dark);
+        }
+
+        .summary-details {
+            margin-bottom: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--vintage-light);
+        }
+
+        .summary-label {
+            color: var(--vintage-brown);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--vintage-dark);
+        }
+
+        .summary-total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--vintage-gold);
+        }
+
+        .discount-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--vintage-cream);
+            border-radius: 2px;
+            border: 1px solid var(--vintage-light);
+        }
+
+        .discount-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--vintage-dark);
+        }
+
+        .discount-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .discount-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            font-family: 'Lora', serif;
+            background: white;
+            color: var(--vintage-dark);
+        }
+
+        .discount-input input:focus {
+            outline: none;
+            border-color: var(--vintage-gold);
+        }
+
+        .summary-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Promo Banner */
+        .promo-banner {
+            background: linear-gradient(rgba(62, 39, 35, 0.9), rgba(62, 39, 35, 0.9)), url('https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--vintage-cream);
+            padding: 40px;
+            border-radius: 2px;
+            margin-top: 30px;
+            text-align: center;
+            border: 2px solid var(--vintage-gold);
+        }
+
+        .promo-banner h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--vintage-cream);
+        }
+
+        .promo-banner p {
+            color: var(--vintage-light);
+            margin-bottom: 20px;
+        }
+
+        /* Continue Shopping */
+        .continue-shopping {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--vintage-light);
+            border-radius: 2px;
+            margin-top: 30px;
+            border: 1px solid var(--vintage-brown);
+        }
+
+        .continue-shopping i {
+            font-size: 1.5rem;
+            color: var(--vintage-gold);
+        }
+
+        .continue-shopping p {
+            flex: 1;
+            color: var(--vintage-dark);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--vintage-green);
+            color: var(--vintage-cream);
+            border-radius: 2px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 4000;
+            animation: slideIn 0.3s ease;
+            font-family: 'Lora', serif;
+            border-left: 4px solid var(--vintage-gold);
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 70px 0 30px;
+            border-top: 3px solid var(--vintage-gold);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 3px;
+            background: var(--vintage-gold);
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer-column p {
+            color: var(--vintage-light);
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--vintage-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--vintage-gold);
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(201, 169, 110, 0.2);
+            border-radius: 50%;
+            color: var(--vintage-cream);
+            transition: var(--transition);
+            border: 1px solid var(--vintage-gold);
+        }
+
+        .social-links a:hover {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(201, 169, 110, 0.2);
+            color: var(--vintage-light);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .cart-header {
+                display: none;
+            }
+
+            .cart-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+                padding: 30px;
+                border: 1px solid var(--vintage-light);
+                border-radius: 2px;
+                margin-bottom: 20px;
+            }
+
+            .product-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .product-specs {
+                justify-content: center;
+            }
+
+            .unit-price, .item-total {
+                text-align: center;
+            }
+
+            .quantity-controls {
+                justify-content: center;
+            }
+
+            .remove-btn {
+                justify-self: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .discount-input {
+                flex-direction: column;
+            }
+
+            .summary-actions {
+                flex-direction: column;
+            }
+
+            .promo-banner {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-cogs"></i>
+                    <h1>Classic<span>Parts</span></h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/collections/">Collection</a></li>
+                        <li><a href="/compare/">Compare</a></li>
+                        <li><a href="/marketplace/">Marketplace</a></li>
+                        <li><a href="/cart/" class="active">Cart</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
+                        <div class="cart-count" id="cartCount">3</div>
+                    </div>
+                    <a href="/profile/" class="btn btn-gold btn-sm">Profile</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-links">
+                <a href="/user/">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="/marketplace/">Marketplace</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Shopping Cart</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Section -->
+    <section class="cart-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Shopping Cart</h2>
+                <p>Review your items and proceed to checkout</p>
+            </div>
+
+            <div class="cart-container">
+                <!-- Cart Items -->
+                <div class="cart-items">
+                    {% if cart %}
+                    <div class="cart-header">
+                        <div>Product</div>
+                        <div>Price</div>
+                        <div>Quantity</div>
+                        <div>Total</div>
+                        <div>Update</div>
+                        <div></div>
+                    </div>
+
+                    {% for item in cart %}
+                    <form method="post">
+                            {% csrf_token %}
+                    <div class="cart-item" id="cartItem-{{ item.id }}">
+                        <div class="product-info">
+                            <div class="product-image">
+                                <img src="{{ item.part.image.url }}" alt="{{ item.part.name }}">
+                            </div>
+                            <div class="product-details">
+                                <h3>{{ item.part.name }}</h3>
+                                <p>{{ item.part.brand }}</p>
+                                <div class="product-specs">
+                                    <span class="spec">{{ item.part.condition }}</span>
+                                    <span class="spec">{{ item.part.vehicle }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="unit-price">
+                            $<span id="unitPrice-{{ item.part.id }}">{{ item.part.price }}</span>
+                        </div>
+
+                        <div class="quantity-controls">
+                            <input type="number" id="quantity-{{ item.id }}" name="quantity" class="quantity-input" value="{{ item.quantity }}" min="1" max="{{ item.part.stock }}">
+                            <input type="hidden" name="cid" value="{{item.id}}">
+                        </div>
+
+                        <div class="item-total">
+                            $<span id="itemTotal-{{ item.id }}">{{ item.total_price|floatformat:2 }}</span>
+                        </div>
+                        <div>
+                            <button class="btn" type="submit">
+                            <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+
+                        <button class="remove-btn" onclick="window.location.href='/remove-cart/{{item.id}}/'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    </form>
+                    {% endfor %}
+
+                    <!-- Cart Actions -->
+                    <div class="cart-actions" style="display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--vintage-light);">
+                        <a href="/vehicle-parts/" class="btn btn-outline">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your Cart is Empty</h3>
+                        <p>Looks like you haven't added any vintage auto parts to your cart yet. Browse our collection to find the perfect parts for your classic car.</p>
+                        <a href="/marketplace/" class="btn btn-gold">
+                            <i class="fas fa-car"></i> Browse Parts
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Cart Summary -->
+                <div class="cart-summary">
+                    <div class="summary-header">
+                        <h3>Order Summary</h3>
+                    </div>
+
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span class="summary-label">Subtotal</span>
+                            <span class="summary-value" id="subtotal">${{ total|floatformat:2 }}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Shipping</span>
+                            <span class="summary-value" id="shipping">
+                                FREE
+                            </span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Tax</span>
+                            <span class="summary-value" id="tax">$0</span>
+                        </div>
+
+                        <div class="summary-row summary-total">
+                            <span>Total</span>
+                            <span id="total">${{ total|floatformat:2 }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Discount Section -->
+                    <div class="discount-section">
+                        <h4>Have a promo code?</h4>
+                        <div class="discount-input">
+                            <input type="text" id="promoCode" placeholder="Enter code">
+                            <button class="btn btn-sm" onclick="applyPromoCode()">Apply</button>
+                        </div>
+                        <div id="promoMessage" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                    </div>
+
+                    <!-- Checkout Button -->
+                    <div class="summary-actions">
+                        <button class="btn btn-gold" onclick="window.location.href='/checkout/'">
+                            <i class="fas fa-lock"></i> Proceed to Checkout
+                        </button>
+                        <a href="/vehicle-parts/" class="btn btn-outline">
+                            <i class="fas fa-shopping-bag"></i> Continue Shopping
+                        </a>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--vintage-light);">
+                        <p style="color: var(--vintage-brown); font-size: 0.9rem; margin-bottom: 10px;">Secure Payment</p>
+                        <div style="display: flex; gap: 15px;">
+                            <i class="fab fa-cc-visa" style="font-size: 1.5rem; color: #1a1f71;"></i>
+                            <i class="fab fa-cc-mastercard" style="font-size: 1.5rem; color: #eb001b;"></i>
+                            <i class="fab fa-cc-amex" style="font-size: 1.5rem; color: #2e77bc;"></i>
+                            <i class="fab fa-cc-paypal" style="font-size: 1.5rem; color: #003087;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promo Banner -->
+            {% if cart_items %}
+            <div class="promo-banner">
+                <h3>Free Shipping on Orders Over $100</h3>
+                <p>Add <span id="remainingAmount">${{ remaining|floatformat:2 }}</span> more to your cart to qualify for free shipping</p>
+                <a href="/marketplace/" class="btn btn-gold">Shop More Parts</a>
+            </div>
+            {% endif %}
+
+            <!-- Continue Shopping -->
+            <div class="continue-shopping">
+                <i class="fas fa-truck"></i>
+                <p>
+                    <strong>Free Returns</strong><br>
+                    All purchases come with our 30-day return policy. Return shipping is free for defective items.
+                </p>
+                <a href="/returns/" class="btn btn-sm">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ClassicParts</h3>
+                    <p>ClassicParts is the premier marketplace for vintage auto parts, connecting enthusiasts and collectors worldwide.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/marketplace/">Browse Parts</a></li>
+                        <li><a href="/sell-part/">Sell Parts</a></li>
+                        <li><a href="/collections/">My Collection</a></li>
+                        <li><a href="/cart/">Shopping Cart</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Customer Service</h3>
+                    <ul class="footer-links">
+                        <li><a href="/help/">Help Center</a></li>
+                        <li><a href="/shipping/">Shipping Info</a></li>
+                        <li><a href="/returns/">Returns & Exchanges</a></li>
+                        <li><a href="/contact/">Contact Us</a></li>
+                        <li><a href="/faq/">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Heritage Drive, Auburn, IN</li>
+                        <li><i class="fas fa-phone"></i> (555) 321-PARTS</li>
+                        <li><i class="fas fa-envelope"></i> support@classicparts.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 9AM-6PM EST</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ClassicAuto Parts Marketplace. All rights reserved. Vintage automotive excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+
+</body>
+</html>
