@@ -33,10 +33,13 @@ urlpatterns = [
     path('checkout/', views.checkout),
     path('success/', views.success),
     path('orders/', views.orders),
-    path('view-orders/', views.view_orders),
-    path('ship-item/<id>/', views.ship_item),
+    path('view-orders/', views.manage_orders),
+    path('update-order-status/<id>/', views.update_order_status),
     path('new-sellers/', views.new_sellers),
     path('approve-seller/<id>/', views.approve_seller),
     path('reject-seller/<id>/', views.reject_seller),
     path('sellers/', views.sellers),
+    path('recommendations/', views.recommendation, name='recommendations'),
+    path('logout/', views.logout),
 ]
+    # path('ship-item/<id>/', views.ship_item), # Removed in favor of update-order-status

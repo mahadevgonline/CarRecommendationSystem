@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -448,6 +449,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -476,7 +478,8 @@
             <div class="registration-container">
                 <div class="registration-info">
                     <h2>Join AutoSelect Today</h2>
-                    <p>Create an account to get personalized car recommendations based on your preferences, budget, and lifestyle.</p>
+                    <p>Create an account to get personalized car recommendations based on your preferences, budget, and
+                        lifestyle.</p>
 
                     <ul class="benefits">
                         <li>
@@ -523,11 +526,18 @@
 
                     <form id="registrationForm" method="post">
                         {% csrf_token %}
+                        {% if error %}
+                        <div
+                            style="background: #ffebee; color: #c62828; padding: 12px; border-radius: 5px; margin-bottom: 20px; text-align: center; border: 1px solid #ef9a9a;">
+                            <i class="fas fa-exclamation-circle"></i> {{ error }}
+                        </div>
+                        {% endif %}
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="fullName" name="name" class="form-control" placeholder="Enter your full name" required>
+                                <input type="text" id="fullName" name="name" class="form-control"
+                                    placeholder="Enter your full name" required>
                             </div>
                         </div>
 
@@ -535,7 +545,8 @@
                             <label for="email">Email Address</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-envelope"></i>
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
+                                <input type="email" id="email" name="email" class="form-control"
+                                    placeholder="Enter your email" required>
                             </div>
                         </div>
 
@@ -543,7 +554,8 @@
                             <label for="email">Phone Number</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-phone"></i>
-                                <input type="number" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" required>
+                                <input type="number" id="phone" name="phone" class="form-control"
+                                    placeholder="Enter your phone number" required>
                             </div>
                         </div>
 
@@ -551,7 +563,8 @@
                             <label for="address">Address</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-home"></i>
-                                <input type="text" id="address" name="address" class="form-control" placeholder="Enter your address" required>
+                                <input type="text" id="address" name="address" class="form-control"
+                                    placeholder="Enter your address" required>
                             </div>
                         </div>
 
@@ -559,7 +572,8 @@
                             <label for="password">Password</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                                <input type="password" id="password" class="form-control"
+                                    placeholder="Create a password" required>
                                 <span class="password-toggle" id="togglePassword">
                                     <i class="fas fa-eye"></i>
                                 </span>
@@ -570,13 +584,15 @@
                             <label for="confirmPassword">Confirm Password</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" id="confirmPassword" name="password" class="form-control" placeholder="Confirm your password" required>
+                                <input type="password" id="confirmPassword" name="password" class="form-control"
+                                    placeholder="Confirm your password" required>
                             </div>
                         </div>
 
                         <div class="terms">
                             <input type="checkbox" id="agreeTerms" required>
-                            <label for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                            <label for="agreeTerms">I agree to the <a href="#">Terms of Service</a> and <a
+                                    href="#">Privacy Policy</a></label>
                         </div>
 
                         <button type="submit" class="btn">
@@ -598,7 +614,8 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>About AutoSelect</h3>
-                    <p>AutoSelect is an intelligent car recommendation system that helps you find the perfect vehicle based on your unique needs, preferences, and budget.</p>
+                    <p>AutoSelect is an intelligent car recommendation system that helps you find the perfect vehicle
+                        based on your unique needs, preferences, and budget.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -646,7 +663,7 @@
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
 
-        togglePassword.addEventListener('click', function() {
+        togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
@@ -655,7 +672,7 @@
         // Form submission
         const registrationForm = document.getElementById('registrationForm');
 
-        registrationForm.addEventListener('submit', function(e) {
+        registrationForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             // Get form values
@@ -688,11 +705,11 @@
         const formControls = document.querySelectorAll('.form-control');
         formControls.forEach(control => {
             // Add focus effect
-            control.addEventListener('focus', function() {
+            control.addEventListener('focus', function () {
                 this.parentElement.parentElement.classList.add('focused');
             });
 
-            control.addEventListener('blur', function() {
+            control.addEventListener('blur', function () {
                 if (!this.value) {
                     this.parentElement.parentElement.classList.remove('focused');
                 }
@@ -700,4 +717,5 @@
         });
     </script>
 </body>
+
 </html>

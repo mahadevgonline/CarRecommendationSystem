@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +91,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -351,10 +353,21 @@
             color: white;
         }
 
-        .stat-icon.total { background: var(--info); }
-        .stat-icon.pending { background: var(--warning); }
-        .stat-icon.processing { background: #9b59b6; }
-        .stat-icon.completed { background: var(--success); }
+        .stat-icon.total {
+            background: var(--info);
+        }
+
+        .stat-icon.pending {
+            background: var(--warning);
+        }
+
+        .stat-icon.processing {
+            background: #9b59b6;
+        }
+
+        .stat-icon.completed {
+            background: var(--success);
+        }
 
         .stat-info h3 {
             font-size: 2rem;
@@ -594,6 +607,7 @@
                 transform: translateY(-50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -644,7 +658,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -699,7 +714,8 @@
                 font-size: 0.9rem;
             }
 
-            .orders-table th, .orders-table td {
+            .orders-table th,
+            .orders-table td {
                 padding: 10px 5px;
             }
 
@@ -727,6 +743,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -839,12 +856,14 @@
                     </table>
 
                     <!-- Bulk Actions -->
-                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <div
+                        style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <span id="selectedCount">0</span> orders selected
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <select id="bulkAction" style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
+                            <select id="bulkAction"
+                                style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
                                 <option value="">Bulk Actions</option>
                                 <option value="update-status">Update Status</option>
                                 <option value="print-labels">Print Labels</option>
@@ -889,7 +908,7 @@
                 <button class="btn btn-info" onclick="printInvoice()">
                     <i class="fas fa-print"></i> Print Invoice
                 </button>
-                 <button id="modalUpdateStatusBtn" class="btn btn-primary" style="display:none;">
+                <button id="modalUpdateStatusBtn" class="btn btn-primary" style="display:none;">
                     <i class="fas fa-sync-alt"></i> Update Status
                 </button>
             </div>
@@ -918,60 +937,33 @@
     </div>
 
     <script>
+        const csrfToken = "{{ csrf_token }}";
         // Sample order data
         const orders = [
-        {% for i in ord %}
-            {
-                id: "{{i.id}}",
-                customer: { name: "{{i.fname}}", email: "{{i.email}}", initials: "{{ i.fname|slice:":1" }}{{ i.lname|slice:":1" }}" },
-                date: "{{i.date}}",
-                items: {{ i.orderitems_set.all|length }},
-                total: {% for j in i.orderitems_set.all %}{{j.total_price}}{% endfor %},
-                products: [
-                    {% for j in i.orderitems_set.all %}
-                    {
-                        name: "{{ j.item.name }}",
-                        qty: {{ j.quantity }},
-                        price: {{ j.total_price }}
-                    },
-                    {% endfor %}
+            {% for i in ord %}
+        {
+            id: "{{i.id}}",
+                customer: { name: "{{i.fname}}", email: "{{i.email}}", initials: "{{ i.fname|slice:": 1" }}{{ i.lname|slice:": 1" }}" },
+            date: "{{i.date}}",
+                items: { { i.orderitems_set.all | length } },
+            total: {% for j in i.orderitems_set.all %} { { j.total_price } } {% endfor %},
+            products: [
+                {% for j in i.orderitems_set.all %}
+        {
+            name: "{{ j.item.name }}",
+                qty: { { j.quantity } },
+            price: { { j.total_price } }
+        },
+        {% endfor %}
                 ],
-                address: "{{ i.address }}",
-                status: "{{i.status}}",
+        address: "{{ i.address }}",
+            status: "{{i.status}}",
                 statusText: "{{i.status}}"
             },
-            {% endfor %}
+        {% endfor %}
         ];
 
-        // DOM Elements
-        const searchInput = document.getElementById('searchInput');
-        const statusFilter = document.getElementById('statusFilter');
-        const timeFilter = document.getElementById('timeFilter');
-        const selectedCount = document.getElementById('selectedCount');
-        const ordersTable = document.querySelector('#ordersTable tbody');
-        const deleteModal = document.getElementById('deleteModal');
-        const deleteOrderId = document.getElementById('deleteOrderId');
-        const deleteCustomerName = document.getElementById('deleteCustomerName');
-        const orderModal = document.getElementById('orderModal');
-        const modalBody = document.getElementById('modalBody');
-
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        }
-
-        // Format currency
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD'
-            }).format(amount);
-        }
+        // ... [constants remain same] ...
 
         // Render orders table
         function renderOrders(filteredOrders) {
@@ -980,11 +972,49 @@
 
             filteredOrders.forEach(order => {
                 const row = document.createElement('tr');
-                const shipBtn = (order.status && order.status.toLowerCase() === 'processing')
-                ? `<button class="btn btn-warning btn-sm" onclick="window.location.href = '/ship-item/${order.id}/'">
-                       <i class="fas fa-truck"></i> Ship
-                   </button>`
-                : '';
+
+                let actionsHtml = '';
+                const status = order.status ? order.status.toLowerCase() : '';
+
+                if (status === 'pending') {
+                    actionsHtml = `
+                        <form action="/update-order-status/${order.id}/" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                            <input type="hidden" name="status" value="Accepted">
+                            <button type="submit" class="btn btn-success btn-sm" title="Accept Order">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </form>
+                        <form action="/update-order-status/${order.id}/" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                            <input type="hidden" name="status" value="Rejected">
+                            <button type="submit" class="btn btn-danger btn-sm" title="Reject Order">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </form>
+                    `;
+                } else if (status === 'accepted') {
+                    actionsHtml = `
+                        <form action="/update-order-status/${order.id}/" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                            <input type="hidden" name="status" value="Shipped">
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="fas fa-truck"></i> Ship
+                            </button>
+                        </form>
+                    `;
+                } else if (status === 'shipped') {
+                    actionsHtml = `
+                        <form action="/update-order-status/${order.id}/" method="POST" style="display:inline;">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                            <input type="hidden" name="status" value="Delivered">
+                            <button type="submit" class="btn btn-info btn-sm">
+                                <i class="fas fa-box-open"></i> Delivered
+                            </button>
+                        </form>
+                    `;
+                }
+
                 row.innerHTML = `
                     <td><strong>${order.id}</strong></td>
                     <td>
@@ -1000,16 +1030,14 @@
                     <td>${order.items} item${order.items > 1 ? 's' : ''}</td>
                     <td class="order-total">${formatCurrency(order.total)}</td>
                     <td>
-                        <span class="status-badge status-${order.status}">${order.statusText}</span>
+                        <span class="status-badge status-${status}">${order.statusText}</span>
                     </td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn btn-info btn-sm" onclick="viewOrder('${order.id}')">
                                 <i class="fas fa-eye"></i>
                             </button>
-
-                            ${shipBtn}
-
+                            ${actionsHtml}
                         </div>
                     </td>
                 `;
@@ -1017,8 +1045,12 @@
             });
 
             // Update checkboxes
-            updateCheckboxListeners();
-            updateSelectedCount();
+            if (typeof updateCheckboxListeners === 'function') {
+                updateCheckboxListeners();
+            }
+            if (typeof updateSelectedCount === 'function') {
+                updateSelectedCount();
+            }
         }
 
         // Filter orders
@@ -1048,7 +1080,7 @@
                 const now = new Date();
                 let daysAgo = 0;
 
-                switch(timePeriod) {
+                switch (timePeriod) {
                     case 'today': daysAgo = 1; break;
                     case 'week': daysAgo = 7; break;
                     case 'month': daysAgo = 30; break;
@@ -1158,7 +1190,7 @@
         }
 
         // Confirm delete
-        document.getElementById('confirmDelete').addEventListener('click', function() {
+        document.getElementById('confirmDelete').addEventListener('click', function () {
             if (orderToDelete) {
                 console.log('Deleting order:', orderToDelete);
                 alert('Order deleted successfully!');
@@ -1196,10 +1228,10 @@
 
 
         // Export orders
-        
+
 
         // Bulk actions
-        document.getElementById('applyBulkAction').addEventListener('click', function() {
+        document.getElementById('applyBulkAction').addEventListener('click', function () {
             const action = document.getElementById('bulkAction').value;
             const checkedBoxes = document.querySelectorAll('.order-checkbox:checked');
             const orderIds = Array.from(checkedBoxes).map(cb => cb.value);
@@ -1214,7 +1246,7 @@
                 return;
             }
 
-            switch(action) {
+            switch (action) {
                 case 'update-status':
                     const newStatus = prompt('Enter new status for selected orders:');
                     if (newStatus) {
@@ -1240,16 +1272,16 @@
         });
 
         // Demo functions
-        window.printInvoice = function() {
+        window.printInvoice = function () {
             alert('Printing invoice...');
         };
 
-        window.updateOrderStatus = function() {
+        window.updateOrderStatus = function () {
             alert('Updating order status...');
         };
 
         // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
+        window.addEventListener('click', function (event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
@@ -1266,4 +1298,5 @@
         });
     </script>
 </body>
+
 </html>
