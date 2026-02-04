@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toyota Camry - AutoSelect Admin</title>
+    <title>{{car.make}} {{car.model}} - AutoSelect Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -90,7 +91,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -701,7 +703,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -760,16 +763,23 @@
                 display: none;
             }
 
-            .car-images, .car-info, .specs-section, .features-section, .metrics-section, .activity-section {
+            .car-images,
+            .car-info,
+            .specs-section,
+            .features-section,
+            .metrics-section,
+            .activity-section {
                 padding: 20px;
             }
 
-            .features-grid, .metrics-grid {
+            .features-grid,
+            .metrics-grid {
                 grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -834,7 +844,7 @@
             <div class="content">
                 <div class="page-title">
                     <div>
-                        <h2>Toyota Camry</h2>
+                        <h2>{{car.make}} {{car.model}}</h2>
                         <p>Detailed view of the car and its performance metrics</p>
                     </div>
                     <a href="/cars/" class="btn btn-outline">
@@ -847,7 +857,10 @@
                     <!-- Car Images -->
                     <div class="car-images">
                         <div class="main-image">
-                            <img src="{{car.image.url}}" alt="Toyota Camry" id="mainImage">
+                            {% if car.image %}<img src="{{car.image.url}}" alt="{{car.make}} {{car.model}}"
+                                id="mainImage">{% else %}<div
+                                style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
+                                <i class="fas fa-car" style="font-size:4rem;"></i></div>{% endif %}
                         </div>
 
                     </div>
@@ -1112,4 +1125,5 @@
 
 
 </body>
+
 </html>

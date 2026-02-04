@@ -945,8 +945,8 @@
             id: "{{i.id}}",
                 customer: { name: "{{i.fname}}", email: "{{i.email}}", initials: "{{ i.fname|slice:": 1" }}{{ i.lname|slice:": 1" }}" },
             date: "{{i.date}}",
-                items: { { i.orderitems_set.all | length } },
-            total: {% for j in i.orderitems_set.all %} { { j.total_price } } {% endfor %},
+                items: 2,
+                    total: {% for j in i.orderitems.all %} { { j.total_price } } {% endfor %},
             products: [
                 {% for j in i.orderitems_set.all %}
         {

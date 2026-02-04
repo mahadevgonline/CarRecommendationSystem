@@ -386,9 +386,9 @@ def manage_orders(request):
         orders = Order.objects.filter(orderitems__item__seller=seller).distinct().order_by('-date')
         
         # Get notifications
-        notifications = Notification.objects.filter(recipient=seller, is_read=False).order_by('-created_at')
+        # notifications = Notification.objects.filter(recipient=seller, is_read=False).order_by('-created_at')
         
-        return render(request, "seller/orders.html", {'ord': orders, 'notifications': notifications})
+        return render(request, "seller/orders.html", {'ord': orders})
     except Seller.DoesNotExist:
         return redirect('/login/')
 

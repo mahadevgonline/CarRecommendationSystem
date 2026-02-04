@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Toyota Camry - AutoSelect Admin</title>
+    <title>Edit {{car.make}} {{car.model}} - AutoSelect Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -90,7 +91,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -587,7 +589,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -652,6 +655,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -716,7 +720,7 @@
             <div class="content">
                 <div class="page-title">
                     <div>
-                        <h2>Edit Toyota Camry</h2>
+                        <h2>Edit {{car.make}} {{car.model}}</h2>
                         <p>Update the car details and specifications</p>
                     </div>
                     <div>
@@ -749,7 +753,8 @@
                                 <label for="make" class="required">Make</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-car"></i>
-                                    <input type="text" id="make" class="form-control" name="make" value="{{car.make}}" required>
+                                    <input type="text" id="make" class="form-control" name="make" value="{{car.make}}"
+                                        required>
                                 </div>
                             </div>
 
@@ -757,7 +762,8 @@
                                 <label for="model" class="required">Model</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-car-side"></i>
-                                    <input type="text" id="model" class="form-control" name="model" value="{{car.model}}" required>
+                                    <input type="text" id="model" class="form-control" name="model"
+                                        value="{{car.model}}" required>
                                 </div>
                             </div>
                         </div>
@@ -767,7 +773,8 @@
                                 <label for="year" class="required">Year</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-calendar-alt"></i>
-                                    <input type="number" id="year" class="form-control" name="year" value="{{car.year}}" min="1990" max="2030" required>
+                                    <input type="number" id="year" class="form-control" name="year" value="{{car.year}}"
+                                        min="1990" max="2030" required>
                                 </div>
                             </div>
 
@@ -775,7 +782,8 @@
                                 <label for="price" class="required">Price ($)</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-dollar-sign"></i>
-                                    <input type="number" id="price" class="form-control" name="price" value="{{car.price}}" min="0" step="0.01" required>
+                                    <input type="number" id="price" class="form-control" name="price"
+                                        value="{{car.price}}" min="0" step="0.01" required>
                                 </div>
                             </div>
                         </div>
@@ -819,7 +827,8 @@
 
                         <div class="form-group">
                             <label for="description" class="required">Description</label>
-                            <textarea id="description" class="form-control" name="description" required>{{car.description}}</textarea>
+                            <textarea id="description" class="form-control" name="description"
+                                required>{{car.description}}</textarea>
                         </div>
                     </div>
 
@@ -862,7 +871,8 @@
                                     <label for="engine">Engine</label>
                                     <div class="input-with-icon">
                                         <i class="fas fa-cog"></i>
-                                        <input type="text" id="engine" name="engine" class="form-control" value="{{car.engine}}">
+                                        <input type="text" id="engine" name="engine" class="form-control"
+                                            value="{{car.engine}}">
                                     </div>
                                 </div>
 
@@ -870,7 +880,8 @@
                                     <label for="horsepower">Horsepower</label>
                                     <div class="input-with-icon">
                                         <i class="fas fa-tachometer-alt"></i>
-                                        <input type="number" id="horsepower" name="hpower" class="form-control" value="{{car.horse_power}}">
+                                        <input type="number" id="horsepower" name="hpower" class="form-control"
+                                            value="{{car.horse_power}}">
                                     </div>
                                 </div>
                             </div>
@@ -897,7 +908,8 @@
                                     <label for="mpgCity">MPG (City)</label>
                                     <div class="input-with-icon">
                                         <i class="fas fa-gas-pump"></i>
-                                        <input type="number" id="mpgCity" name="mpg_city" class="form-control" value="{{car.mpg_city}}">
+                                        <input type="number" id="mpgCity" name="mpg_city" class="form-control"
+                                            value="{{car.mpg_city}}">
                                     </div>
                                 </div>
 
@@ -905,7 +917,8 @@
                                     <label for="mpgHighway">MPG (Highway)</label>
                                     <div class="input-with-icon">
                                         <i class="fas fa-road"></i>
-                                        <input type="number" id="mpgHighway" name="mpg_hway" class="form-control" value="{{car.mpg_hway}}">
+                                        <input type="number" id="mpgHighway" name="mpg_hway" class="form-control"
+                                            value="{{car.mpg_hway}}">
                                     </div>
                                 </div>
                             </div>
@@ -922,7 +935,8 @@
                         <button type="button" class="btn btn-outline" id="cancelBtn">
                             <i class="fas fa-times"></i> Cancel
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="window.location.href='/delete-car/{{car.id}}/'">
+                        <button type="button" class="btn btn-danger"
+                            onclick="window.location.href='/delete-car/{{car.id}}/'">
                             <i class="fas fa-trash"></i> Delete Car
                         </button>
                         <button type="submit" class="btn btn-primary">
@@ -936,4 +950,5 @@
 
 
 </body>
+
 </html>
