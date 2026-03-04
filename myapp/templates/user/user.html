@@ -1,3 +1,4 @@
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -706,7 +707,7 @@
                                 <h3>{{i.year}} {{i.make}}</h3>
                                 <p>{{i.model}}</p>
                             </div>
-                            <div class="car-price">${{i.price}}</div>
+                            <div class="car-price">{{i.price|inr}}</div>
                         </div>
                         <div class="car-specs">
                             <div class="spec"><i class="fas fa-tachometer-alt"></i> {{i.horse_power}} HP</div>

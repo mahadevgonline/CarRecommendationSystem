@@ -1,36 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AutoSelect</title>
+    <title>Sign In - ClassicAuto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+        rel="stylesheet">
     <style>
+        :root {
+            --vintage-dark: #3e2723;
+            --vintage-brown: #5d4037;
+            --vintage-light: #d7ccc8;
+            --vintage-gold: #c9a96e;
+            --vintage-gold-dark: #b89446;
+            --vintage-cream: #f5f1e6;
+            --vintage-red: #8b4513;
+            --transition: all 0.4s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Lora', serif;
+            color: var(--vintage-dark);
+            background-color: var(--vintage-cream);
+            min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            font-family: 'Cinzel', serif;
+        }
+
+        /* ── Header ── */
+        header {
+            background-color: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 18px 0;
+            border-bottom: 3px solid var(--vintage-gold);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header Styles */
-        header {
-            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
-            color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 0 24px;
         }
 
         .header-content {
@@ -42,387 +67,557 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
+            text-decoration: none;
+            color: var(--vintage-cream);
         }
 
         .logo i {
-            font-size: 2.5rem;
-            color: #e74c3c;
+            color: var(--vintage-gold);
+            font-size: 2rem;
         }
 
         .logo h1 {
-            font-size: 2rem;
-            font-weight: 600;
+            font-size: 1.8rem;
+            font-weight: 700;
             letter-spacing: 1px;
         }
 
         .logo span {
-            color: #e74c3c;
+            color: var(--vintage-gold);
         }
 
         nav ul {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 28px;
         }
 
         nav a {
-            color: white;
+            color: var(--vintage-cream);
             text-decoration: none;
+            font-family: 'Lora', serif;
             font-weight: 500;
-            font-size: 1.1rem;
-            transition: color 0.3s;
+            font-size: 1rem;
+            transition: var(--transition);
             padding: 5px 10px;
-            border-radius: 4px;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--vintage-gold);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
         }
 
         nav a:hover {
-            color: #e74c3c;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--vintage-gold);
         }
 
-        /* Login Section */
-        .login-section {
-            padding: 80px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 200px);
-        }
-
-        .login-container {
-            display: flex;
-            max-width: 1000px;
+        nav a:hover::after {
             width: 100%;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .login-info {
-            flex: 1;
-            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
-            color: white;
-            padding: 50px;
+        /* ── Page Layout ── */
+        .page-wrapper {
+            min-height: calc(100vh - 74px);
+            display: flex;
+            align-items: stretch;
+        }
+
+        /* ── Left Panel ── */
+        .auth-panel-left {
+            flex: 1.1;
+            background: linear-gradient(160deg, var(--vintage-dark) 0%, #5a3520 60%, var(--vintage-brown) 100%);
+            color: var(--vintage-cream);
             display: flex;
             flex-direction: column;
             justify-content: center;
+            padding: 60px 50px;
             position: relative;
             overflow: hidden;
         }
 
-        .login-info::before {
+        /* decorative circles */
+        .auth-panel-left::before {
             content: '';
             position: absolute;
-            width: 200px;
-            height: 200px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            top: -50px;
-            left: -50px;
+            border: 2px solid rgba(201, 169, 110, 0.15);
+            top: -80px;
+            left: -80px;
         }
 
-        .login-info::after {
+        .auth-panel-left::after {
             content: '';
             position: absolute;
-            width: 150px;
-            height: 150px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            bottom: -50px;
-            right: -50px;
+            border: 2px solid rgba(201, 169, 110, 0.12);
+            bottom: -60px;
+            right: -60px;
         }
 
-        .login-info-content {
+        .panel-inner {
             position: relative;
             z-index: 1;
         }
 
-        .login-info h2 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            font-weight: 600;
+        .panel-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201, 169, 110, 0.15);
+            border: 1px solid rgba(201, 169, 110, 0.4);
+            color: var(--vintage-gold);
+            padding: 6px 14px;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
         }
 
-        .login-info p {
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .auth-panel-left h2 {
+            font-size: 2.6rem;
+            line-height: 1.25;
+            margin-bottom: 18px;
+            color: var(--vintage-cream);
         }
 
-        .testimonial {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 25px;
-            border-radius: 8px;
-            margin-top: 30px;
-            border-left: 4px solid #e74c3c;
+        .auth-panel-left h2 em {
+            color: var(--vintage-gold);
+            font-style: normal;
         }
 
-        .testimonial p {
+        .auth-panel-left>.panel-inner>p {
+            font-size: 1.05rem;
+            color: var(--vintage-light);
+            margin-bottom: 40px;
             font-style: italic;
-            margin-bottom: 15px;
+            line-height: 1.8;
         }
 
-        .client {
+        /* gold divider */
+        .gold-divider {
+            width: 60px;
+            height: 3px;
+            background: var(--vintage-gold);
+            margin-bottom: 36px;
+        }
+
+        /* feature list */
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .feature-list li {
             display: flex;
             align-items: center;
+            gap: 14px;
+            font-size: 0.95rem;
+            color: var(--vintage-light);
         }
 
-        .client img {
-            width: 50px;
-            height: 50px;
+        .feature-list li .feat-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(201, 169, 110, 0.15);
+            border: 1px solid rgba(201, 169, 110, 0.35);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vintage-gold);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        /* testimonial */
+        .testimonial-box {
+            margin-top: 44px;
+            padding: 24px 28px;
+            background: rgba(201, 169, 110, 0.08);
+            border-left: 3px solid var(--vintage-gold);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .testimonial-box p {
+            font-style: italic;
+            color: var(--vintage-light);
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-author img {
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 15px;
-            border: 2px solid #e74c3c;
+            border: 2px solid var(--vintage-gold);
         }
 
-        .client-info h4 {
-            margin-bottom: 5px;
-        }
-
-        .client-info p {
-            margin: 0;
+        .testimonial-author .auth-info h4 {
             font-size: 0.9rem;
-            opacity: 0.8;
+            color: var(--vintage-cream);
+            margin-bottom: 2px;
         }
 
-        .login-form {
+        .testimonial-author .auth-info p {
+            font-size: 0.8rem;
+            color: var(--vintage-gold);
+            margin: 0;
+            font-style: normal;
+        }
+
+        /* ── Right Panel (Form) ── */
+        .auth-panel-right {
             flex: 1;
-            padding: 50px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            padding: 60px 50px;
+            background: var(--vintage-cream);
+        }
+
+        .form-top-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .form-top-label .line {
+            flex: 1;
+            height: 1px;
+            background: var(--vintage-light);
+        }
+
+        .form-top-label span {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--vintage-brown);
         }
 
         .form-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
         }
 
         .form-header h2 {
             font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            color: var(--vintage-dark);
+            margin-bottom: 8px;
         }
 
         .form-header p {
-            color: #7f8c8d;
+            color: var(--vintage-brown);
+            font-style: italic;
+            font-size: 0.95rem;
         }
 
+        /* error alert */
+        .alert-error {
+            background: #fff3e0;
+            color: var(--vintage-red);
+            border: 1px solid #ffcc80;
+            border-left: 4px solid var(--vintage-red);
+            padding: 12px 16px;
+            border-radius: 2px;
+            margin-bottom: 22px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.35s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* form groups */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #2c3e50;
+            margin-bottom: 7px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--vintage-brown);
         }
 
-        .input-with-icon {
+        .input-wrap {
             position: relative;
         }
 
-        .input-with-icon i {
+        .input-wrap .input-icon {
             position: absolute;
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #7f8c8d;
+            color: var(--vintage-brown);
+            font-size: 0.9rem;
+            pointer-events: none;
+            transition: color 0.3s;
         }
 
         .form-control {
             width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: all 0.3s;
+            padding: 14px 16px 14px 44px;
+            border: 1px solid var(--vintage-light);
+            border-radius: 2px;
+            font-family: 'Lora', serif;
+            font-size: 0.97rem;
+            color: var(--vintage-dark);
+            background: #faf8f2;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #a89080;
+            font-style: italic;
         }
 
         .form-control:focus {
-            border-color: #e74c3c;
-            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
-            outline: none;
+            border-color: var(--vintage-gold);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.18);
+        }
+
+        .form-control:focus+.input-icon,
+        .input-wrap:focus-within .input-icon {
+            color: var(--vintage-gold);
         }
 
         .password-toggle {
             position: absolute;
-            right: 15px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: #7f8c8d;
+            color: var(--vintage-brown);
             cursor: pointer;
+            font-size: 0.9rem;
+            transition: color 0.3s;
         }
 
-        .remember-forgot {
+        .password-toggle:hover {
+            color: var(--vintage-gold);
+        }
+
+        /* checkbox row */
+        .check-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 26px;
         }
 
-        .remember {
+        .custom-check {
             display: flex;
             align-items: center;
-        }
-
-        .remember input {
-            margin-right: 8px;
-        }
-
-        .remember label {
+            gap: 8px;
+            cursor: pointer;
             font-size: 0.9rem;
-            color: #7f8c8d;
+            color: var(--vintage-brown);
         }
 
-        .forgot-password {
-            color: #e74c3c;
+        .custom-check input[type="checkbox"] {
+            appearance: none;
+            width: 17px;
+            height: 17px;
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            background: #faf8f2;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .custom-check input[type="checkbox"]:checked {
+            background: var(--vintage-gold);
+            border-color: var(--vintage-gold-dark);
+        }
+
+        .custom-check input[type="checkbox"]:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 10px;
+            color: var(--vintage-dark);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .forgot-link {
+            color: var(--vintage-gold-dark);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 500;
+            transition: color 0.3s;
         }
 
-        .forgot-password:hover {
+        .forgot-link:hover {
+            color: var(--vintage-dark);
             text-decoration: underline;
         }
 
-        .btn {
-            display: inline-block;
+        /* submit button */
+        .btn-submit {
             width: 100%;
             padding: 15px;
-            background: #e74c3c;
-            color: white;
+            background: var(--vintage-brown);
+            color: var(--vintage-cream);
             border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 25px;
-            color: #7f8c8d;
-        }
-
-        .register-link a {
-            color: #e74c3c;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-
-        .divider {
-            text-align: center;
+            transition: var(--transition);
             position: relative;
-            margin: 25px 0;
-            color: #7f8c8d;
+            overflow: hidden;
         }
 
-        .divider::before {
+        .btn-submit::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 0;
-            width: 45%;
-            height: 1px;
-            background: #ddd;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .15), transparent);
+            transition: var(--transition);
         }
 
-        .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: 0;
-            width: 45%;
-            height: 1px;
-            background: #ddd;
+        .btn-submit:hover {
+            background: var(--vintage-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(62, 39, 35, 0.3);
         }
 
-        .social-login {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
+        .btn-submit:hover::before {
+            left: 100%;
         }
 
-        .social-btn {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: white;
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* switch link */
+        .switch-link {
+            text-align: center;
+            margin-top: 26px;
+            font-size: 0.92rem;
+            color: var(--vintage-brown);
+        }
+
+        .switch-link a {
+            color: var(--vintage-gold-dark);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .switch-link a:hover {
+            color: var(--vintage-dark);
+        }
+
+        /* ornament line */
+        .ornament {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
+            gap: 12px;
+            margin: 28px 0;
+            color: var(--vintage-light);
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        .social-btn:hover {
-            background: #f5f5f5;
-            transform: translateY(-2px);
+        .ornament::before,
+        .ornament::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--vintage-light);
         }
 
-        .social-btn.google {
-            color: #db4437;
-        }
-
-        .social-btn.facebook {
-            color: #4267B2;
-        }
-
-        /* Footer */
+        /* ── Footer ── */
         footer {
-            background: #2c3e50;
-            color: white;
-            padding: 60px 0 30px;
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 50px 0 24px;
+            border-top: 3px solid var(--vintage-gold);
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 36px;
+            margin-bottom: 36px;
         }
 
         .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 25px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
             position: relative;
             padding-bottom: 10px;
         }
 
-        .footer-column h3:after {
+        .footer-column h3::after {
             content: '';
             position: absolute;
-            width: 40px;
-            height: 3px;
-            background: #e74c3c;
+            width: 36px;
+            height: 2px;
+            background: var(--vintage-gold);
             bottom: 0;
             left: 0;
         }
 
         .footer-column p {
-            color: #bdc3c7;
-            margin-bottom: 20px;
+            color: var(--vintage-light);
+            font-size: 0.9rem;
+            line-height: 1.7;
         }
 
         .footer-links {
@@ -430,200 +625,356 @@
         }
 
         .footer-links li {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .footer-links a {
-            color: #bdc3c7;
+            color: var(--vintage-light);
             text-decoration: none;
-            transition: color 0.3s;
+            font-size: 0.9rem;
+            transition: var(--transition);
         }
 
         .footer-links a:hover {
-            color: #e74c3c;
+            color: var(--vintage-gold);
             padding-left: 5px;
         }
 
         .social-links {
             display: flex;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 12px;
+            margin-top: 16px;
         }
 
         .social-links a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            background: rgba(201, 169, 110, 0.15);
+            border: 1px solid rgba(201, 169, 110, 0.35);
             border-radius: 50%;
-            color: white;
-            transition: all 0.3s;
+            color: var(--vintage-cream);
+            font-size: 0.85rem;
+            transition: var(--transition);
+            text-decoration: none;
         }
 
         .social-links a:hover {
-            background: #e74c3c;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
             transform: translateY(-3px);
         }
 
         .copyright {
             text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #bdc3c7;
-            font-size: 0.9rem;
+            padding-top: 24px;
+            border-top: 1px solid rgba(201, 169, 110, 0.15);
+            color: var(--vintage-light);
+            font-size: 0.85rem;
         }
 
-        /* Responsive Design */
+        /* ── Responsive ── */
         @media (max-width: 900px) {
-            .login-container {
+            .page-wrapper {
                 flex-direction: column;
             }
 
-            .login-info {
-                padding: 30px;
+            .auth-panel-left {
+                padding: 40px 30px;
             }
 
-            .login-form {
-                padding: 30px;
+            .auth-panel-right {
+                padding: 40px 30px;
+            }
+
+            .auth-panel-left h2 {
+                font-size: 2rem;
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 680px) {
             .header-content {
                 flex-direction: column;
-                gap: 20px;
+                gap: 14px;
             }
 
             nav ul {
-                gap: 15px;
+                gap: 14px;
             }
 
-            .social-login {
-                flex-direction: column;
-            }
-
-            .remember-forgot {
+            .check-row {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+                gap: 12px;
             }
+        }
+
+        /* ── McQueen Mascot ── */
+        .mascot-row {
+            display: flex;
+            justify-content: flex-end;
+            margin: 0 0 12px;
+        }
+
+        .car-mascot {
+            position: relative;
+            display: inline-block;
+            user-select: none;
+        }
+
+        .car-mascot svg {
+            display: block;
+            filter: drop-shadow(0 3px 8px rgba(62, 39, 35, 0.2));
+        }
+
+        .mascot-pupil-l,
+        .mascot-pupil-r {
+            transition: transform 0.08s linear;
+        }
+
+        .mascot-bubble {
+            position: absolute;
+            right: 116px;
+            top: 6px;
+            background: var(--vintage-cream);
+            border: 2px solid var(--vintage-gold);
+            border-radius: 10px 10px 0 10px;
+            padding: 6px 11px;
+            font-family: 'Lora', serif;
+            font-size: 0.78rem;
+            font-style: italic;
+            color: var(--vintage-dark);
+            white-space: nowrap;
+            opacity: 0;
+            transform: scale(0.8);
+            transform-origin: right top;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            box-shadow: 0 3px 10px rgba(62, 39, 35, 0.1);
+        }
+
+        .car-mascot.shy .mascot-bubble {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @keyframes mascotShake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            25% {
+                transform: translateX(-4px) rotate(-3deg)
+            }
+
+            50% {
+                transform: translateX(4px) rotate(3deg)
+            }
+
+            75% {
+                transform: translateX(-3px) rotate(-2deg)
+            }
+        }
+
+        .car-mascot.shake {
+            animation: mascotShake 0.4s ease;
         }
     </style>
 </head>
+
 <body>
+
     <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-car"></i>
-                    <h1>Auto<span>Select</span></h1>
-                </div>
+                <a href="/" class="logo">
+                    <i class="fas fa-car-side"></i>
+                    <h1>Classic<span>Auto</span></h1>
+                </a>
                 <nav>
                     <ul>
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#">How It Works</a></li>
-                        <li><a href="#">Car Brands</a></li>
-                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#">Collection</a></li>
+                        <li><a href="#">Heritage</a></li>
                         <li><a href="#">Contact</a></li>
+                        <li><a href="/seller-register/">Seller</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
 
-    <!-- Login Section -->
-    <section class="login-section">
-        <div class="container">
-            <div class="login-container">
-                <div class="login-info">
-                    <div class="login-info-content">
-                        <h2>Welcome Back!</h2>
-                        <p>Sign in to your AutoSelect account to access personalized car recommendations, save your favorites, and compare vehicles.</p>
+    <!-- Page Body -->
+    <div class="page-wrapper">
 
-                        <div class="testimonial">
-                            <p>"AutoSelect helped me find the perfect family SUV within my budget. The recommendations were spot on!"</p>
-                            <div class="client">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
-                                <div class="client-info">
-                                    <h4>Sarah Johnson</h4>
-                                    <p>AutoSelect User</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Left: Brand Panel -->
+        <div class="auth-panel-left">
+            <div class="panel-inner">
+                <div class="panel-badge">
+                    <i class="fas fa-star"></i>
+                    Est. Trusted Platform
                 </div>
 
-                <div class="login-form">
-                    <div class="form-header">
-                        <h2>Sign In</h2>
-                        <p>Access your personalized car recommendations</p>
-                    </div>
+                <h2>Welcome <em>Back</em> to ClassicAuto</h2>
+                <div class="gold-divider"></div>
 
-                    <div class="social-login">
-                        <button class="social-btn google">
-                            <i class="fab fa-google"></i>
-                            Google
-                        </button>
-                        <button class="social-btn facebook">
-                            <i class="fab fa-facebook-f"></i>
-                            Facebook
-                        </button>
-                    </div>
+                <p>Sign in to your account and continue your journey through the golden era of automotive craftsmanship.
+                </p>
 
-                    <div class="divider">Or sign in with email</div>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feat-icon"><i class="fas fa-heart"></i></span>
+                        View your saved & favourite vehicles
+                    </li>
+                    <li>
+                        <span class="feat-icon"><i class="fas fa-sliders-h"></i></span>
+                        Access personalised recommendations
+                    </li>
+                    <li>
+                        <span class="feat-icon"><i class="fas fa-balance-scale"></i></span>
+                        Compare models side by side
+                    </li>
+                    <li>
+                        <span class="feat-icon"><i class="fas fa-bell"></i></span>
+                        Get alerts on new arrivals & deals
+                    </li>
+                </ul>
 
-                    <form id="loginForm" method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-envelope"></i>
-                                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
-                            </div>
+                <div class="testimonial-box">
+                    <p>"ClassicAuto helped me find the perfect family vehicle within my budget. The recommendations were
+                        absolutely spot on!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson">
+                        <div class="auth-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Verified Member</p>
                         </div>
-
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-lock"></i>
-                                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
-                                <span class="password-toggle" id="togglePassword">
-                                    <i class="fas fa-eye"></i>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="remember-forgot">
-                            <div class="remember">
-                                <input type="checkbox" id="rememberMe">
-                                <label for="rememberMe">Remember me</label>
-                            </div>
-                            <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
-                        </div>
-
-                        <button type="submit" class="btn">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
-                        </button>
-                    </form>
-
-                    <div class="register-link">
-                        Don't have an account? <a href="/register/">Create Account</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <!-- Right: Form Panel -->
+        <div class="auth-panel-right">
+
+            <div class="form-top-label">
+                <div class="line"></div>
+                <span>Member Access</span>
+                <div class="line"></div>
+            </div>
+
+            <div class="form-header">
+                <h2>Sign In</h2>
+                <p>Access your personalised car recommendations</p>
+            </div>
+
+            <!-- McQueen Mascot -->
+            <div class="mascot-row">
+                <div class="car-mascot" id="carMascot">
+                    <div class="mascot-bubble">Not looking! 🙈</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 92" width="108" height="83">
+                        <ellipse cx="60" cy="90" rx="44" ry="4" fill="rgba(62,39,35,0.1)" />
+                        <rect x="8" y="48" width="104" height="30" rx="8" fill="#c0392b" />
+                        <path d="M22 48 Q28 17 60 15 Q92 17 98 48 Z" fill="#a93226" />
+                        <path d="M30 48 Q36 21 60 19 Q84 21 90 48 Z" fill="rgba(174,214,241,0.5)" />
+                        <rect x="8" y="60" width="104" height="3" rx="1.5" fill="#c9a96e" />
+                        <rect x="4" y="52" width="6" height="4" rx="1" fill="#a93226" />
+                        <rect x="110" y="52" width="6" height="4" rx="1" fill="#a93226" />
+                        <circle cx="38" cy="55" r="11" fill="white" stroke="#7b2d2d" stroke-width="1.5" />
+                        <circle cx="82" cy="55" r="11" fill="white" stroke="#7b2d2d" stroke-width="1.5" />
+                        <g class="mascot-pupil-l">
+                            <circle cx="38" cy="55" r="6" fill="#111" />
+                            <circle cx="36" cy="52" r="2" fill="white" opacity="0.85" />
+                        </g>
+                        <g class="mascot-pupil-r">
+                            <circle cx="82" cy="55" r="6" fill="#111" />
+                            <circle cx="80" cy="52" r="2" fill="white" opacity="0.85" />
+                        </g>
+                        <path d="M44 70 Q60 78 76 70" stroke="#7b2d2d" stroke-width="2.5" stroke-linecap="round"
+                            fill="none" />
+                        <line x1="52" y1="70" x2="52" y2="74" stroke="#7b2d2d" stroke-width="1.5" />
+                        <line x1="60" y1="71" x2="60" y2="76" stroke="#7b2d2d" stroke-width="1.5" />
+                        <line x1="68" y1="70" x2="68" y2="74" stroke="#7b2d2d" stroke-width="1.5" />
+                        <circle cx="22" cy="78" r="11" fill="#2c2c2c" />
+                        <circle cx="22" cy="78" r="5" fill="#666" />
+                        <circle cx="22" cy="78" r="2" fill="#999" />
+                        <circle cx="98" cy="78" r="11" fill="#2c2c2c" />
+                        <circle cx="98" cy="78" r="5" fill="#666" />
+                        <circle cx="98" cy="78" r="2" fill="#999" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            {% if msg == 'Invalid' %}
+            <div class="alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                Invalid email or password. Please try again.
+            </div>
+            {% elif msg == 'New Seller' %}
+            <div class="alert-error">
+                <i class="fas fa-hourglass-half"></i>
+                Your seller account is pending admin approval.
+            </div>
+            {% endif %}
+
+            <form id="loginForm" method="post">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrap">
+                        <input type="email" id="email" name="email" class="form-control" placeholder="your@email.com"
+                            required>
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <input type="password" id="password" name="password" class="form-control"
+                            placeholder="Enter your password" required>
+                        <i class="fas fa-lock input-icon"></i>
+                        <span class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="check-row">
+                    <label class="custom-check">
+                        <input type="checkbox" id="rememberMe">
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-sign-in-alt"></i>&ensp;Sign In
+                </button>
+            </form>
+
+            <div class="switch-link">
+                Don't have an account? <a href="/register/">Create Account</a>
+            </div>
+
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
                 <div class="footer-column">
-                    <h3>About AutoSelect</h3>
-                    <p>AutoSelect is an intelligent car recommendation system that helps you find the perfect vehicle based on your unique needs, preferences, and budget.</p>
+                    <h3>About ClassicAuto</h3>
+                    <p>An intelligent car recommendation system helping you find the perfect vehicle based on your
+                        unique needs, preferences, and budget.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -634,86 +985,107 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="#">How It Works</a></li>
-                        <li><a href="#">Car Brands</a></li>
-                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#">Collection</a></li>
+                        <li><a href="#">Heritage</a></li>
                         <li><a href="#">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
-                    <h3>Popular Categories</h3>
+                    <h3>Categories</h3>
                     <ul class="footer-links">
                         <li><a href="#">Family Cars</a></li>
                         <li><a href="#">Luxury Vehicles</a></li>
-                        <li><a href="#">Fuel-Efficient Cars</a></li>
-                        <li><a href="#">SUVs & Crossovers</a></li>
+                        <li><a href="#">Vintage Classics</a></li>
+                        <li><a href="#">SUVs &amp; Crossovers</a></li>
                         <li><a href="#">Electric Vehicles</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h3>Contact Info</h3>
                     <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Auto Street, Detroit, MI</li>
-                        <li><i class="fas fa-phone"></i> (555) 123-4567</li>
-                        <li><i class="fas fa-envelope"></i> info@autoselect.com</li>
+                        <li><i class="fas fa-map-marker-alt" style="color:var(--vintage-gold);margin-right:6px;"></i>
+                            123 Auto Street, Detroit, MI</li>
+                        <li><i class="fas fa-phone" style="color:var(--vintage-gold);margin-right:6px;"></i> (555)
+                            123-4567</li>
+                        <li><i class="fas fa-envelope" style="color:var(--vintage-gold);margin-right:6px;"></i>
+                            info@classicauto.com</li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2023 AutoSelect Car Recommendation System. All rights reserved.</p>
+                <p>&copy; 2025 ClassicAuto Car Recommendation System. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Toggle password visibility
+        // Password toggle
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
 
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        togglePassword.addEventListener('click', function () {
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+            this.innerHTML = isPassword
+                ? '<i class="fas fa-eye-slash"></i>'
+                : '<i class="fas fa-eye"></i>';
         });
 
-        // Form submission
-        const loginForm = document.getElementById('loginForm');
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Get form values
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-
-            // In a real application, you would submit the form data to a server
-            // For this example, we'll just show a success message
-
-            // Reset form
-            loginForm.submit();
-        });
-
-        // Add some interactivity to form inputs
-        const formControls = document.querySelectorAll('.form-control');
-        formControls.forEach(control => {
-            // Add focus effect
-            control.addEventListener('focus', function() {
-                this.parentElement.parentElement.classList.add('focused');
+        // Input focus-ring animation for icon colour
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.closest('.input-wrap')?.querySelector('.input-icon')
+                    ?.style.setProperty('color', 'var(--vintage-gold)');
             });
-
-            control.addEventListener('blur', function() {
-                if (!this.value) {
-                    this.parentElement.parentElement.classList.remove('focused');
-                }
+            input.addEventListener('blur', () => {
+                input.closest('.input-wrap')?.querySelector('.input-icon')
+                    ?.style.setProperty('color', 'var(--vintage-brown)');
             });
         });
+
+        // McQueen mascot — cursor tracking + shy mode
+        const carMascot = document.getElementById('carMascot');
+        const mascotSvg = carMascot ? carMascot.querySelector('svg') : null;
+        const pupilL = carMascot ? carMascot.querySelector('.mascot-pupil-l') : null;
+        const pupilR = carMascot ? carMascot.querySelector('.mascot-pupil-r') : null;
+        const MAX_MOVE = 4.5;
+        let isShyMode = false;
+
+        function setPupils(lx, ly, rx, ry, animated) {
+            const tr = animated ? 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1)' : 'transform 0.08s linear';
+            if (pupilL) { pupilL.style.transition = tr; pupilL.style.transform = `translate(${lx}px,${ly}px)`; }
+            if (pupilR) { pupilR.style.transition = tr; pupilR.style.transform = `translate(${rx}px,${ry}px)`; }
+        }
+
+        function trackCursor(mx, my) {
+            if (isShyMode || !mascotSvg) return;
+            const r = mascotSvg.getBoundingClientRect();
+            const sx = r.width / 120, sy = r.height / 92;
+            const la = Math.atan2(my - (r.top + 55 * sy), mx - (r.left + 38 * sx));
+            const ra = Math.atan2(my - (r.top + 55 * sy), mx - (r.left + 82 * sx));
+            setPupils(
+                Math.cos(la) * MAX_MOVE, Math.sin(la) * MAX_MOVE,
+                Math.cos(ra) * MAX_MOVE, Math.sin(ra) * MAX_MOVE,
+                false
+            );
+        }
+
+        document.addEventListener('mousemove', e => trackCursor(e.clientX, e.clientY));
+
+        if (carMascot && passwordInput) {
+            passwordInput.addEventListener('focus', function () {
+                isShyMode = true;
+                carMascot.classList.add('shake', 'shy');
+                setTimeout(() => carMascot.classList.remove('shake'), 450);
+                setPupils(5, -4, 5, -4, true);   // look away — animated
+            });
+            passwordInput.addEventListener('blur', function () {
+                isShyMode = false;
+                carMascot.classList.remove('shy');
+            });
+        }
     </script>
-{% if msg == 'Invalid' %}
-<script>alert('Invalid email or password');</script>
-    {% elif msg == 'New Seller' %}
-    <script>alert('Kindly wait for the approval from the admin!');</script>
-{% endif %}
 </body>
+
 </html>

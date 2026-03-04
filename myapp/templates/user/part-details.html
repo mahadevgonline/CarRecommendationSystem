@@ -1,11 +1,15 @@
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ part.name }} - ClassicAuto Parts</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --vintage-dark: #3e2723;
@@ -32,7 +36,11 @@
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
-        h1, h2, h3, h4, h5 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
             font-family: 'Cinzel', serif;
             font-weight: 600;
             line-height: 1.3;
@@ -70,7 +78,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .2), transparent);
             transition: var(--transition);
         }
 
@@ -294,7 +302,8 @@
             transition: var(--transition);
         }
 
-        .thumbnail:hover, .thumbnail.active {
+        .thumbnail:hover,
+        .thumbnail.active {
             border-color: var(--vintage-gold);
         }
 
@@ -616,8 +625,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* Description Tab */
@@ -1060,6 +1074,7 @@
             color: var(--vintage-gold);
             padding-left: 5px;
         }
+
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -1080,6 +1095,7 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
+
         .user-actions {
             display: flex;
             align-items: center;
@@ -1128,7 +1144,7 @@
             background: var(--vintage-green);
             color: var(--vintage-cream);
             border-radius: 2px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             z-index: 4000;
             animation: slideIn 0.3s ease;
             font-family: 'Lora', serif;
@@ -1141,6 +1157,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -1152,6 +1169,7 @@
                 transform: translateX(0);
                 opacity: 1;
             }
+
             to {
                 transform: translateX(100%);
                 opacity: 0;
@@ -1226,6 +1244,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -1303,15 +1322,16 @@
                     <!-- Pricing Section -->
                     <div class="pricing-section">
                         <div class="price-display">
-                            <span class="current-price">${{ part.price }}</span>
+                            <span class="current-price">{{ part.price|inr }}</span>
                             {% if part.price %}
-                            <span class="old-price">${{ part.price }}</span>
+                            <span class="old-price">{{ part.price|inr }}</span>
                             <span class="discount-badge">Save 0%</span>
                             {% endif %}
                         </div>
 
                         <div class="stock-info">
-                            <span class="stock-status {% if part.stock > 10 %}in-stock{% elif part.stock > 0 %}low-stock{% else %}out-of-stock{% endif %}">
+                            <span
+                                class="stock-status {% if part.stock > 10 %}in-stock{% elif part.stock > 0 %}low-stock{% else %}out-of-stock{% endif %}">
                                 {% if part.stock > 10 %}
                                 <i class="fas fa-check"></i> In Stock ({{ part.stock }} available)
                                 {% elif part.stock > 0 %}
@@ -1327,10 +1347,12 @@
 
                         {% if part.stock > 0 %}
                         <div class="quantity-selector">
-                            <label for="quantity" style="font-weight: 500; color: var(--vintage-dark);">Quantity:</label>
+                            <label for="quantity"
+                                style="font-weight: 500; color: var(--vintage-dark);">Quantity:</label>
                             <div class="quantity-controls">
                                 <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
-                                <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="{{ part.stock }}">
+                                <input type="number" id="quantity" class="quantity-input" value="1" min="1"
+                                    max="{{ part.stock }}">
                                 <button class="quantity-btn" onclick="increaseQuantity()">+</button>
                             </div>
                             <span style="color: var(--vintage-brown);">
@@ -1451,7 +1473,8 @@
                     <div class="compatibility-content">
                         <h3 style="margin-bottom: 20px; color: var(--vintage-dark);">Vehicle Compatibility</h3>
                         <p style="margin-bottom: 30px; color: var(--vintage-brown);">
-                            This part is compatible with the following vehicles. Please verify fitment before purchasing.
+                            This part is compatible with the following vehicles. Please verify fitment before
+                            purchasing.
                         </p>
 
                         <div class="vehicle-card">
@@ -1479,7 +1502,8 @@
                         {% endfor %}
                         {% endif %}
 
-                        <div style="margin-top: 30px; padding: 20px; background: var(--vintage-cream); border-radius: 2px; border: 1px solid var(--vintage-light);">
+                        <div
+                            style="margin-top: 30px; padding: 20px; background: var(--vintage-cream); border-radius: 2px; border: 1px solid var(--vintage-light);">
                             <h5 style="color: var(--vintage-dark); margin-bottom: 10px;">
                                 <i class="fas fa-exclamation-triangle" style="color: var(--vintage-gold);"></i>
                                 Fitment Disclaimer
@@ -1506,41 +1530,51 @@
                             </div>
                             <div class="shipping-method">
                                 <h4>Expedited Shipping</h4>
-                                <div class="shipping-price">$14.99</div>
+                                <div class="shipping-price">₹1,275</div>
                                 <div class="shipping-estimate">Estimated delivery: 2-3 business days</div>
                             </div>
                             <div class="shipping-method">
                                 <h4>Overnight Shipping</h4>
-                                <div class="shipping-price">$29.99</div>
+                                <div class="shipping-price">₹2,549</div>
                                 <div class="shipping-estimate">Estimated delivery: Next business day</div>
                             </div>
                         </div>
 
                         <div style="margin-top: 40px;">
                             <h4 style="margin-bottom: 15px; color: var(--vintage-dark);">Return Policy</h4>
-                            <div style="background: var(--vintage-cream); padding: 20px; border-radius: 2px; border: 1px solid var(--vintage-light);">
+                            <div
+                                style="background: var(--vintage-cream); padding: 20px; border-radius: 2px; border: 1px solid var(--vintage-light);">
                                 <ul style="list-style-type: none; padding-left: 0;">
                                     <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check" style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>30-Day Return Window:</strong> Returns accepted within 30 days of delivery
+                                        <i class="fas fa-check"
+                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
+                                        <strong>30-Day Return Window:</strong> Returns accepted within 30 days of
+                                        delivery
                                     </li>
                                     <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check" style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>Condition Requirements:</strong> Item must be in original condition with all packaging
+                                        <i class="fas fa-check"
+                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
+                                        <strong>Condition Requirements:</strong> Item must be in original condition with
+                                        all packaging
                                     </li>
                                     <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check" style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>Return Shipping:</strong> Buyer responsible for return shipping costs unless item is defective
+                                        <i class="fas fa-check"
+                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
+                                        <strong>Return Shipping:</strong> Buyer responsible for return shipping costs
+                                        unless item is defective
                                     </li>
                                     <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check" style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>Refund Processing:</strong> Refunds processed within 3-5 business days after item is received
+                                        <i class="fas fa-check"
+                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
+                                        <strong>Refund Processing:</strong> Refunds processed within 3-5 business days
+                                        after item is received
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <div style="margin-top: 30px; padding: 20px; background: var(--vintage-cream); border-radius: 2px; border: 1px solid var(--vintage-light);">
+                        <div
+                            style="margin-top: 30px; padding: 20px; background: var(--vintage-cream); border-radius: 2px; border: 1px solid var(--vintage-light);">
                             <h5 style="color: var(--vintage-dark); margin-bottom: 10px;">
                                 <i class="fas fa-shield-alt" style="color: var(--vintage-gold);"></i>
                                 Buyer Protection
@@ -1577,7 +1611,7 @@
                         <div class="part-card-title">
                             <h3>{{ related_part.name }}</h3>
                         </div>
-                        <div class="part-card-price">${{ related_part.price }}</div>
+                        <div class="part-card-price">{{ related_part.price|inr }}</div>
                         <div class="part-card-specs">
                             <div class="spec-small">
                                 <i class="fas fa-car"></i> {{ related_part.vehicle|truncatechars:15 }}
@@ -1587,10 +1621,12 @@
                             </div>
                         </div>
                         <div class="part-card-actions">
-                            <button class="btn btn-sm" onclick="window.location.href='/part-detail/{{ related_part.id }}/'">
+                            <button class="btn btn-sm"
+                                onclick="window.location.href='/part-detail/{{ related_part.id }}/'">
                                 <i class="fas fa-eye"></i> View
                             </button>
-                            <button class="btn btn-gold btn-sm" onclick="addToCart('{{ related_part.id }}', '{{ related_part.name }}', {{ related_part.price }}, '{{ related_part.image.url }}')">
+                            <button class="btn btn-gold btn-sm"
+                                onclick="addToCart('{{ related_part.id }}', '{{ related_part.name }}', {{ related_part.price }}, '{{ related_part.image.url }}')">
                                 <i class="fas fa-cart-plus"></i> Add
                             </button>
                         </div>
@@ -1598,7 +1634,8 @@
                 </div>
                 {% empty %}
                 <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--vintage-brown);">
-                    <i class="fas fa-cogs" style="font-size: 3rem; margin-bottom: 20px; color: var(--vintage-gold);"></i>
+                    <i class="fas fa-cogs"
+                        style="font-size: 3rem; margin-bottom: 20px; color: var(--vintage-gold);"></i>
                     <h4>No Related Parts Found</h4>
                 </div>
                 {% endfor %}
@@ -1612,7 +1649,8 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>About ClassicParts</h3>
-                    <p>ClassicParts is the premier marketplace for vintage auto parts, connecting enthusiasts and collectors worldwide.</p>
+                    <p>ClassicParts is the premier marketplace for vintage auto parts, connecting enthusiasts and
+                        collectors worldwide.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -1673,22 +1711,23 @@
             const partData = {
                 id: '{{ part.id }}',
                 name: '{{ part.name|escapejs }}',
-                price: {{ part.price }},
-                image: '{{ part.main_image.url }}',
-                quantity: quantity
+                price: {{ part.price }
+        },
+        image: '{{ part.main_image.url }}',
+            quantity: quantity
             };
 
-            const existingItem = cart.find(item => item.id === partData.id);
+        const existingItem = cart.find(item => item.id === partData.id);
 
-            if (existingItem) {
-                existingItem.quantity += quantity;
-            } else {
-                cart.push(partData);
-            }
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push(partData);
+        }
 
-            updateCartCount();
-            showNotification('Added to cart!', 'success');
-            window.location.href=`/add-cart/{{part.id}}/`;
+        updateCartCount();
+        showNotification('Added to cart!', 'success');
+        window.location.href = `/add-cart/{{part.id}}/`;
         }
 
         function addToCartDirect(partId, name, price, image) {
@@ -1769,17 +1808,18 @@
             const partData = {
                 id: '{{ part.id }}',
                 name: '{{ part.name|escapejs }}',
-                price: {{ part.price }},
-                image: '{{ part.main_image.url }}'
+                price: {{ part.price }
+        },
+        image: '{{ part.main_image.url }}'
             };
 
-            if (!wishlist.find(item => item.id === partData.id)) {
-                wishlist.push(partData);
-                localStorage.setItem('classicPartsWishlist', JSON.stringify(wishlist));
-                showNotification('Added to wishlist!', 'success');
-            } else {
-                showNotification('Already in wishlist!', 'info');
-            }
+        if (!wishlist.find(item => item.id === partData.id)) {
+            wishlist.push(partData);
+            localStorage.setItem('classicPartsWishlist', JSON.stringify(wishlist));
+            showNotification('Added to wishlist!', 'success');
+        } else {
+            showNotification('Already in wishlist!', 'info');
+        }
         }
 
         // Contact Seller
@@ -1805,13 +1845,13 @@
             notification.textContent = message;
             notification.style.display = 'block';
             notification.style.background = type === 'success' ? 'var(--vintage-green)' :
-                                          type === 'info' ? 'var(--vintage-gold)' :
-                                          'var(--vintage-red)';
+                type === 'info' ? 'var(--vintage-gold)' :
+                    'var(--vintage-red)';
 
             // Add icon
             const icon = type === 'success' ? 'fa-check-circle' :
-                        type === 'info' ? 'fa-info-circle' :
-                        'fa-exclamation-triangle';
+                type === 'info' ? 'fa-info-circle' :
+                    'fa-exclamation-triangle';
             notification.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
 
             setTimeout(() => {
@@ -1854,4 +1894,5 @@
         document.head.appendChild(style);
     </script>
 </body>
+
 </html>

@@ -1,3 +1,4 @@
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -788,9 +789,37 @@
                         <i class="fas fa-search"></i>
                         <input type="text" id="searchInput" placeholder="Search orders...">
                     </div>
-                    <div class="notification">
+                    <div class="notification" id="notifBell" style="position:relative;cursor:pointer;"
+                        onclick="toggleNotifDropdown()">
                         <i class="fas fa-bell"></i>
-                        <div class="notification-badge">5</div>
+                        {% if notif_count > 0 %}
+                        <div class="notification-badge">{{ notif_count }}</div>
+                        {% endif %}
+                        <!-- Notification Dropdown -->
+                        <div id="notifDropdown"
+                            style="display:none;position:absolute;top:50px;right:0;width:360px;background:#fff;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.18);z-index:2000;overflow:hidden;">
+                            <div
+                                style="padding:15px 20px;background:#2c3e50;color:#fff;font-weight:600;font-size:1rem;">
+                                <i class="fas fa-bell"></i> New Order Notifications
+                            </div>
+                            {% for notif in notifications %}
+                            <div
+                                style="padding:14px 20px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;">
+                                <div>
+                                    <div style="font-size:0.9rem;color:#333;">{{ notif.message }}</div>
+                                    <div style="font-size:0.75rem;color:#999;margin-top:3px;">{{
+                                        notif.created_at|date:"M d, Y H:i" }}</div>
+                                </div>
+                                <a href="/mark-notification/{{ notif.id }}/"
+                                    style="margin-left:10px;padding:5px 10px;background:#2ecc71;color:#fff;border-radius:5px;font-size:0.75rem;white-space:nowrap;">Dismiss</a>
+                            </div>
+                            {% empty %}
+                            <div style="padding:20px;text-align:center;color:#999;">
+                                <i class="fas fa-check-circle" style="font-size:2rem;color:#2ecc71;"></i>
+                                <p style="margin-top:8px;">All caught up! No new notifications.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                     <div class="user-menu">
                         <div class="user-avatar">AJ</div>
@@ -810,84 +839,183 @@
 
                 </div>
 
-                <!-- Stats Cards -->
-
-                <!-- Table Container -->
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3><i class="fas fa-list"></i> Recent Orders</h3>
-                        <div class="table-actions">
-                            <div class="table-filters">
-                                <select id="statusFilter" class="filter-select">
-                                    <option value="">All Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="processing">Processing</option>
-                                    <option value="shipped">Shipped</option>
-                                    <option value="delivered">Delivered</option>
-                                    <option value="cancelled">Cancelled</option>
-                                </select>
-                                <select id="timeFilter" class="filter-select">
-                                    <option value="">All Time</option>
-                                    <option value="today">Today</option>
-                                    <option value="week">This Week</option>
-                                    <option value="month">This Month</option>
-                                </select>
-                            </div>
+                <!-- PENDING ORDERS SECTION -->
+                {% with pending_orders=ord|dictsort:"status" %}
+                {% for order in ord %}
+                {% if order.status == 'Processing' %}
+                {% if forloop.first %}
+                <div
+                    style="background:#fff;border-radius:10px;padding:20px 25px;margin-bottom:25px;border-left:5px solid #f39c12;box-shadow:0 2px 10px rgba(0,0,0,0.07);">
+                    <h3 style="color:#f39c12;margin-bottom:15px;"><i class="fas fa-clock"></i> Pending Review — New
+                        Orders</h3>
+                    {% endif %}
+                    <div
+                        style="display:flex;justify-content:space-between;align-items:center;padding:14px;border:1px solid #f0f0f0;border-radius:8px;margin-bottom:10px;background:#fffbf2;">
+                        <div>
+                            <strong>Order #{{ order.id }}</strong> &nbsp;
+                            <span style="color:#666;">{{ order.fname }} {{ order.lname }}</span> &nbsp;&bull;&nbsp;
+                            <span style="color:#999;font-size:0.85rem;">{{ order.date }}</span>
+                        </div>
+                        <div style="display:flex;gap:10px;">
+                            <form method="POST" action="/update-order-status/{{ order.id }}/" style="margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="Accepted">
+                                <button type="submit"
+                                    style="padding:7px 18px;background:#2ecc71;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.85rem;">
+                                    <i class="fas fa-check"></i> Accept
+                                </button>
+                            </form>
+                            <form method="POST" action="/update-order-status/{{ order.id }}/" style="margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="Rejected">
+                                <button type="submit"
+                                    style="padding:7px 18px;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.85rem;">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            </form>
                         </div>
                     </div>
+                    {% if forloop.last %}
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                {% endwith %}
 
-                    <!-- Orders Table -->
+                <!-- ORDERS TABLE -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3><i class="fas fa-list"></i> All Customer Orders</h3>
+                    </div>
                     <table class="orders-table" id="ordersTable">
                         <thead>
                             <tr>
-
                                 <th>Order ID</th>
                                 <th>Customer</th>
                                 <th>Date</th>
                                 <th>Items</th>
                                 <th>Total</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th>Update Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Order rows will be populated by JavaScript -->
+                            {% for order in ord %}
+                            <tr>
+                                <td><strong>#{{ order.id }}</strong></td>
+                                <td>
+                                    <div style="font-weight:600;">{{ order.fname }} {{ order.lname }}</div>
+                                    <div style="font-size:0.8rem;color:#999;">{{ order.email }}</div>
+                                    <div style="font-size:0.8rem;color:#999;">{{ order.phone }}</div>
+                                </td>
+                                <td>{{ order.date }}</td>
+                                <td>
+                                    {% for item in order.orderitems_set.all %}
+                                    <div style="font-size:0.85rem;">{{ item.item.name }} &times; {{ item.quantity }}
+                                    </div>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% for item in order.orderitems_set.all %}
+                                    {{ item.total_price|inr }}<br>
+                                    {% endfor %}
+                                </td>
+                                <td>
+                                    {% if order.status == 'Processing' %}
+                                    <span
+                                        style="background:#fff3cd;color:#856404;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">⏳
+                                        Pending Review</span>
+                                    {% elif order.status == 'Accepted' %}
+                                    <span
+                                        style="background:#d4edda;color:#155724;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">✅
+                                        Order Confirmed</span>
+                                    {% elif order.status == 'Packed' %}
+                                    <span
+                                        style="background:#fff3cd;color:#856404;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">📦
+                                        Packed</span>
+                                    {% elif order.status == 'Shipped' %}
+                                    <span
+                                        style="background:#cce5ff;color:#004085;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">🚚
+                                        Shipped</span>
+                                    {% elif order.status == 'Out for Delivery' %}
+                                    <span
+                                        style="background:#e2d9f3;color:#6f42c1;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">🛵
+                                        Out for Delivery</span>
+                                    {% elif order.status == 'Delivered' %}
+                                    <span
+                                        style="background:#d4edda;color:#155724;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">🎉
+                                        Delivered</span>
+                                    {% elif order.status == 'Rejected' %}
+                                    <span
+                                        style="background:#f8d7da;color:#721c24;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">❌
+                                        Rejected</span>
+                                    {% else %}
+                                    <span
+                                        style="background:#e2e3e5;color:#383d41;padding:4px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">{{
+                                        order.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if order.status == 'Accepted' %}
+                                    <form method="POST" action="/update-order-status/{{ order.id }}/">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="Packed">
+                                        <button type="submit"
+                                            style="padding:6px 14px;background:#f39c12;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;">
+                                            <i class="fas fa-box"></i> Mark Packed
+                                        </button>
+                                    </form>
+                                    {% elif order.status == 'Packed' %}
+                                    <form method="POST" action="/update-order-status/{{ order.id }}/">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="Shipped">
+                                        <button type="submit"
+                                            style="padding:6px 14px;background:#3498db;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;">
+                                            <i class="fas fa-shipping-fast"></i> Mark Shipped
+                                        </button>
+                                    </form>
+                                    {% elif order.status == 'Shipped' %}
+                                    <form method="POST" action="/update-order-status/{{ order.id }}/">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="Out for Delivery">
+                                        <button type="submit"
+                                            style="padding:6px 14px;background:#6f42c1;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;">
+                                            <i class="fas fa-motorcycle"></i> Out for Delivery
+                                        </button>
+                                    </form>
+                                    {% elif order.status == 'Out for Delivery' %}
+                                    <form method="POST" action="/update-order-status/{{ order.id }}/">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="status" value="Delivered">
+                                        <button type="submit"
+                                            style="padding:6px 14px;background:#2ecc71;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;">
+                                            <i class="fas fa-check-double"></i> Mark Delivered
+                                        </button>
+                                    </form>
+                                    {% elif order.status == 'Delivered' %}
+                                    <span style="color:#2ecc71;font-size:0.85rem;font-weight:600;">✓ Complete</span>
+                                    {% elif order.status == 'Rejected' %}
+                                    <span style="color:#e74c3c;font-size:0.85rem;font-weight:600;">✗ Rejected</span>
+                                    {% else %}
+                                    <span style="color:#bbb;font-size:0.85rem;">—</span>
+                                    {% endif %}
+                                    <div style="font-size:0.78rem;color:#999;margin-top:5px;">
+                                        <i class="fas fa-map-marker-alt"></i> {{ order.address }}, {{ order.city }}, {{
+                                        order.state }}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" style="text-align:center;padding:40px;color:#999;">
+                                    <i class="fas fa-box-open"
+                                        style="font-size:2.5rem;margin-bottom:10px;display:block;"></i>
+                                    No orders yet. Orders placed by customers will appear here.
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
-
-                    <!-- Bulk Actions -->
-                    <div
-                        style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <span id="selectedCount">0</span> orders selected
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <select id="bulkAction"
-                                style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
-                                <option value="">Bulk Actions</option>
-                                <option value="update-status">Update Status</option>
-                                <option value="print-labels">Print Labels</option>
-                                <option value="export">Export Selected</option>
-                                <option value="delete">Delete Selected</option>
-                            </select>
-                            <button class="btn btn-primary btn-sm" id="applyBulkAction">Apply</button>
-                        </div>
-                    </div>
-
-                    <!-- Pagination -->
-                    <div class="pagination">
-                        <button class="pagination-btn" id="prevPage" disabled>
-                            <i class="fas fa-chevron-left"></i> Previous
-                        </button>
-                        <button class="pagination-btn active">1</button>
-                        <button class="pagination-btn">2</button>
-                        <button class="pagination-btn">3</button>
-                        <span>...</span>
-                        <button class="pagination-btn">8</button>
-                        <button class="pagination-btn" id="nextPage">
-                            Next <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -938,21 +1066,44 @@
 
     <script>
         const csrfToken = "{{ csrf_token }}";
+
+        // Notification Bell Toggle
+        function toggleNotifDropdown() {
+            const dd = document.getElementById('notifDropdown');
+            dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+        }
+        document.addEventListener('click', function (e) {
+            const bell = document.getElementById('notifBell');
+            const dd = document.getElementById('notifDropdown');
+            if (dd && bell && !bell.contains(e.target)) {
+                dd.style.display = 'none';
+            }
+        });
+
+        const formatCurrency = (amount) => {
+            return `₹${Number(amount).toLocaleString('en-IN')}`;
+        };
+
+        const formatDate = (dateStr) => {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        };
+
         // Sample order data
         const orders = [
             {% for i in ord %}
         {
             id: "{{i.id}}",
-                customer: { name: "{{i.fname}}", email: "{{i.email}}", initials: "{{ i.fname|slice:": 1" }}{{ i.lname|slice:": 1" }}" },
+                customer: { name: "{{i.fname}}", email: "{{i.email}}", initials: "{{ i.fname|slice:':1' }}{{ i.lname|slice:':1' }}" },
             date: "{{i.date}}",
-                items: 2,
-                    total: {% for j in i.orderitems.all %} { { j.total_price } } {% endfor %},
-            products: [
-                {% for j in i.orderitems_set.all %}
+                items: { { i.orderitems_set.all | length } },
+            total: [{% for j in i.orderitems_set.all %} { { j.total_price | inr_raw } }, {% endfor %}].reduce((a, b) => a + b, 0),
+                products: [
+                    {% for j in i.orderitems_set.all %}
         {
             name: "{{ j.item.name }}",
                 qty: { { j.quantity } },
-            price: { { j.total_price } }
+            price: { { j.total_price | inr_raw } }
         },
         {% endfor %}
                 ],

@@ -1,11 +1,15 @@
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassicAuto - Vintage Car Recommendations</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --vintage-dark: #3e2723;
@@ -32,7 +36,11 @@
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
-        h1, h2, h3, h4, h5 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
             font-family: 'Cinzel', serif;
             font-weight: 600;
             line-height: 1.3;
@@ -70,7 +78,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .2), transparent);
             transition: var(--transition);
         }
 
@@ -424,6 +432,7 @@
             font-size: 2rem;
             border: 2px solid var(--vintage-brown);
         }
+
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -444,6 +453,7 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
+
         .user-actions {
             display: flex;
             align-items: center;
@@ -628,6 +638,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -681,7 +692,7 @@
                                 <h3>{{i.year}} {{i.make}}</h3>
                                 <p>{{i.model}}</p>
                             </div>
-                            <div class="car-price">${{i.price}}</div>
+                            <div class="car-price">{{i.price|inr}}</div>
                         </div>
                         <div class="car-specs">
                             <div class="spec"><i class="fas fa-tachometer-alt"></i> {{i.horse_power}} HP</div>
@@ -714,7 +725,8 @@
                         <i class="fas fa-search"></i>
                     </div>
                     <h3>Curated Selection</h3>
-                    <p>Every vehicle in our collection is hand-picked for authenticity, condition, and historical significance.</p>
+                    <p>Every vehicle in our collection is hand-picked for authenticity, condition, and historical
+                        significance.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -739,7 +751,8 @@
         <div class="container">
             <div class="cta-content">
                 <h2>Begin Your Classic Car Journey</h2>
-                <p>Take our heritage matching quiz to discover the vintage automobile that perfectly suits your style and preferences</p>
+                <p>Take our heritage matching quiz to discover the vintage automobile that perfectly suits your style
+                    and preferences</p>
                 <a href="#" class="btn btn-gold">Start Heritage Quiz</a>
             </div>
         </div>
@@ -751,7 +764,8 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>About ClassicAuto</h3>
-                    <p>ClassicAuto is dedicated to preserving automotive heritage and connecting enthusiasts with their dream vintage vehicles.</p>
+                    <p>ClassicAuto is dedicated to preserving automotive heritage and connecting enthusiasts with their
+                        dream vintage vehicles.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -798,7 +812,7 @@
         // Simple interactivity for the favorite buttons
         document.querySelectorAll('.btn-gold').forEach(button => {
             if (button.querySelector('i')) {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const icon = this.querySelector('i');
                     if (icon.classList.contains('far')) {
                         icon.classList.remove('far');
@@ -816,4 +830,5 @@
         });
     </script>
 </body>
+
 </html>

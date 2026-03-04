@@ -1,90 +1,92 @@
 from django.shortcuts import render,redirect
 from .models import *
+from .forms import RegisterForm, SellerRegisterForm, LoginForm, AddPartForm, CheckoutForm, ProfileForm
 from django.db.models import F, Q, Min, Max
 from django.db.models.functions import Cast
 from django.db.models import IntegerField
+from django.db import transaction
 from django.contrib.auth.hashers import make_password, check_password
 
 def index(request):
     return render(request, "index.html")
 
 def register(request):
-    error = ''
+    form = RegisterForm(request.POST or None)
     if request.method == "POST":
-        name=request.POST.get("name")
-        email=request.POST.get("email")
-        phone=request.POST.get("phone")
-        password=request.POST.get("password")
-        
-        # Check for duplicate email
-        if Register.objects.filter(email=email).exists():
-            error = 'Email already registered'
-            return render(request, "register.html", {'error': error})
-        
-        # Hash password before saving
-        hashed_password = make_password(password)
-        reg=Register(name=name,email=email,phone=phone,password=hashed_password)
-        reg.save()
-        return redirect('/login/')
-    return render(request, "register.html", {'error': error})
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            if Register.objects.filter(email=email).exists():
+                form.add_error('email', 'Email already registered')
+                return render(request, "register.html", {'form': form})
+            hashed_password = make_password(form.cleaned_data['password'])
+            reg = Register(
+                name=form.cleaned_data['name'],
+                email=email,
+                phone=form.cleaned_data['phone'],
+                password=hashed_password
+            )
+            reg.save()
+            return redirect('/login/')
+    return render(request, "register.html", {'form': form})
 
 def seller_register(request):
-    error = ''
+    form = SellerRegisterForm(request.POST or None)
     if request.method == "POST":
-        name=request.POST.get("name")
-        email=request.POST.get("email")
-        phone=request.POST.get("phone")
-        address=request.POST.get("address")
-        password=request.POST.get("password")
-        
-        # Check for duplicate email
-        if Seller.objects.filter(email=email).exists():
-            error = 'Email already registered'
-            return render(request, "seller_register.html", {'error': error})
-        
-        # Hash password before saving
-        hashed_password = make_password(password)
-        reg=Seller(name=name,email=email,phone=phone,address=address,password=hashed_password)
-        reg.save()
-        return redirect('/login/')
-    return render(request, "seller_register.html", {'error': error})
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            if Seller.objects.filter(email=email).exists():
+                form.add_error('email', 'Email already registered')
+                return render(request, "seller_register.html", {'form': form})
+            hashed_password = make_password(form.cleaned_data['password'])
+            reg = Seller(
+                name=form.cleaned_data['name'],
+                email=email,
+                phone=form.cleaned_data['phone'],
+                address=form.cleaned_data['address'],
+                password=hashed_password
+            )
+            reg.save()
+            return redirect('/login/')
+    return render(request, "seller_register.html", {'form': form})
 
 def login(request):
-    msg=''
+    form = LoginForm(request.POST or None)
+    msg = ''
     if request.method == "POST":
-        email=request.POST.get("email")
-        password=request.POST.get("password")
-        
-        # Check Register users (supports both hashed and plaintext passwords)
-        user = Register.objects.filter(email=email).first()
-        if user:
-            # Try hashed password first, then plaintext for old accounts
-            password_valid = check_password(password, user.password) or (password == user.password)
-            if password_valid:
-                if user.rights == 'User':
-                    request.session['uid'] = user.id
-                    return redirect('/user/')
-                elif user.rights == 'Admin':
-                    request.session['uid'] = user.id
-                    return redirect('/adminp/')
-        
-        # Check Seller users (supports both hashed and plaintext passwords)
-        seller = Seller.objects.filter(email=email).first()
-        if seller:
-            # Try hashed password first, then plaintext for old accounts
-            password_valid = check_password(password, seller.password) or (password == seller.password)
-            if password_valid:
-                if seller.rights == 'Seller':
-                    request.session['sid'] = seller.id
-                    return redirect('/seller/')
-                elif seller.rights == 'New Seller':
-                    msg = 'New Seller'
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+
+            # Check Register users (supports both hashed and plaintext passwords)
+            user = Register.objects.filter(email=email).first()
+            if user:
+                password_valid = check_password(password, user.password) or (password == user.password)
+                if password_valid:
+                    if user.rights == 'User':
+                        request.session['uid'] = user.id
+                        return redirect('/user/')
+                    elif user.rights == 'Admin':
+                        request.session['uid'] = user.id
+                        return redirect('/adminp/')
+
+            # Check Seller users (supports both hashed and plaintext passwords)
+            seller = Seller.objects.filter(email=email).first()
+            if seller:
+                password_valid = check_password(password, seller.password) or (password == seller.password)
+                if password_valid:
+                    if seller.rights == 'Seller':
+                        request.session['sid'] = seller.id
+                        return redirect('/seller/')
+                    elif seller.rights == 'New Seller':
+                        msg = 'New Seller'
+                else:
+                    msg = 'Invalid'
             else:
-                msg = 'Invalid'
+                if not user:
+                    msg = 'Invalid'
         else:
-            if not user:
-                msg = 'Invalid'
-    return render(request, "login.html", {'msg': msg})
+            msg = 'Invalid'
+    return render(request, "login.html", {'msg': msg, 'form': form})
 
 def user(request):
     cars = Car.objects.all()
@@ -213,18 +215,26 @@ def profile(request):
         return redirect('/login/')
     uid=request.session['uid']
     reg=Register.objects.get(id=uid)
+    form = ProfileForm(request.POST or None, initial={'name': reg.name, 'email': reg.email, 'phone': reg.phone})
     if request.method=="POST":
-        name=request.POST.get("name")
-        email=request.POST.get("email")
-        phone=request.POST.get("phone")
-        password=request.POST.get("password")
-        if password:
-            hashed_password = make_password(password)
-            Register.objects.filter(id=uid).update(name=name,email=email,phone=phone,password=hashed_password)
-        else:
-            Register.objects.filter(id=uid).update(name=name,email=email,phone=phone)
-        return redirect('/profile/')
-    return render(request, "user/profile.html",{'reg':reg})
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            if password:
+                hashed_password = make_password(password)
+                Register.objects.filter(id=uid).update(
+                    name=form.cleaned_data['name'],
+                    email=form.cleaned_data['email'],
+                    phone=form.cleaned_data['phone'],
+                    password=hashed_password
+                )
+            else:
+                Register.objects.filter(id=uid).update(
+                    name=form.cleaned_data['name'],
+                    email=form.cleaned_data['email'],
+                    phone=form.cleaned_data['phone']
+                )
+            return redirect('/profile/')
+    return render(request, "user/profile.html", {'reg': reg, 'form': form})
 
 def add_parts(request):
     if 'sid' not in request.session:
@@ -232,22 +242,27 @@ def add_parts(request):
     sid=request.session['sid']
     sell=Seller.objects.get(id=sid)
     car=Car.objects.all()
+    form = AddPartForm(request.POST or None, request.FILES or None)
     if request.method=="POST":
-        name=request.POST.get("name")
-        number=request.POST.get("number")
-        brand=request.POST.get("brand")
-        category=request.POST.get("category")
-        price=request.POST.get("price")
-        stock=request.POST.get("stock")
-        condition=request.POST.get("condition")
-        vid=request.POST.get("vehicle")
-        description=request.POST.get("description")
-        image=request.FILES.get("image")
-        veh=Car.objects.get(id=vid)
-        part=VehiclePart(seller=sell,name=name,number=number,brand=brand,category=category,price=price,stock=stock,condition=condition,description=description,vehicle=veh,image=image)
-        part.save()
-        return redirect('/add-parts/')
-    return render(request, "seller/add-parts.html",{'car':car})
+        if form.is_valid():
+            veh = Car.objects.get(id=form.cleaned_data['vehicle'])
+            image = request.FILES.get("image")
+            part = VehiclePart(
+                seller=sell,
+                name=form.cleaned_data['name'],
+                number=form.cleaned_data['number'],
+                brand=form.cleaned_data['brand'],
+                category=form.cleaned_data['category'],
+                price=form.cleaned_data['price'],
+                stock=form.cleaned_data['stock'],
+                condition=form.cleaned_data['condition'],
+                description=form.cleaned_data['description'],
+                vehicle=veh,
+                image=image
+            )
+            part.save()
+            return redirect('/add-parts/')
+    return render(request, "seller/add-parts.html", {'car': car, 'form': form})
 
 def parts(request):
     if 'sid' not in request.session:
@@ -260,7 +275,9 @@ def parts(request):
 def edit_part(request,id):
     if 'sid' not in request.session:
         return redirect('/login/')
-    part=VehiclePart.objects.get(id=id)
+    part=VehiclePart.objects.filter(id=id, seller_id=request.session['sid']).first()
+    if not part:
+        return redirect('/parts/')  # Or show a 403 Forbidden error
     if request.method=="POST":
         name=request.POST.get("name")
         number=request.POST.get("number")
@@ -272,7 +289,7 @@ def edit_part(request,id):
         vid=request.POST.get("vehicle")
         description=request.POST.get("description")
         veh = Car.objects.get(id=vid)
-        VehiclePart.objects.filter(id=id).update(name=name, number=number, brand=brand, category=category, price=price, stock=stock,
+        VehiclePart.objects.filter(id=id, seller_id=request.session['sid']).update(name=name, number=number, brand=brand, category=category, price=price, stock=stock,
                            condition=condition, description=description, vehicle=veh)
         return redirect(f'/edit-part/{id}/')
     return render(request, "seller/edit-part.html",{'part':part})
@@ -280,11 +297,11 @@ def edit_part(request,id):
 def delete_part(request,id):
     if 'sid' not in request.session:
         return redirect('/login/')
-    VehiclePart.objects.filter(id=id).delete()
+    VehiclePart.objects.filter(id=id, seller_id=request.session['sid']).delete()
     return redirect('/parts/')
 
 def vehicle_parts(request):
-    parts= VehiclePart.objects.all()
+    parts= VehiclePart.objects.select_related('vehicle').all()
     cars=Car.objects.all()
     return render(request, "user/vehicle-parts.html",{'parts':parts,'vehicles':cars})
 
@@ -297,7 +314,7 @@ def cart(request):
         return redirect('/login/')
     uid=request.session['uid']
     reg=Register.objects.get(id=uid)
-    cart=Cart.objects.filter(user=reg)
+    cart=Cart.objects.filter(user=reg).select_related('part')
     total=0
     for i in cart:
         total+=i.total_price
@@ -328,7 +345,7 @@ def add_cart(request,id):
 def remove_cart(request,id):
     if 'uid' not in request.session:
         return redirect('/login/')
-    Cart.objects.filter(id=id).delete()
+    Cart.objects.filter(id=id, user_id=request.session['uid']).delete()
     return redirect('/cart/')
 
 def checkout(request):
@@ -336,32 +353,46 @@ def checkout(request):
         return redirect('/login/')
     uid=request.session['uid']
     reg=Register.objects.get(id=uid)
-    cart=Cart.objects.filter(user=reg)
+    cart=Cart.objects.filter(user=reg).select_related('part')
     total = 0
     for i in cart:
         total += i.total_price
+    form = CheckoutForm(request.POST or None)
     if request.method=="POST":
-        fname=request.POST.get("fname")
-        lname=request.POST.get("lname")
-        email=request.POST.get("email")
-        phone=request.POST.get("phone")
-        address=request.POST.get("address")
-        city=request.POST.get("city")
-        state=request.POST.get("state")
-        zip=request.POST.get("zip")
-        country=request.POST.get("country")
-        ord = Order.objects.create(user=reg, fname=fname, lname=lname, email=email, phone=phone, address=address,
-                                   city=city,
-                                   state=state, zip=zip, country=country)
-        for i in cart:
-            # Deduct stock after purchase
-            i.part.stock -= i.quantity
-            i.part.save()
-            op=OrderItems(order=ord, item=i.part,quantity=i.quantity)
-            op.save()
-        cart.delete()
-        return redirect('/success/')
-    return render(request, "user/checkout.html",{'cart':cart,'total':total})
+        if form.is_valid():
+            with transaction.atomic():
+                ord = Order.objects.create(
+                    user=reg,
+                    fname=form.cleaned_data['fname'],
+                    lname=form.cleaned_data['lname'],
+                    email=form.cleaned_data['email'],
+                    phone=form.cleaned_data['phone'],
+                    address=form.cleaned_data['address'],
+                    city=form.cleaned_data['city'],
+                    state=form.cleaned_data['state'],
+                    zip=form.cleaned_data['zip'],
+                    country=form.cleaned_data['country']
+                )
+                for i in cart:
+                    VehiclePart.objects.filter(id=i.part.id).update(stock=F('stock') - i.quantity)
+                    op=OrderItems(order=ord, item=i.part, quantity=i.quantity)
+                    op.save()
+                cart.delete()
+                # Send a notification to each relevant seller
+                sellers_notified = set()
+                for i in Cart.objects.filter(user=reg).select_related('part__seller'):
+                    pass  # cart already deleted above, use ord items
+                for op_item in OrderItems.objects.filter(order=ord).select_related('item__seller'):
+                    seller_obj = op_item.item.seller
+                    if seller_obj and seller_obj.id not in sellers_notified:
+                        sellers_notified.add(seller_obj.id)
+                        Notification.objects.create(
+                            seller=seller_obj,
+                            order=ord,
+                            message=f"New order #{ord.id} received from {reg.name}. Please review and accept."
+                        )
+            return redirect('/success/')
+    return render(request, "user/checkout.html", {'cart': cart, 'total': total, 'form': form})
 
 def success(request):
     return render(request, "user/success.html")
@@ -371,7 +402,7 @@ def orders(request):
         return redirect('/login/')
     uid=request.session['uid']
     reg=Register.objects.get(id=uid)
-    ord=Order.objects.filter(user=reg)
+    ord=Order.objects.filter(user=reg).prefetch_related('orderitems_set__item')
     return render(request, "user/orders.html",{'ord':ord})
 
 def manage_orders(request):
@@ -383,12 +414,11 @@ def manage_orders(request):
         seller = Seller.objects.get(id=sid)
         # STRICT FILTER: Only show orders that contain items from this seller
         # distinct() avoids duplicate rows if order has multiple items from same seller
-        orders = Order.objects.filter(orderitems__item__seller=seller).distinct().order_by('-date')
-        
-        # Get notifications
-        # notifications = Notification.objects.filter(recipient=seller, is_read=False).order_by('-created_at')
-        
-        return render(request, "seller/orders.html", {'ord': orders})
+        orders = Order.objects.filter(orderitems__item__seller=seller).distinct().order_by('-date').prefetch_related('orderitems_set__item')
+        # Unread notifications for this seller
+        notifications = Notification.objects.filter(seller=seller, is_read=False).order_by('-created_at')
+        notif_count = notifications.count()
+        return render(request, "seller/orders.html", {'ord': orders, 'notifications': notifications, 'notif_count': notif_count})
     except Seller.DoesNotExist:
         return redirect('/login/')
 
@@ -401,36 +431,36 @@ def update_order_status(request, id):
         new_status = request.POST.get('status')
         try:
             seller = Seller.objects.get(id=sid)
-            # SECURITY CHECK: distinct check to ensure seller owns items in the order
+            # SECURITY: ensure seller owns at least one item in this order
             order = Order.objects.filter(id=id, orderitems__item__seller=seller).first()
             
             if order:
-                # Valid transitions Logic
                 current_status = order.status
-                allowed = False
-                
-                if current_status == 'Pending' and new_status in ['Accepted', 'Rejected']:
-                    allowed = True
-                elif current_status == 'Accepted' and new_status == 'Shipped':
-                    allowed = True
-                elif current_status == 'Shipped' and new_status == 'Delivered':
-                    allowed = True
-                    
-                if allowed:
+                # Full status transition map
+                transitions = {
+                    'Processing':       ['Accepted', 'Rejected'],
+                    'Accepted':         ['Packed'],
+                    'Packed':           ['Shipped'],
+                    'Shipped':          ['Out for Delivery'],
+                    'Out for Delivery': ['Delivered'],
+                }
+                allowed_next = transitions.get(current_status, [])
+                if new_status in allowed_next:
                     order.status = new_status
                     order.save()
-                    
-                    # Notify User
-                    Notification.objects.create(
-                        user=order.user,
-                        order=order,
-                        message=f"Your order #{order.id} status has been updated to {new_status}."
-                    )
             
         except Exception as e:
             print(f"Error updating order: {e}")
             
     return redirect('/view-orders/')
+
+
+def mark_notification_read(request, id):
+    if 'sid' not in request.session:
+        return redirect('/login/')
+    Notification.objects.filter(id=id, seller_id=request.session['sid']).update(is_read=True)
+    return redirect('/view-orders/')
+
 
 def new_sellers(request):
     sell=Seller.objects.filter(rights='New Seller')
@@ -447,9 +477,6 @@ def reject_seller(request,id):
 def sellers(request):
     sell=Seller.objects.filter(rights='Seller')
     return render(request, "admin/sellers.html",{'sell':sell})
-
-    request.session.flush()
-    return redirect('/login/')
 
 def logout(request):
     """Clear session and redirect to login"""

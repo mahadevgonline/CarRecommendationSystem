@@ -41,5 +41,6 @@ urlpatterns = [
     path('sellers/', views.sellers),
     path('recommendations/', views.recommendation, name='recommendations'),
     path('logout/', views.logout),
+    path('mark-notification/<id>/', views.mark_notification_read),
 ]
     # path('ship-item/<id>/', views.ship_item), # Removed in favor of update-order-status

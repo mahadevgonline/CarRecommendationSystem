@@ -1,5 +1,7 @@
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +92,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -342,10 +345,21 @@
             color: white;
         }
 
-        .stat-icon.total { background: var(--info); }
-        .stat-icon.in-stock { background: var(--success); }
-        .stat-icon.low-stock { background: var(--warning); }
-        .stat-icon.out-of-stock { background: var(--danger); }
+        .stat-icon.total {
+            background: var(--info);
+        }
+
+        .stat-icon.in-stock {
+            background: var(--success);
+        }
+
+        .stat-icon.low-stock {
+            background: var(--warning);
+        }
+
+        .stat-icon.out-of-stock {
+            background: var(--danger);
+        }
 
         .stat-info h3 {
             font-size: 2rem;
@@ -575,6 +589,7 @@
                 transform: translateY(-50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -625,7 +640,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -680,7 +696,8 @@
                 font-size: 0.9rem;
             }
 
-            .parts-table th, .parts-table td {
+            .parts-table th,
+            .parts-table td {
                 padding: 10px 5px;
             }
 
@@ -708,6 +725,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -825,7 +843,8 @@
                         </thead>
                         <tbody>
                             {% for part in parts %}
-                            <tr class="{% if part.stock < 5 %}low-stock{% elif part.stock == 0 %}out-of-stock{% endif %}">
+                            <tr
+                                class="{% if part.stock < 5 %}low-stock{% elif part.stock == 0 %}out-of-stock{% endif %}">
                                 <td>
                                     <input type="checkbox" class="part-checkbox" value="{{ part.id }}">
                                 </td>
@@ -834,7 +853,8 @@
                                         {% if part.image %}
                                         <img src="{{ part.image.url }}" alt="{{ part.name }}" class="part-image">
                                         {% else %}
-                                        <div class="part-image" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                                        <div class="part-image"
+                                            style="background: #f0f0f0; display: flex; align-items: center; justify-content: center;">
                                             <i class="fas fa-cog" style="color: #95a5a6;"></i>
                                         </div>
                                         {% endif %}
@@ -847,9 +867,10 @@
                                 <td>{{ part.number }}</td>
                                 <td>{{ part.category }}</td>
                                 <td>{{ part.vehicle }}</td>
-                                <td>${{ part.price }}</td>
+                                <td>{{ part.price|inr }}</td>
                                 <td>
-                                    <div class="stock-status {% if part.stock > 10 %}stock-in{% elif part.stock > 0 %}stock-low{% else %}stock-out{% endif %}">
+                                    <div
+                                        class="stock-status {% if part.stock > 10 %}stock-in{% elif part.stock > 0 %}stock-low{% else %}stock-out{% endif %}">
                                         {{ part.stock }} units
                                     </div>
                                 </td>
@@ -860,11 +881,14 @@
                                 </td>
                                 <td>
                                     {% if part.stock > 10 %}
-                                    <span style="color: var(--success);"><i class="fas fa-check-circle"></i> Available</span>
+                                    <span style="color: var(--success);"><i class="fas fa-check-circle"></i>
+                                        Available</span>
                                     {% elif part.stock > 0 %}
-                                    <span style="color: var(--warning);"><i class="fas fa-exclamation-triangle"></i> Low Stock</span>
+                                    <span style="color: var(--warning);"><i class="fas fa-exclamation-triangle"></i> Low
+                                        Stock</span>
                                     {% else %}
-                                    <span style="color: var(--danger);"><i class="fas fa-times-circle"></i> Out of Stock</span>
+                                    <span style="color: var(--danger);"><i class="fas fa-times-circle"></i> Out of
+                                        Stock</span>
                                     {% endif %}
                                 </td>
                                 <td>
@@ -881,7 +905,8 @@
                             {% empty %}
                             <tr>
                                 <td colspan="10" style="text-align: center; padding: 40px;">
-                                    <i class="fas fa-cogs" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+                                    <i class="fas fa-cogs"
+                                        style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
                                     <p style="color: #95a5a6;">No parts found. Add your first part!</p>
                                     <a href="/add-parts/" class="btn btn-primary" style="margin-top: 15px;">
                                         <i class="fas fa-plus"></i> Add Part
@@ -893,12 +918,14 @@
                     </table>
 
                     <!-- Bulk Actions -->
-                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <div
+                        style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <span id="selectedCount">0</span> parts selected
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <select id="bulkAction" style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
+                            <select id="bulkAction"
+                                style="padding: 8px 15px; border: 1px solid #ddd; border-radius: 5px;">
                                 <option value="">Bulk Actions</option>
                                 <option value="update-stock">Update Stock</option>
                                 <option value="change-status">Change Status</option>
@@ -1009,7 +1036,7 @@
         ];
 
         // Search functionality
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase();
             const rows = partsTable.querySelectorAll('tbody tr');
 
@@ -1046,7 +1073,7 @@
         }
 
         // Select all functionality
-        selectAllCheckbox.addEventListener('change', function() {
+        selectAllCheckbox.addEventListener('change', function () {
             partCheckboxes.forEach(checkbox => {
                 checkbox.checked = this.checked;
             });
@@ -1088,12 +1115,12 @@
         }
 
         // Confirm delete
-        document.getElementById('confirmDelete').addEventListener('click', function() {
+        document.getElementById('confirmDelete').addEventListener('click', function () {
             if (partToDelete) {
                 // Here you would typically make an API call to delete the part
                 console.log('Deleting part:', partToDelete);
                 alert('Part deleted successfully!');
-                window.location.href=`/delete-part/${partToDelete}/`;
+                window.location.href = `/delete-part/${partToDelete}/`;
                 closeModal('deleteModal');
                 // Refresh the page or remove the row
                 location.reload(); // Or update the table without reloading
@@ -1112,7 +1139,7 @@
         }
 
         // Bulk actions
-        document.getElementById('applyBulkAction').addEventListener('click', function() {
+        document.getElementById('applyBulkAction').addEventListener('click', function () {
             const action = document.getElementById('bulkAction').value;
             const checkedBoxes = document.querySelectorAll('.part-checkbox:checked');
             const partIds = Array.from(checkedBoxes).map(cb => cb.value);
@@ -1127,7 +1154,7 @@
                 return;
             }
 
-            switch(action) {
+            switch (action) {
                 case 'update-stock':
                     const newStock = prompt('Enter new stock quantity for selected parts:');
                     if (newStock !== null && !isNaN(newStock)) {
@@ -1156,13 +1183,13 @@
         });
 
         // Export button
-        document.getElementById('exportBtn').addEventListener('click', function() {
+        document.getElementById('exportBtn').addEventListener('click', function () {
             // Export all parts
             alert('Exporting all parts to CSV...');
         });
 
         // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
+        window.addEventListener('click', function (event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
@@ -1178,4 +1205,5 @@
     </script>
     {% endif %}
 </body>
+
 </html>

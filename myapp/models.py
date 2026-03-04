@@ -81,6 +81,7 @@ class Order(models.Model):
     country=models.CharField(max_length=100)
     date=models.DateField(auto_now_add=True,null=True)
     status=models.CharField(max_length=100,default='Processing',null=True)
+    payment_method=models.CharField(max_length=100,default='COD')
     def __str__(self):
         return self.user.name
 
@@ -91,3 +92,12 @@ class OrderItems(models.Model):
     @property
     def total_price(self):
         return self.quantity * self.item.price
+
+class Notification(models.Model):
+    seller=models.ForeignKey(Seller, on_delete=models.CASCADE, related_name='notifications')
+    order=models.ForeignKey(Order, on_delete=models.CASCADE, related_name='notifications')
+    message=models.TextField()
+    is_read=models.BooleanField(default=False)
+    created_at=models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"Notification for {self.seller.name} - Order #{self.order.id}"

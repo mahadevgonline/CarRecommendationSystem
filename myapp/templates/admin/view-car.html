@@ -1,3 +1,4 @@
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -860,7 +861,8 @@
                             {% if car.image %}<img src="{{car.image.url}}" alt="{{car.make}} {{car.model}}"
                                 id="mainImage">{% else %}<div
                                 style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">
-                                <i class="fas fa-car" style="font-size:4rem;"></i></div>{% endif %}
+                                <i class="fas fa-car" style="font-size:4rem;"></i>
+                            </div>{% endif %}
                         </div>
 
                     </div>
@@ -872,7 +874,7 @@
                                 <h1>{{car.make}} {{car.model}} <span class="status-badge active">Active</span></h1>
                                 <p class="car-meta">{{car.year}} • {{car.category}} • {{car.fuel_type}}</p>
                             </div>
-                            <div class="car-price">${{car.price}}</div>
+                            <div class="car-price">{{car.price|inr}}</div>
                         </div>
 
                         <div class="car-stats">
