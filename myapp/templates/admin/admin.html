@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,7 +92,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -449,7 +451,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #f0f0f0;
@@ -541,7 +544,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -584,6 +588,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -658,7 +663,7 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>2,847</h3>
+                            <h3>{{ total_users }}</h3>
                             <p>Total Users</p>
                         </div>
                     </div>
@@ -667,17 +672,17 @@
                             <i class="fas fa-car"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>156</h3>
+                            <h3>{{ total_cars }}</h3>
                             <p>Cars in Database</p>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon recommendations">
-                            <i class="fas fa-chart-bar"></i>
+                        <div class="stat-icon recommendations" style="background:var(--warning)">
+                            <i class="fas fa-shopping-bag"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>1,243</h3>
-                            <p>Recommendations Today</p>
+                            <h3>{{ total_orders }}</h3>
+                            <p>Total Orders</p>
                         </div>
                     </div>
                     <div class="stat-card">
@@ -685,8 +690,26 @@
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>$24,580</h3>
+                            <h3>${{ total_revenue|floatformat:0 }}</h3>
                             <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:var(--success)">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ total_sellers }}</h3>
+                            <p>Active Sellers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-left-color:var(--warning)">
+                        <div class="stat-icon" style="background:var(--warning)">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>{{ pending_sellers }}</h3>
+                            <p>Pending Sellers</p>
                         </div>
                     </div>
                 </div>
@@ -695,28 +718,15 @@
                 <div class="charts">
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>User Activity</h3>
-                            <div class="chart-actions">
-                                <select>
-                                    <option>Last 7 Days</option>
-                                    <option>Last 30 Days</option>
-                                    <option>Last 90 Days</option>
-                                </select>
-                            </div>
+                            <h3>Orders by Status</h3>
                         </div>
                         <div class="chart-wrapper">
-                            <canvas id="userActivityChart"></canvas>
+                            <canvas id="ordersStatusChart"></canvas>
                         </div>
                     </div>
                     <div class="chart-container">
                         <div class="chart-header">
-                            <h3>Car Types</h3>
-                            <div class="chart-actions">
-                                <select>
-                                    <option>This Month</option>
-                                    <option>Last Month</option>
-                                </select>
-                            </div>
+                            <h3>Cars by Category</h3>
                         </div>
                         <div class="chart-wrapper">
                             <canvas id="carTypesChart"></canvas>
@@ -728,280 +738,161 @@
                 <div class="recent-activity">
                     <div class="activity-header">
                         <h3>Recent Activity</h3>
-                        <button class="btn btn-outline">View All</button>
+                        <a href="/cars/" class="btn btn-outline">View All</a>
                     </div>
                     <ul class="activity-list">
+                        {% for order in recent_orders %}
+                        <li class="activity-item">
+                            <div class="activity-icon recommendation">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>New Order #{{ order.id }}</h4>
+                                <p>{{ order.user.name }} placed an order &mdash; {{ order.status }}</p>
+                            </div>
+                            <div class="activity-time">{{ order.date }}</div>
+                        </li>
+                        {% empty %}
+                        <li class="activity-item">
+                            <div class="activity-details">
+                                <p>No orders yet.</p>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        {% for u in recent_users %}
                         <li class="activity-item">
                             <div class="activity-icon user">
                                 <i class="fas fa-user-plus"></i>
                             </div>
                             <div class="activity-details">
-                                <h4>New User Registration</h4>
-                                <p>John Doe signed up for AutoSelect</p>
+                                <h4>New User Registered</h4>
+                                <p>{{ u.name }} joined ClassicAuto</p>
                             </div>
-                            <div class="activity-time">10 min ago</div>
+                            <div class="activity-time">ID #{{ u.id }}</div>
                         </li>
-                        <li class="activity-item">
-                            <div class="activity-icon car">
-                                <i class="fas fa-car"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>New Car Added</h4>
-                                <p>2023 Toyota Camry added to database</p>
-                            </div>
-                            <div class="activity-time">1 hour ago</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon recommendation">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>Recommendation Generated</h4>
-                                <p>Sarah received car recommendations</p>
-                            </div>
-                            <div class="activity-time">2 hours ago</div>
-                        </li>
-                        <li class="activity-item">
-                            <div class="activity-icon user">
-                                <i class="fas fa-user-edit"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>Profile Updated</h4>
-                                <p>Michael updated his preferences</p>
-                            </div>
-                            <div class="activity-time">3 hours ago</div>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
 
                 <!-- Top Cars Table -->
                 <div class="top-cars">
                     <div class="table-header">
-                        <h3>Top Recommended Cars</h3>
-                        <button class="btn btn-primary">
+                        <h3>Top Cars by Favourites</h3>
+                        <a href="/add-car/" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Add New Car
-                        </button>
+                        </a>
                     </div>
                     <table>
                         <thead>
                             <tr>
-                                <th>Car Model</th>
-                                <th>Type</th>
+                                <th>Car</th>
+                                <th>Category</th>
                                 <th>Price</th>
-                                <th>Recommendations</th>
-                                <th>Status</th>
+                                <th>Fuel</th>
+                                <th>Favourites</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for car in top_cars %}
                             <tr>
                                 <td>
                                     <div class="car-info">
                                         <div class="car-image">
+                                            {% if car.image %}
+                                            <img src="{{ car.image.url }}"
+                                                style="width:50px;height:50px;object-fit:cover;border-radius:5px;"
+                                                alt="{{ car.make }}">
+                                            {% else %}
                                             <i class="fas fa-car"></i>
+                                            {% endif %}
                                         </div>
-                                        <div>
-                                            <div>Toyota Camry</div>
-                                            <div class="car-meta">2023 Model</div>
-                                        </div>
+                                        <span>{{ car.year }} {{ car.make }} {{ car.model }}</span>
                                     </div>
                                 </td>
-                                <td>Sedan</td>
-                                <td>$26,420</td>
-                                <td>342</td>
-                                <td><span class="status active">Active</span></td>
+                                <td>{{ car.category }}</td>
+                                <td>${{ car.price|floatformat:0 }}</td>
+                                <td>{{ car.fuel_type }}</td>
+                                <td><span class="status active">{{ car.fav_count }} &#9829;</span></td>
                                 <td>
-                                    <button class="btn btn-outline">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
+                                    <a href="/edit-car/{{ car.id }}/" class="btn btn-outline"
+                                        style="font-size:0.8rem;padding:5px 10px;">Edit</a>
+                                    <a href="/delete-car/{{ car.id }}/" class="btn"
+                                        style="background:#e74c3c;color:white;font-size:0.8rem;padding:5px 10px;"
+                                        onclick="return confirm('Delete this car?')">Del</a>
                                 </td>
                             </tr>
+                            {% empty %}
                             <tr>
-                                <td>
-                                    <div class="car-info">
-                                        <div class="car-image">
-                                            <i class="fas fa-car"></i>
-                                        </div>
-                                        <div>
-                                            <div>Honda CR-V</div>
-                                            <div class="car-meta">2023 Model</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>SUV</td>
-                                <td>$29,500</td>
-                                <td>298</td>
-                                <td><span class="status active">Active</span></td>
-                                <td>
-                                    <button class="btn btn-outline">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                </td>
+                                <td colspan="6" style="text-align:center;color:#999;">No cars in the database yet.</td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="car-info">
-                                        <div class="car-image">
-                                            <i class="fas fa-car"></i>
-                                        </div>
-                                        <div>
-                                            <div>Ford Explorer</div>
-                                            <div class="car-meta">2023 Model</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>SUV</td>
-                                <td>$36,760</td>
-                                <td>267</td>
-                                <td><span class="status active">Active</span></td>
-                                <td>
-                                    <button class="btn btn-outline">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="car-info">
-                                        <div class="car-image">
-                                            <i class="fas fa-car"></i>
-                                        </div>
-                                        <div>
-                                            <div>BMW 3 Series</div>
-                                            <div class="car-meta">2023 Model</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Luxury Sedan</td>
-                                <td>$43,800</td>
-                                <td>198</td>
-                                <td><span class="status pending">Pending</span></td>
-                                <td>
-                                    <button class="btn btn-outline">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="car-info">
-                                        <div class="car-image">
-                                            <i class="fas fa-car"></i>
-                                        </div>
-                                        <div>
-                                            <div>Tesla Model 3</div>
-                                            <div class="car-meta">2023 Model</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>Electric</td>
-                                <td>$42,990</td>
-                                <td>312</td>
-                                <td><span class="status active">Active</span></td>
-                                <td>
-                                    <button class="btn btn-outline">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                </td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        // Initialize Charts
-        document.addEventListener('DOMContentLoaded', function() {
-            // User Activity Chart
-            const userActivityCtx = document.getElementById('userActivityChart').getContext('2d');
-            const userActivityChart = new Chart(userActivityCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'User Registrations',
-                        data: [65, 59, 80, 81, 56, 55, 40],
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }, {
-                        label: 'Recommendations',
-                        data: [28, 48, 40, 19, 86, 27, 90],
-                        borderColor: '#e74c3c',
-                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                        borderWidth: 2,
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
+
+                <script>
+                    // ── Real chart data from Django view ──
+                    const catLabels = {{ chart_cat_labels| safe }};
+                    const catData = {{ chart_cat_data| safe }};
+                    const statLabels = {{ chart_status_labels| safe }};
+                    const statData = {{ chart_status_data| safe }};
+
+                    const COLORS = ['#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#e74c3c', '#1abc9c', '#e67e22', '#34495e'];
+
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Orders by Status — bar chart
+                        const statusCtx = document.getElementById('ordersStatusChart');
+                        if (statusCtx) {
+                            new Chart(statusCtx.getContext('2d'), {
+                                type: 'bar',
+                                data: {
+                                    labels: statLabels,
+                                    datasets: [{
+                                        label: 'Orders',
+                                        data: statData,
+                                        backgroundColor: COLORS.slice(0, statData.length),
+                                        borderRadius: 5,
+                                    }]
+                                },
+                                options: {
+                                    responsive: true, maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                                }
+                            });
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
+
+                        // Cars by Category — doughnut chart
+                        const catCtx = document.getElementById('carTypesChart');
+                        if (catCtx) {
+                            new Chart(catCtx.getContext('2d'), {
+                                type: 'doughnut',
+                                data: {
+                                    labels: catLabels,
+                                    datasets: [{
+                                        data: catData,
+                                        backgroundColor: COLORS.slice(0, catData.length),
+                                        borderWidth: 0
+                                    }]
+                                },
+                                options: {
+                                    responsive: true, maintainAspectRatio: false,
+                                    plugins: { legend: { position: 'bottom' } }
+                                }
+                            });
                         }
-                    }
-                }
-            });
+                    });
 
-            // Car Types Chart
-            const carTypesCtx = document.getElementById('carTypesChart').getContext('2d');
-            const carTypesChart = new Chart(carTypesCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Sedan', 'SUV', 'Truck', 'Luxury', 'Electric'],
-                    datasets: [{
-                        data: [30, 25, 15, 20, 10],
-                        backgroundColor: [
-                            '#3498db',
-                            '#2ecc71',
-                            '#f39c12',
-                            '#9b59b6',
-                            '#e74c3c'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        });
-
-        // Toggle sidebar on small screens
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const mainContent = document.querySelector('.main-content');
-
-            if (window.innerWidth <= 992) {
-                sidebar.classList.toggle('collapsed');
-                mainContent.classList.toggle('expanded');
-            }
-        }
-
-        // Add interactivity to menu items
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-    </script>
+                    // Sidebar toggle
+                    document.querySelectorAll('.menu-item').forEach(item => {
+                        item.addEventListener('click', function () {
+                            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                            this.classList.add('active');
+                        });
+                    });
+                </script>
 </body>
+
 </html>

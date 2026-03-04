@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from .models import *
 from .forms import RegisterForm, SellerRegisterForm, LoginForm, AddPartForm, CheckoutForm, ProfileForm
-from django.db.models import F, Q, Min, Max
+from django.db.models import F, Q, Min, Max, Count, Sum
+import json
 from django.db.models.functions import Cast
 from django.db.models import IntegerField
 from django.db import transaction
@@ -95,7 +96,65 @@ def user(request):
 def admin(request):
     if 'uid' not in request.session:
         return redirect('/login/')
-    return render(request, "admin/admin.html")
+
+    # ── Stat Cards ──────────────────────────────────────────────────────────
+    total_users    = Register.objects.filter(rights='User').count()
+    total_cars     = Car.objects.count()
+    total_orders   = Order.objects.count()
+    total_sellers  = Seller.objects.filter(rights='Seller').count()
+    pending_sellers = Seller.objects.filter(rights='New Seller').count()
+    total_parts    = VehiclePart.objects.count()
+
+    # Revenue = sum of (quantity * item.price) across all OrderItems
+    revenue_data   = OrderItems.objects.aggregate(
+        total=Sum(F('quantity') * F('item__price'))
+    )
+    total_revenue  = revenue_data['total'] or 0
+
+    # ── Recent Activity ──────────────────────────────────────────────────────
+    recent_orders  = Order.objects.select_related('user').order_by('-id')[:5]
+    recent_users   = Register.objects.filter(rights='User').order_by('-id')[:5]
+
+    # ── Chart Data ───────────────────────────────────────────────────────────
+    # Cars by category  →  for doughnut chart
+    cars_by_cat    = list(
+        Car.objects.values('category').annotate(count=Count('id')).order_by('-count')
+    )
+    chart_cat_labels = json.dumps([c['category'] for c in cars_by_cat])
+    chart_cat_data   = json.dumps([c['count']    for c in cars_by_cat])
+
+    # Orders by status  →  for bar chart
+    orders_by_status = list(
+        Order.objects.values('status').annotate(count=Count('id')).order_by('status')
+    )
+    chart_status_labels = json.dumps([o['status'] for o in orders_by_status])
+    chart_status_data   = json.dumps([o['count']  for o in orders_by_status])
+
+    # ── Top Cars (by favourite count) ────────────────────────────────────────
+    top_cars = (
+        Car.objects
+        .annotate(fav_count=Count('favorite'))
+        .order_by('-fav_count')[:8]
+    )
+
+    context = {
+        'total_users':       total_users,
+        'total_cars':        total_cars,
+        'total_orders':      total_orders,
+        'total_revenue':     total_revenue,
+        'total_sellers':     total_sellers,
+        'pending_sellers':   pending_sellers,
+        'total_parts':       total_parts,
+        'recent_orders':     recent_orders,
+        'recent_users':      recent_users,
+        'top_cars':          top_cars,
+        'chart_cat_labels':  chart_cat_labels,
+        'chart_cat_data':    chart_cat_data,
+        'chart_status_labels': chart_status_labels,
+        'chart_status_data':   chart_status_data,
+    }
+    return render(request, "admin/admin.html", context)
+
 
 def seller(request):
     return render(request, "seller/seller.html")
