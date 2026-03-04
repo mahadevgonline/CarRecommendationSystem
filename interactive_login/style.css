@@ -1,0 +1,497 @@
+/* ═══════════════════════════════════════════════════
+   INTERACTIVE LOGIN — style.css
+   Dark modern UI · Purple accent
+═══════════════════════════════════════════════════ */
+
+/* ── Reset ──────────────────────────────────────── */
+*, *::before, *::after {
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Variables ──────────────────────────────────── */
+:root {
+    --bg:            #07071a;
+    --card:          rgba(16, 16, 42, 0.88);
+    --purple:        #8b5cf6;
+    --purple-dk:     #6d28d9;
+    --purple-lt:     #a78bfa;
+    --purple-glow:   rgba(139, 92, 246, 0.28);
+    --blue-glow:     rgba(59, 130, 246, 0.18);
+    --text:          #e2e8f0;
+    --muted:         #94a3b8;
+    --border:        rgba(139, 92, 246, 0.22);
+    --input-bg:      rgba(255,255,255,0.05);
+    --face-color:    #fbbf24;
+    --face-shadow:   #d97706;
+    --transition:    all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Body ───────────────────────────────────────── */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    line-height: 1.6;
+}
+
+/* ── Ambient Background Glows ───────────────────── */
+.bg-glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    opacity: 0.2;
+}
+.bg-glow-1 {
+    width: 560px; height: 560px;
+    background: var(--purple);
+    top: -160px; left: -140px;
+    animation: drift1 9s ease-in-out infinite alternate;
+}
+.bg-glow-2 {
+    width: 420px; height: 420px;
+    background: #3b82f6;
+    bottom: -120px; right: -100px;
+    animation: drift2 11s ease-in-out infinite alternate;
+}
+.bg-glow-3 {
+    width: 280px; height: 280px;
+    background: #ec4899;
+    bottom: 40px; left: 40px;
+    opacity: 0.1;
+    animation: drift1 13s ease-in-out infinite alternate;
+}
+@keyframes drift1 { to { transform: translate(50px, 70px);  } }
+@keyframes drift2 { to { transform: translate(-50px, -60px); } }
+
+/* ── Layout Wrapper ─────────────────────────────── */
+.login-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+}
+
+/* ═══════════════════════════════════════════════════
+   MASCOT
+═══════════════════════════════════════════════════ */
+.mascot-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: -20px;
+    z-index: 20;
+    user-select: none;
+    animation: floatUp 0.7s ease forwards, floatBob 3.2s ease-in-out 0.7s infinite;
+}
+@keyframes floatUp  { from { opacity:0; transform:translateY(-30px); } to { opacity:1; transform:translateY(0); } }
+@keyframes floatBob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+
+/* -- Antenna ---------------------------------------- */
+.antenna {
+    width: 5px;
+    height: 32px;
+    background: linear-gradient(to bottom, #c4b5fd, #7c3aed);
+    border-radius: 3px;
+    position: relative;
+    z-index: 5;
+    margin-bottom: -3px;
+}
+.antenna-ball {
+    width: 12px; height: 12px;
+    background: var(--purple-lt);
+    border-radius: 50%;
+    position: absolute;
+    top: -6px; left: -3.5px;
+    box-shadow: 0 0 12px var(--purple-lt), 0 0 24px var(--purple);
+    animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%,100% { box-shadow: 0 0 8px var(--purple-lt); }
+    50%      { box-shadow: 0 0 20px var(--purple-lt), 0 0 6px var(--purple); }
+}
+
+/* -- Face ------------------------------------------- */
+.face {
+    width: 150px; height: 140px;
+    background: radial-gradient(circle at 40% 35%, #fde68a, #f59e0b 55%, #d97706);
+    border-radius: 50% 50% 46% 46%;
+    position: relative;
+    z-index: 4;
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.4),
+        inset 0 -6px 14px rgba(0,0,0,0.12),
+        inset 0 4px 8px rgba(255,255,255,0.3);
+    overflow: visible;
+    transition: transform 0.4s ease;
+}
+
+/* Car-mirror "ears" */
+.mirror {
+    width: 18px; height: 28px;
+    background: linear-gradient(145deg, #7c3aed, #4c1d95);
+    border-radius: 4px;
+    position: absolute;
+    top: 28px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    transition: transform 0.3s ease;
+}
+.mirror-left  { left: -15px; transform: rotate(-10deg); }
+.mirror-right { right:-15px; transform: rotate(10deg);  }
+.face.shy .mirror-left  { transform: rotate(-6deg) translateY(4px); }
+.face.shy .mirror-right { transform: rotate(6deg)  translateY(4px); }
+
+/* -- Eyes row --------------------------------------- */
+.eyes-row {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin-top: 32px;
+}
+
+/* Individual eye */
+.eye {
+    width: 40px; height: 40px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+        inset 0 2px 6px rgba(0,0,0,0.18),
+        0 2px 6px rgba(0,0,0,0.25);
+    flex-shrink: 0;
+}
+
+/* Pupil */
+.pupil {
+    width: 22px; height: 22px;
+    background: radial-gradient(circle at 35% 30%, #4c1d95, #1e1b4b 70%);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    /* Tracking mode: fast linear; animation mode set by JS class */
+    transition: transform 0.08s linear;
+}
+.pupil.snap { transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+
+.pupil-shine {
+    width: 7px; height: 7px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    position: absolute;
+    top: 4px; left: 5px;
+}
+
+/* Eyelids */
+.eyelid {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    /* same gradient as face so they blend in */
+    background: linear-gradient(to bottom, #fde68a, #f59e0b);
+    transition: height 0.32s cubic-bezier(0.4,0,0.2,1);
+    z-index: 2;
+}
+.top-lid    { top:0; height:0; }
+.bottom-lid { bottom:0; height:0; }
+
+/* Closed state */
+.eye.closed .top-lid    { height: 54%; }
+.eye.closed .bottom-lid { height: 54%; }
+
+/* -- Nose ------------------------------------------- */
+.nose {
+    width: 11px; height: 8px;
+    background: var(--face-shadow);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 38px; left: 50%;
+    transform: translateX(-50%);
+}
+
+/* -- Mouth ------------------------------------------ */
+.mouth {
+    width: 40px; height: 18px;
+    border: 3.5px solid #92400e;
+    border-top: none;
+    border-radius: 0 0 22px 22px;
+    position: absolute;
+    bottom: 18px; left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+}
+.face.shy .mouth {
+    width: 26px; height: 10px;
+    border-radius: 0 0 14px 14px;
+    bottom: 20px;
+}
+
+/* -- Cheeks ----------------------------------------- */
+.cheek {
+    width: 24px; height: 15px;
+    background: rgba(251,113,133,0.42);
+    border-radius: 50%;
+    position: absolute;
+    bottom: 30px;
+}
+.cheek-left  { left: 10px; }
+.cheek-right { right: 10px; }
+
+/* -- Shy Hands -------------------------------------- */
+.shy-hands {
+    position: absolute;
+    bottom: -10px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0;
+    font-size: 1.7rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, bottom 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 10;
+}
+.face.shy .shy-hands {
+    opacity: 1;
+    bottom: 24px;
+}
+.hand-left  { transform: scaleX(-1); }
+
+/* -- Speech Bubble ---------------------------------- */
+.speech-bubble {
+    position: absolute;
+    right: -185px;
+    top: 14px;
+    background: rgba(16,16,42,0.92);
+    border: 1.5px solid var(--border);
+    border-radius: 14px 14px 14px 0;
+    padding: 9px 15px;
+    font-size: 0.8rem;
+    color: var(--text);
+    white-space: nowrap;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: scale(0.75);
+    transform-origin: left center;
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    pointer-events: none;
+    z-index: 30;
+}
+.speech-bubble.show {
+    opacity: 1;
+    transform: scale(1);
+}
+/* Tail */
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -9px; bottom: 12px;
+    border: 9px solid transparent;
+    border-right-color: var(--border);
+    border-left: none;
+}
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -6px; bottom: 13px;
+    border: 8px solid transparent;
+    border-right-color: rgba(16,16,42,0.92);
+    border-left: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   LOGIN CARD
+═══════════════════════════════════════════════════ */
+.login-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 42px 40px;
+    width: 420px;
+    backdrop-filter: blur(22px);
+    box-shadow:
+        0 24px 64px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(139,92,246,0.08);
+    animation: slideUp 0.65s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes slideUp {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* Brand */
+.card-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.brand-icon { width: 36px; height: auto; }
+.brand-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--purple-lt);
+}
+
+/* Card header */
+.card-header { text-align: center; margin-bottom: 30px; }
+.card-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(130deg, #e2e8f0 20%, var(--purple-lt));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 5px;
+}
+.card-header p { color: var(--muted); font-size: 0.9rem; }
+
+/* ── Field Groups ─────────────────────────────── */
+.field-group { margin-bottom: 18px; }
+.field-group label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 7px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+.input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.field-icon {
+    position: absolute;
+    left: 14px;
+    width: 17px; height: 17px;
+    color: var(--muted);
+    transition: color 0.25s ease;
+    pointer-events: none;
+    display: flex; align-items: center;
+}
+.field-icon svg { width: 100%; height: 100%; }
+
+.input-wrap input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px 14px 46px;
+    color: var(--text);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.input-wrap input::placeholder { color: rgba(148,163,184,0.5); }
+.input-wrap input:focus {
+    border-color: var(--purple);
+    background: rgba(139,92,246,0.07);
+    box-shadow: 0 0 0 3px var(--purple-glow);
+}
+.input-wrap:focus-within .field-icon { color: var(--purple-lt); }
+
+/* Password toggle button */
+.toggle-pw {
+    position: absolute;
+    right: 13px;
+    background: none; border: none;
+    color: var(--muted);
+    cursor: pointer;
+    width: 20px; height: 20px;
+    padding: 0;
+    transition: color 0.2s ease;
+    display: flex; align-items: center;
+}
+.toggle-pw:hover { color: var(--purple-lt); }
+.toggle-pw svg   { width: 100%; height: 100%; }
+
+/* ── Extras Row ──────────────────────────────── */
+.extras-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 6px 0 24px;
+    font-size: 0.85rem;
+}
+.remember-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    cursor: pointer;
+}
+.remember-label input[type=checkbox] {
+    accent-color: var(--purple);
+    width: 15px; height: 15px;
+    cursor: pointer;
+}
+.forgot-link { color: var(--purple-lt); text-decoration: none; }
+.forgot-link:hover { text-decoration: underline; }
+
+/* ── Sign In Button ───────────────────────────── */
+.btn-signin {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--purple), var(--purple-dk));
+    border: none; border-radius: 12px;
+    color: white;
+    font-size: 0.98rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 22px rgba(109,40,217,0.45);
+    letter-spacing: 0.4px;
+}
+.btn-signin:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(109,40,217,0.6);
+}
+.btn-signin:active { transform: translateY(0); }
+.btn-icon {
+    font-size: 1.15rem;
+    transition: transform 0.2s ease;
+}
+.btn-signin:hover .btn-icon { transform: translateX(5px); }
+
+/* Loading state */
+.btn-signin.loading {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+/* ── Register Row ─────────────────────────────── */
+.register-row {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 20px;
+}
+.register-row a {
+    color: var(--purple-lt);
+    font-weight: 600;
+    text-decoration: none;
+}
+.register-row a:hover { text-decoration: underline; }
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 500px) {
+    .login-card { width: 92vw; padding: 30px 22px; }
+    .speech-bubble { display: none; }
+}
