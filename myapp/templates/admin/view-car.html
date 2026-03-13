@@ -3,6 +3,12 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{car.make}} {{car.model}} - AutoSelect Admin</title>
@@ -865,6 +871,20 @@
                             </div>{% endif %}
                         </div>
 
+                        <!-- Image Update Form -->
+                        <div style="text-align: center; margin-top: 15px;">
+                            <form action="/update-car-image/{{car.id}}/" method="post" enctype="multipart/form-data"
+                                id="imageUpdateForm">
+                                {% csrf_token %}
+                                <input type="file" name="image" id="carImageInput" style="display: none;"
+                                    accept="image/*" onchange="document.getElementById('imageUpdateForm').submit();">
+                                <button type="button" class="btn btn-outline"
+                                    onclick="document.getElementById('carImageInput').click();">
+                                    <i class="fas fa-camera"></i> Edit Image
+                                </button>
+                            </form>
+                        </div>
+
                     </div>
 
                     <!-- Car Information -->
@@ -1124,7 +1144,6 @@
             </div>
         </div>
     </div>
-
 
 </body>
 

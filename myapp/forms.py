@@ -1,11 +1,39 @@
 from django import forms
+import re
+
+
+def validate_password(password):
+    """
+    Returns an error string if the password fails validation, else None.
+    Rules:
+      - Minimum 6 characters
+      - Maximum 20 characters
+      - At least one uppercase letter (A-Z)
+      - At least one special symbol (!@#$%^&* etc.)
+    """
+    if len(password) < 6:
+        return 'Password must be at least 6 characters long.'
+    if len(password) > 20:
+        return 'Password must be no more than 20 characters long.'
+    if not re.search(r'[A-Z]', password):
+        return 'Password must contain at least one uppercase letter (A-Z).'
+    if not re.search(r'[!@#$%^&*()\-_=+\[\]{};:\'",.<>?/\\|`~]', password):
+        return 'Password must contain at least one special symbol (e.g. @, #, !).'
+    return None
 
 
 class RegisterForm(forms.Form):
     name = forms.CharField(max_length=100)
     email = forms.EmailField()
     phone = forms.CharField(max_length=20)
-    password = forms.CharField(widget=forms.PasswordInput, min_length=6)
+    password = forms.CharField(widget=forms.PasswordInput, min_length=6, max_length=20)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password', '')
+        error = validate_password(password)
+        if error:
+            raise forms.ValidationError(error)
+        return password
 
 
 class SellerRegisterForm(forms.Form):
@@ -13,7 +41,14 @@ class SellerRegisterForm(forms.Form):
     email = forms.EmailField()
     phone = forms.CharField(max_length=20)
     address = forms.CharField(max_length=200)
-    password = forms.CharField(widget=forms.PasswordInput, min_length=6)
+    password = forms.CharField(widget=forms.PasswordInput, min_length=6, max_length=20)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password', '')
+        error = validate_password(password)
+        if error:
+            raise forms.ValidationError(error)
+        return password
 
 
 class LoginForm(forms.Form):
@@ -50,4 +85,14 @@ class ProfileForm(forms.Form):
     name = forms.CharField(max_length=100)
     email = forms.EmailField()
     phone = forms.CharField(max_length=20)
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
+    password = forms.CharField(widget=forms.PasswordInput, required=False, max_length=20)
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password', '')
+        # Only validate if user actually typed something
+        if password:
+            error = validate_password(password)
+            if error:
+                raise forms.ValidationError(error)
+        return password
+

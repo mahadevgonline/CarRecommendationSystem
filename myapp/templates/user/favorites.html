@@ -3,6 +3,12 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Favorites - ClassicAuto</title>
@@ -613,6 +619,7 @@
                 <nav>
                     <ul>
                         <li><a href="/user/">Home</a></li>
+                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -625,7 +632,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -729,22 +736,21 @@
         const favoritesData = [
             {% for i in fav %}
         {
-            id: { { i.id } },
-            cid: { { i.car.id } },
-            make: "{{i.car.make}}",
-                model: "{{i.car.model}}",
-                    year: { { i.car.year } },
+            id: {{i.id}},
+            cid: {{i.car.id}},
+            make: "{{i.car.make|escapejs}}",
+                model: "{{i.car.model|escapejs}}",
+                    year: {{i.car.year}},
             price: "{{i.car.price|inr}}",
-                category: "{{i.car.category}}",
-                    fuelType: "{{i.car.fuel_type}}",
-                        description: "{{i.car.description}}",
-                            engine: "{{i.car.engine}}",
-                                horsePower: "{{i.car.horse_power}}",
-                                    transmission: "{{i.car.transmission}}",
-                                        mpgCity: { { i.car.mpg_city } },
-            mpgHighway: { { i.car.mpg_hway } },
-            image: "{{i.car.image.url}}",
-
+                category: "{{i.car.category|escapejs}}",
+                    fuelType: "{{i.car.fuel_type|escapejs}}",
+                        description: "{{i.car.description|escapejs}}",
+                            engine: "{{i.car.engine|escapejs}}",
+                                horsePower: "{{i.car.horse_power|escapejs}}",
+                                    transmission: "{{i.car.transmission|escapejs}}",
+                                        mpgCity: "{{i.car.mpg_city|escapejs}}",
+                                            mpgHighway: "{{i.car.mpg_hway|escapejs}}",
+                                                image: "{{i.car.image.url|escapejs}}",
             },
         {% endfor %}
         ];

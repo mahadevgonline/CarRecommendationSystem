@@ -1,8 +1,14 @@
-{% load currency_filters %}
+﻿{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassicAuto Parts Marketplace</title>
@@ -1034,7 +1040,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -1047,7 +1053,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -1065,53 +1071,20 @@
             </div>
 
             <div class="categories-grid">
-                <div class="category-card" onclick="filterByCategory('engine')">
+                {% for cat in categories_with_counts %}
+                <div class="category-card" onclick="filterByCategory('{{ cat.key }}')">
                     <div class="category-icon">
-                        <i class="fas fa-cog"></i>
+                        <i
+                            class="fas {% if 'engine' in cat.key %}fa-cog{% elif 'brak' in cat.key %}fa-stop-circle{% elif 'suspension' in cat.key %}fa-car-side{% elif 'electric' in cat.key %}fa-bolt{% elif 'body' in cat.key %}fa-car{% elif 'interior' in cat.key %}fa-chair{% elif 'exhaust' in cat.key %}fa-wind{% elif 'light' in cat.key %}fa-lightbulb{% else %}fa-wrench{% endif %}"></i>
                     </div>
-                    <h3>Engine Parts</h3>
-                    <div class="category-count">{{ engine_count }} parts</div>
+                    <h3>{{ cat.name }}</h3>
+                    <div class="category-count">{{ cat.count }} part{{ cat.count|pluralize }}</div>
                 </div>
-
-                <div class="category-card" onclick="filterByCategory('braking')">
-                    <div class="category-icon">
-                        <i class="fas fa-stop-circle"></i>
-                    </div>
-                    <h3>Braking System</h3>
-                    <div class="category-count">{{ braking_count }} parts</div>
+                {% empty %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--vintage-brown);">
+                    <p>No categories found yet. Parts will appear here once sellers list them.</p>
                 </div>
-
-                <div class="category-card" onclick="filterByCategory('suspension')">
-                    <div class="category-icon">
-                        <i class="fas fa-car-side"></i>
-                    </div>
-                    <h3>Suspension</h3>
-                    <div class="category-count">{{ suspension_count }} parts</div>
-                </div>
-
-                <div class="category-card" onclick="filterByCategory('electrical')">
-                    <div class="category-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Electrical</h3>
-                    <div class="category-count">{{ electrical_count }} parts</div>
-                </div>
-
-                <div class="category-card" onclick="filterByCategory('body')">
-                    <div class="category-icon">
-                        <i class="fas fa-car"></i>
-                    </div>
-                    <h3>Body Parts</h3>
-                    <div class="category-count">{{ body_count }} parts</div>
-                </div>
-
-                <div class="category-card" onclick="filterByCategory('interior')">
-                    <div class="category-icon">
-                        <i class="fas fa-chair"></i>
-                    </div>
-                    <h3>Interior</h3>
-                    <div class="category-count">{{ interior_count }} parts</div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -1119,24 +1092,21 @@
     <!-- Parts Listing Section -->
     <section class="parts-section">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" id="partsSection">
                 <h2>Available Parts</h2>
                 <p>Browse our collection of authentic vintage auto parts for sale</p>
             </div>
+
+            <!-- Live filtering removed, now using a manual Search button -->
 
             <div class="filter-bar">
                 <div class="filter-content">
                     <div class="filter-options">
                         <select class="filter-select" id="categoryFilter">
                             <option value="">All Categories</option>
-                            <option value="engine">Engine Parts</option>
-                            <option value="braking">Braking System</option>
-                            <option value="suspension">Suspension</option>
-                            <option value="electrical">Electrical</option>
-                            <option value="exhaust">Exhaust System</option>
-                            <option value="body">Body Parts</option>
-                            <option value="interior">Interior</option>
-                            <option value="lighting">Lighting</option>
+                            {% for cat in categories_with_counts %}
+                            <option value="{{ cat.key }}">{{ cat.name }} ({{ cat.count }})</option>
+                            {% endfor %}
                         </select>
 
                         <select class="filter-select" id="conditionFilter">
@@ -1155,14 +1125,22 @@
                         </select>
                     </div>
 
-                    <div class="sort-options">
-                        <label for="sortSelect" style="color: var(--vintage-dark); font-weight: 500;">Sort by:</label>
-                        <select class="filter-select" id="sortSelect">
-                            <option value="newest">Newest First</option>
-                            <option value="price_low">Price: Low to High</option>
-                            <option value="price_high">Price: High to Low</option>
-                            <option value="popular">Most Popular</option>
-                        </select>
+                    <div class="sort-options"
+                        style="flex: 1; justify-content: space-between; align-items: center; border-left: 2px solid var(--vintage-light); padding-left: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <label for="sortSelect" style="color: var(--vintage-dark); font-weight: 500;">Sort
+                                by:</label>
+                            <select class="filter-select" id="sortSelect">
+                                <option value="newest">Newest First</option>
+                                <option value="price_low">Price: Low to High</option>
+                                <option value="price_high">Price: High to Low</option>
+                                <option value="popular">Most Popular</option>
+                            </select>
+                        </div>
+                        <button onclick="filterParts()" class="btn btn-gold"
+                            style="padding: 12px 30px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4); display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-search"></i> Search
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1274,19 +1252,19 @@
                 <div class="cart-summary">
                     <div class="summary-row">
                         <span>Subtotal</span>
-                        <span id="cartSubtotal">$0.00</span>
+                        <span id="cartSubtotal">₹0.00</span>
                     </div>
                     <div class="summary-row">
                         <span>Shipping</span>
-                        <span id="cartShipping">$9.99</span>
+                        <span id="cartShipping">₹9.99</span>
                     </div>
                     <div class="summary-row">
                         <span>Tax</span>
-                        <span id="cartTax">$0.00</span>
+                        <span id="cartTax">₹0.00</span>
                     </div>
                     <div class="summary-row summary-total">
                         <span>Total</span>
-                        <span id="cartTotal">$0.00</span>
+                        <span id="cartTotal">₹0.00</span>
                     </div>
                 </div>
 
@@ -1316,7 +1294,7 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/marketplace/">Browse Parts</a></li>
                         <li><a href="/sell-part/">Sell Parts</a></li>
                         <li><a href="/collections/">My Collection</a></li>
@@ -1425,9 +1403,9 @@
                         <p>Add some vintage parts to get started!</p>
                     </div>
                 `;
-                cartSubtotal.textContent = '$0.00';
-                cartTax.textContent = '$0.00';
-                cartTotal.textContent = '$0.00';
+                cartSubtotal.textContent = '₹0.00';
+                cartTax.textContent = '₹0.00';
+                cartTotal.textContent = '₹0.00';
                 return;
             }
 
@@ -1477,7 +1455,6 @@
         }
 
         // Filtering and Search
-        const searchInput = document.getElementById('searchInput');
         const categoryFilter = document.getElementById('categoryFilter');
         const conditionFilter = document.getElementById('conditionFilter');
         const vehicleFilter = document.getElementById('vehicleFilter');
@@ -1485,32 +1462,23 @@
         const partsGrid = document.getElementById('partsGrid');
 
         function filterParts() {
-            const searchTerm = searchInput.value.toLowerCase();
             const category = categoryFilter.value;
             const condition = conditionFilter.value;
             const vehicle = vehicleFilter.value;
-            const sort = sortSelect.value;
+            const sort = sortSelect.value; // For future implementation of sorting
 
             const partCards = document.querySelectorAll('.part-card');
 
             partCards.forEach(card => {
-                const partName = card.querySelector('.part-title h3').textContent.toLowerCase();
-                const partBrand = card.querySelector('.part-title p').textContent.toLowerCase();
-                const partDesc = card.querySelector('.part-description').textContent.toLowerCase();
                 const partCategory = card.dataset.category;
                 const partCondition = card.dataset.condition;
                 const partVehicle = card.dataset.vehicle;
-
-                const matchesSearch = !searchTerm ||
-                    partName.includes(searchTerm) ||
-                    partBrand.includes(searchTerm) ||
-                    partDesc.includes(searchTerm);
 
                 const matchesCategory = !category || partCategory.includes(category);
                 const matchesCondition = !condition || partCondition === condition;
                 const matchesVehicle = !vehicle || partVehicle === vehicle;
 
-                if (matchesSearch && matchesCategory && matchesCondition && matchesVehicle) {
+                if (matchesCategory && matchesCondition && matchesVehicle) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
@@ -1521,6 +1489,8 @@
         function filterByCategory(category) {
             categoryFilter.value = category;
             filterParts();
+            // Scroll smoothly to the parts section
+            document.getElementById('partsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function changePage(page) {
@@ -1567,13 +1537,6 @@
 
         // Initialize cart count
         updateCartCount();
-
-        // Add event listeners for filtering
-        searchInput.addEventListener('input', filterParts);
-        categoryFilter.addEventListener('change', filterParts);
-        conditionFilter.addEventListener('change', filterParts);
-        vehicleFilter.addEventListener('change', filterParts);
-        sortSelect.addEventListener('change', filterParts);
 
         // Close modal when clicking outside
         window.addEventListener('click', (event) => {

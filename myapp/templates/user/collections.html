@@ -3,6 +3,12 @@
 <html lang="en">
 
 <head>
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassicAuto - Vintage Car Recommendations</title>
@@ -662,29 +668,53 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-
-
     <!-- Vintage Cars Section -->
     <section class="vintage-cars">
         <div class="container">
             <div class="section-header">
-                <h2>Curated Classic Collection</h2>
-                <p>Hand-picked vintage automobiles with timeless appeal and enduring value</p>
+                <h2>Discover Our Collection</h2>
+                <p>Browse, search, and filter our hand-picked vintage automobiles</p>
             </div>
 
-            <div class="car-grid">
-                <!-- Car 1 -->
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-options">
+                    <input type="text" id="searchBox" class="filter-select" placeholder="🔍 Search make or model..."
+                        style="min-width:220px;">
+                    <select id="filterMake" class="filter-select">
+                        <option value="">All Makes</option>
+                    </select>
+                    <select id="filterCategory" class="filter-select">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select id="filterFuel" class="filter-select">
+                        <option value="">All Fuel Types</option>
+                    </select>
+                    <select id="sortBy" class="filter-select">
+                        <option value="">Sort By</option>
+                        <option value="price-asc">Price: Low → High</option>
+                        <option value="price-desc">Price: High → Low</option>
+                        <option value="year-desc">Year: Newest</option>
+                        <option value="year-asc">Year: Oldest</option>
+                        <option value="hp-desc">HP: Highest</option>
+                    </select>
+                </div>
+                <div id="resultCount" style="font-weight:600; color:var(--vintage-brown); white-space:nowrap;"></div>
+            </div>
+
+            <div class="car-grid" id="carGrid">
                 {% for i in cars %}
-                <div class="car-card">
+                <div class="car-card" data-make="{{i.make}}" data-model="{{i.model}}" data-year="{{i.year}}"
+                    data-price="{{i.price}}" data-category="{{i.category}}" data-fuel="{{i.fuel_type}}"
+                    data-hp="{{i.horse_power}}">
                     <div class="car-image" style="background-image: url('{{i.image.url}}')">
-                        <div class="car-badge">Classic</div>
+                        <div class="car-badge">{{i.category}}</div>
                     </div>
                     <div class="car-content">
                         <div class="car-header">
@@ -699,49 +729,23 @@
                             <div class="spec"><i class="fas fa-cogs"></i> {{i.fuel_type}}</div>
                             <div class="spec"><i class="fas fa-road"></i> {{i.mpg_city}} mi</div>
                         </div>
-                        <p>{{i.description}}</p>
+                        <p style="font-size:0.9rem; color:var(--vintage-brown); margin-bottom:15px;">
+                            {{i.description|truncatewords:20}}</p>
                         <div class="car-actions">
                             <a href="/car-detail/{{i.id}}/" class="btn">View Details</a>
-                            <button class="btn btn-gold"><i class="far fa-heart"></i></button>
+                            <a href="/add-favorite/{{i.id}}/" class="btn btn-gold" title="Add to Favorites"><i
+                                    class="far fa-heart"></i></a>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
-
             </div>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2>Why Choose ClassicAuto</h2>
-                <p>We preserve automotive history while helping you find your perfect vintage companion</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3>Curated Selection</h3>
-                    <p>Every vehicle in our collection is hand-picked for authenticity, condition, and historical
-                        significance.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-certificate"></i>
-                    </div>
-                    <h3>Authenticity Guarantee</h3>
-                    <p>We provide detailed documentation and verification for all our classic automobiles.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-tools"></i>
-                    </div>
-                    <h3>Restoration Services</h3>
-                    <p>Our network of master craftsmen can help restore your classic to its original glory.</p>
-                </div>
+            <!-- No Results Message -->
+            <div id="noResults" style="display:none; text-align:center; padding:60px 20px;">
+                <i class="fas fa-search" style="font-size:3rem; color:var(--vintage-gold); margin-bottom:15px;"></i>
+                <h3 style="font-family:'Cinzel',serif; margin-bottom:10px;">No Cars Found</h3>
+                <p style="color:var(--vintage-brown);">Try adjusting your filters or search term.</p>
             </div>
         </div>
     </section>
@@ -750,10 +754,10 @@
     <section class="cta">
         <div class="container">
             <div class="cta-content">
-                <h2>Begin Your Classic Car Journey</h2>
-                <p>Take our heritage matching quiz to discover the vintage automobile that perfectly suits your style
-                    and preferences</p>
-                <a href="#" class="btn btn-gold">Start Heritage Quiz</a>
+                <h2>Can't Find What You're Looking For?</h2>
+                <p>Try our AI-powered recommendation engine to discover the vintage automobile that perfectly suits your
+                    preferences</p>
+                <a href="/ai-car-finder/" class="btn btn-gold">Discover AI Recommendations</a>
             </div>
         </div>
     </section>
@@ -809,24 +813,82 @@
     </footer>
 
     <script>
-        // Simple interactivity for the favorite buttons
-        document.querySelectorAll('.btn-gold').forEach(button => {
-            if (button.querySelector('i')) {
-                button.addEventListener('click', function () {
-                    const icon = this.querySelector('i');
-                    if (icon.classList.contains('far')) {
-                        icon.classList.remove('far');
-                        icon.classList.add('fas');
-                        this.style.background = '#8b4513';
-                        this.style.color = '#f5f1e6';
-                    } else {
-                        icon.classList.remove('fas');
-                        icon.classList.add('far');
-                        this.style.background = '';
-                        this.style.color = '';
-                    }
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = Array.from(document.querySelectorAll('.car-card'));
+            const grid = document.getElementById('carGrid');
+            const searchBox = document.getElementById('searchBox');
+            const filterMake = document.getElementById('filterMake');
+            const filterCategory = document.getElementById('filterCategory');
+            const filterFuel = document.getElementById('filterFuel');
+            const sortBy = document.getElementById('sortBy');
+            const resultCount = document.getElementById('resultCount');
+            const noResults = document.getElementById('noResults');
+
+            // ── Populate filter dropdowns from data ──
+            const makes = [...new Set(cards.map(c => c.dataset.make))].sort();
+            const categories = [...new Set(cards.map(c => c.dataset.category))].sort();
+            const fuels = [...new Set(cards.map(c => c.dataset.fuel))].sort();
+
+            makes.forEach(m => filterMake.add(new Option(m, m)));
+            categories.forEach(c => filterCategory.add(new Option(c, c)));
+            fuels.forEach(f => filterFuel.add(new Option(f, f)));
+
+            // ── Filter + Sort logic ──
+            function applyFilters() {
+                const query = searchBox.value.toLowerCase().trim();
+                const make = filterMake.value;
+                const cat = filterCategory.value;
+                const fuel = filterFuel.value;
+                const sort = sortBy.value;
+
+                let visible = cards.filter(card => {
+                    const cardMake = card.dataset.make;
+                    const cardModel = card.dataset.model;
+                    const cardCat = card.dataset.category;
+                    const cardFuel = card.dataset.fuel;
+                    const matchSearch = !query || cardMake.toLowerCase().includes(query) || cardModel.toLowerCase().includes(query);
+                    const matchMake = !make || cardMake === make;
+                    const matchCat = !cat || cardCat === cat;
+                    const matchFuel = !fuel || cardFuel === fuel;
+                    return matchSearch && matchMake && matchCat && matchFuel;
                 });
+
+                // Sort
+                if (sort) {
+                    visible.sort((a, b) => {
+                        switch (sort) {
+                            case 'price-asc': return parseInt(a.dataset.price) - parseInt(b.dataset.price);
+                            case 'price-desc': return parseInt(b.dataset.price) - parseInt(a.dataset.price);
+                            case 'year-desc': return parseInt(b.dataset.year) - parseInt(a.dataset.year);
+                            case 'year-asc': return parseInt(a.dataset.year) - parseInt(b.dataset.year);
+                            case 'hp-desc': return parseInt(b.dataset.hp) - parseInt(a.dataset.hp);
+                            default: return 0;
+                        }
+                    });
+                }
+
+                // Hide all cards first
+                cards.forEach(c => c.style.display = 'none');
+
+                // Show matched cards in sorted order
+                visible.forEach(c => {
+                    c.style.display = '';
+                    grid.appendChild(c); // re-append in sorted order
+                });
+
+                resultCount.textContent = `${visible.length} of ${cards.length} vehicles`;
+                noResults.style.display = visible.length === 0 ? 'block' : 'none';
             }
+
+            // Bind events
+            searchBox.addEventListener('input', applyFilters);
+            filterMake.addEventListener('change', applyFilters);
+            filterCategory.addEventListener('change', applyFilters);
+            filterFuel.addEventListener('change', applyFilters);
+            sortBy.addEventListener('change', applyFilters);
+
+            // Initial count
+            applyFilters();
         });
     </script>
 </body>

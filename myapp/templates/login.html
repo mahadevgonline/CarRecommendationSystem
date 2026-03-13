@@ -6,42 +6,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In – ClassicAuto</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+        rel="stylesheet">
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout("preventBack()", 0);
+        window.onunload = function () { null };
+    </script>
     <style>
-        /* ── Reset ── */
+        /* ── Variables matching Register page ── */
+        :root {
+            --vintage-dark: #3e2723;
+            --vintage-brown: #5d4037;
+            --vintage-light: #d7ccc8;
+            --vintage-gold: #c9a96e;
+            --vintage-gold-dark: #b89446;
+            --vintage-cream: #f5f1e6;
+            --vintage-red: #8b4513;
+            --transition: all 0.4s ease;
+        }
+
+        /* ── Custom Cursor ── */
         *,
         *::before,
         *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: none !important;
         }
 
+        /* The custom cursor element */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-4px, -4px);
+            transition: transform 0.05s linear;
+        }
+
+        #custom-cursor svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Cursor dot (trailing) */
+        #cursor-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--vintage-gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+        }
+
+        /* ── Body & Background ── */
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #e8e8e8;
+            font-family: 'Lora', serif;
+            color: var(--vintage-dark);
+            background-color: var(--vintage-cream);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
 
-        /* ── Outer card ── */
+        /* ── Outer Card ── */
         .login-card {
             display: flex;
-            width: 820px;
-            min-height: 520px;
+            width: 860px;
+            min-height: 540px;
             background: #fff;
-            border-radius: 20px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.14);
+            box-shadow: 0 24px 60px rgba(62, 39, 35, 0.2), 0 0 0 1px rgba(201, 169, 110, 0.15);
+            position: relative;
         }
 
         /* ══════════════════════════════
            LEFT PANEL — Characters
         ══════════════════════════════ */
         .left-panel {
-            width: 42%;
-            background: #f0ede8;
+            width: 44%;
+            background: linear-gradient(160deg, var(--vintage-dark) 0%, #5a3520 55%, var(--vintage-brown) 100%);
             display: flex;
             align-items: flex-end;
             justify-content: center;
@@ -50,12 +108,150 @@
             overflow: hidden;
         }
 
+        /* Decorative gold circles like register page */
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 2px solid rgba(201, 169, 110, 0.12);
+            top: -70px;
+            right: -70px;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 2px solid rgba(201, 169, 110, 0.1);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Panel title text */
+        .panel-title {
+            position: absolute;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .panel-title .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(201, 169, 110, 0.15);
+            border: 1px solid rgba(201, 169, 110, 0.4);
+            color: var(--vintage-gold);
+            padding: 5px 14px;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
         /* Scene container */
         .scene {
             position: relative;
-            width: 280px;
-            height: 360px;
+            width: 300px;
+            height: 370px;
             flex-shrink: 0;
+            z-index: 2;
+        }
+
+        /* ────────────────────────────
+           CHARACTER BASE ANIMATIONS
+        ──────────────────────────── */
+        @keyframes bob-slow {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes bob-mid {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-7px);
+            }
+        }
+
+        @keyframes bob-fast {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        @keyframes sway-left {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(-4deg);
+            }
+        }
+
+        @keyframes sway-right {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(4deg);
+            }
+        }
+
+        @keyframes peek-up {
+
+            0%,
+            40%,
+            100% {
+                transform: translateY(0px) scaleY(1);
+            }
+
+            20% {
+                transform: translateY(-18px) scaleY(1.04);
+            }
+        }
+
+        @keyframes squish {
+
+            0%,
+            100% {
+                transform: scaleX(1) scaleY(1);
+            }
+
+            50% {
+                transform: scaleX(1.06) scaleY(0.94);
+            }
         }
 
         /* ── Character: Purple (tallest, leftmost) ── */
@@ -64,10 +260,12 @@
             left: 14px;
             bottom: 0;
             width: 88px;
-            height: 238px;
+            height: 242px;
             background: #7c3aed;
             border-radius: 44px 44px 6px 6px;
             z-index: 1;
+            transform-origin: bottom center;
+            animation: bob-slow 3.2s ease-in-out infinite, sway-left 4.8s ease-in-out infinite;
         }
 
         .char-purple .eyes-row {
@@ -79,16 +277,18 @@
             gap: 14px;
         }
 
-        /* ── Character: Black (behind centre) ── */
+        /* ── Character: Black (centre-back) ── */
         .char-black {
             position: absolute;
             left: 88px;
             bottom: 0;
             width: 74px;
-            height: 208px;
+            height: 210px;
             background: #1a1a2e;
             border-radius: 37px 37px 6px 6px;
             z-index: 2;
+            transform-origin: bottom center;
+            animation: peek-up 5s ease-in-out infinite;
         }
 
         .char-black .eyes-row {
@@ -105,43 +305,58 @@
             position: absolute;
             left: 24px;
             bottom: 0;
-            width: 118px;
-            height: 112px;
+            width: 120px;
+            height: 114px;
             background: #f97316;
             border-radius: 50%;
             z-index: 3;
+            transform-origin: bottom center;
+            animation: squish 2.6s ease-in-out infinite;
         }
 
-        /* Static dot eyes on orange */
-        .char-orange::before,
-        .char-orange::after {
-            content: '';
+        /* Dot eyes on orange */
+        .char-orange .orange-eye {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 11px;
+            height: 11px;
             background: #1a1a2e;
             border-radius: 50%;
             top: 36px;
         }
 
-        .char-orange::before {
+        .char-orange .orange-eye.left {
             left: 28px;
         }
 
-        .char-orange::after {
-            left: 58px;
+        .char-orange .orange-eye.right {
+            left: 60px;
         }
 
-        /* ── Character: Yellow (right, front) ── */
+        /* Small pupil inside orange eye */
+        .char-orange .orange-eye .pupil {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s linear;
+        }
+
+        /* ── Character: Yellow (right-front) ── */
         .char-yellow {
             position: absolute;
-            right: 24px;
+            right: 28px;
             bottom: 0;
             width: 74px;
-            height: 148px;
+            height: 152px;
             background: #d4a017;
             border-radius: 37px 37px 8px 8px;
             z-index: 4;
+            transform-origin: bottom center;
+            animation: bob-fast 2.4s ease-in-out infinite, sway-right 3.6s ease-in-out infinite;
         }
 
         .char-yellow .eyes-row {
@@ -164,7 +379,6 @@
             flex-shrink: 0;
         }
 
-        /* Smaller eyes for black character */
         .char-black .eye {
             width: 13px;
             height: 13px;
@@ -178,7 +392,7 @@
         .pupil {
             width: 9px;
             height: 9px;
-            background: #111;
+            background: #2a0a0a;
             border-radius: 50%;
             position: absolute;
             top: 50%;
@@ -197,16 +411,15 @@
             height: 7px;
         }
 
-        /* Snap class for animating look-away */
+        /* Snap class for look-away animation */
         .pupil.snap {
             transition: transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Shy mode: eyes "close" via eyelid overlay */
+        /* Eyelid overlay for shy mode */
         .eyelid {
             position: absolute;
             width: 100%;
-            background: inherit;
             left: 0;
             z-index: 2;
             transition: height 0.3s ease;
@@ -242,6 +455,19 @@
             height: 54%;
         }
 
+        /* Ground shadow strip */
+        .ground-shadow {
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 260px;
+            height: 16px;
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: 50%;
+            filter: blur(6px);
+        }
+
         /* ══════════════════════════════
            RIGHT PANEL — Form
         ══════════════════════════════ */
@@ -250,52 +476,78 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 48px 50px;
+            padding: 50px 50px;
+            background: var(--vintage-cream);
         }
 
         .form-inner {
             width: 100%;
-            max-width: 320px;
+            max-width: 330px;
         }
 
-        /* Star / logo icon */
+        /* Brand icon */
         .brand-star {
-            font-size: 1.6rem;
-            margin-bottom: 22px;
-            display: block;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--vintage-gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-star i {
+            color: var(--vintage-gold);
+        }
+
+        .brand-star::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--vintage-light);
         }
 
         .form-inner h1 {
-            font-size: 1.85rem;
+            font-family: 'Cinzel', serif;
+            font-size: 1.9rem;
             font-weight: 700;
-            color: #111;
+            color: var(--vintage-dark);
             margin-bottom: 6px;
         }
 
         .form-inner .subtitle {
-            font-size: 0.88rem;
-            color: #6b7280;
+            font-size: 0.9rem;
+            color: var(--vintage-brown);
+            font-style: italic;
             margin-bottom: 28px;
         }
 
-        /* Error / info alerts */
+        /* Error / warn alerts */
         .alert-msg {
             padding: 10px 14px;
-            border-radius: 8px;
+            border-radius: 2px;
             font-size: 0.85rem;
             margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .alert-msg.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 3px solid #ef4444;
+            background: #fff3e0;
+            color: var(--vintage-red);
+            border: 1px solid #ffcc80;
+            border-left: 4px solid var(--vintage-red);
         }
 
         .alert-msg.warn {
-            background: #fef3c7;
-            color: #92400e;
-            border-left: 3px solid #f59e0b;
+            background: #fff8e1;
+            color: #795548;
+            border: 1px solid #ffe082;
+            border-left: 4px solid var(--vintage-gold);
         }
 
         /* Field groups */
@@ -305,10 +557,13 @@
 
         .field-group label {
             display: block;
-            font-size: 0.82rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 6px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--vintage-brown);
+            margin-bottom: 7px;
         }
 
         .field-group input[type="email"],
@@ -316,21 +571,23 @@
         .field-group input[type="text"] {
             width: 100%;
             border: none;
-            border-bottom: 1.5px solid #d1d5db;
+            border-bottom: 1.5px solid var(--vintage-light);
             padding: 9px 0;
+            font-family: 'Lora', serif;
             font-size: 0.95rem;
-            color: #111;
+            color: var(--vintage-dark);
             outline: none;
             background: transparent;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.3s ease;
         }
 
         .field-group input:focus {
-            border-bottom-color: #111;
+            border-bottom-color: var(--vintage-gold);
         }
 
         .field-group input::placeholder {
-            color: #9ca3af;
+            color: #a89080;
+            font-style: italic;
         }
 
         /* Password wrapper */
@@ -349,14 +606,13 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: #9ca3af;
-            cursor: pointer;
+            color: var(--vintage-light);
             font-size: 0.95rem;
             transition: color 0.2s;
         }
 
         .pw-toggle:hover {
-            color: #374151;
+            color: var(--vintage-gold);
         }
 
         /* Options row */
@@ -372,44 +628,88 @@
             display: flex;
             align-items: center;
             gap: 7px;
-            color: #6b7280;
-            cursor: pointer;
+            color: var(--vintage-brown);
         }
 
         .remember-label input[type=checkbox] {
-            accent-color: #111;
+            appearance: none;
             width: 14px;
             height: 14px;
+            border: 1px solid var(--vintage-brown);
+            border-radius: 2px;
+            background: #faf8f2;
+            position: relative;
+            cursor: none;
+            transition: var(--transition);
+        }
+
+        .remember-label input[type=checkbox]:checked {
+            background: var(--vintage-gold);
+            border-color: var(--vintage-gold-dark);
+        }
+
+        .remember-label input[type=checkbox]:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 9px;
+            color: var(--vintage-dark);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .forgot-link {
-            color: #374151;
+            color: var(--vintage-gold-dark);
             text-decoration: none;
             font-weight: 500;
+            font-size: 0.82rem;
+            transition: color 0.2s;
         }
 
         .forgot-link:hover {
-            text-decoration: underline;
+            color: var(--vintage-dark);
         }
 
         /* Log In button */
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: #111;
+            background: var(--vintage-brown);
             border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease, transform 0.15s ease;
+            border-radius: 2px;
+            color: var(--vintage-cream);
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: background 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
             margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: var(--transition);
         }
 
         .btn-login:hover {
-            background: #333;
-            transform: translateY(-1px);
+            background: var(--vintage-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(62, 39, 35, 0.3);
+        }
+
+        .btn-login:hover::before {
+            left: 100%;
         }
 
         .btn-login:active {
@@ -421,22 +721,23 @@
             width: 100%;
             padding: 13px;
             background: white;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 10px;
-            color: #374151;
-            font-size: 0.92rem;
+            border: 1.5px solid var(--vintage-light);
+            border-radius: 2px;
+            color: var(--vintage-brown);
+            font-family: 'Lora', serif;
+            font-size: 0.9rem;
             font-weight: 500;
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: background 0.2s ease, border-color 0.2s ease;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn-google:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
+            background: #faf8f2;
+            border-color: var(--vintage-gold);
+            box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2);
         }
 
         .btn-google svg {
@@ -447,23 +748,34 @@
         /* Register footer */
         .register-footer {
             text-align: center;
-            font-size: 0.82rem;
-            color: #6b7280;
+            font-size: 0.85rem;
+            color: var(--vintage-brown);
             margin-top: 20px;
+            font-style: italic;
         }
 
         .register-footer a {
-            color: #111;
-            font-weight: 700;
+            color: var(--vintage-gold-dark);
+            font-weight: 600;
+            font-style: normal;
             text-decoration: none;
+            transition: color 0.2s;
         }
 
         .register-footer a:hover {
-            text-decoration: underline;
+            color: var(--vintage-dark);
+        }
+
+        /* ── Gold divider ── */
+        .gold-divider {
+            width: 40px;
+            height: 2px;
+            background: var(--vintage-gold);
+            margin: 0 0 20px 0;
         }
 
         /* ── Responsive ── */
-        @media (max-width: 680px) {
+        @media (max-width: 720px) {
             .login-card {
                 flex-direction: column;
                 width: 96vw;
@@ -471,7 +783,7 @@
 
             .left-panel {
                 width: 100%;
-                height: 200px;
+                height: 220px;
                 align-items: center;
             }
 
@@ -480,19 +792,41 @@
             }
 
             .scene {
-                transform: scale(0.6);
+                transform: scale(0.65);
                 transform-origin: bottom center;
             }
+        }
+
+        /* hover pulse on chars */
+        .char-purple:hover,
+        .char-black:hover,
+        .char-orange:hover,
+        .char-yellow:hover {
+            filter: brightness(1.15);
         }
     </style>
 </head>
 
 <body>
 
+    <!-- Custom Cursor -->
+    <div id="custom-cursor">
+        <!-- Vintage arrow cursor SVG -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+            <path d="M5 3L19 12L12 13.5L9 20L5 3Z" fill="#3e2723" stroke="#c9a96e" stroke-width="1.5"
+                stroke-linejoin="round" />
+        </svg>
+    </div>
+    <div id="cursor-dot"></div>
+
     <div class="login-card">
 
         <!-- ═══════════ LEFT PANEL: Characters ═══════════ -->
         <div class="left-panel">
+            <div class="panel-title">
+                <div class="badge"><i class="fas fa-star" style="font-size:0.7rem"></i> ClassicAuto</div>
+            </div>
+
             <div class="scene" id="scene">
 
                 <!-- Purple character -->
@@ -527,8 +861,15 @@
                     </div>
                 </div>
 
-                <!-- Orange blob (static dots as eyes via CSS ::before/::after) -->
-                <div class="char-orange"></div>
+                <!-- Orange blob (has real pupil divs) -->
+                <div class="char-orange">
+                    <div class="orange-eye left">
+                        <div class="pupil" id="po-l"></div>
+                    </div>
+                    <div class="orange-eye right">
+                        <div class="pupil" id="po-r"></div>
+                    </div>
+                </div>
 
                 <!-- Yellow character -->
                 <div class="char-yellow">
@@ -546,6 +887,9 @@
                     </div>
                 </div>
 
+                <!-- Ground shadow -->
+                <div class="ground-shadow"></div>
+
             </div><!-- /scene -->
         </div><!-- /left-panel -->
 
@@ -553,10 +897,13 @@
         <div class="right-panel">
             <div class="form-inner">
 
-                <span class="brand-star">&#10022;</span>
+                <div class="brand-star">
+                    <i class="fas fa-car-side"></i> ClassicAuto
+                </div>
 
                 <h1>Welcome back!</h1>
                 <p class="subtitle">Please enter your details</p>
+                <div class="gold-divider"></div>
 
                 {% if msg == 'Invalid' %}
                 <div class="alert-msg error">
@@ -599,26 +946,13 @@
                             <input type="checkbox" id="remember">
                             Remember me for 30 days
                         </label>
-                        <a href="#" class="forgot-link">Forgot password?</a>
+                        <a href="/forgot-password/" class="forgot-link">Forgot password?</a>
                     </div>
 
                     <!-- Submit -->
                     <button type="submit" class="btn-login">Log In</button>
 
-                    <!-- Google (UI only) -->
-                    <button type="button" class="btn-google">
-                        <svg viewBox="0 0 24 24">
-                            <path fill="#4285F4"
-                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path fill="#34A853"
-                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path fill="#FBBC05"
-                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                            <path fill="#EA4335"
-                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                        </svg>
-                        Log in with Google
-                    </button>
+
 
                 </form>
 
@@ -634,36 +968,63 @@
     <script>
         'use strict';
 
-        /* ── References ──────────────────────────────── */
+        /* ─────────────────────────────────────────
+           CUSTOM CURSOR
+        ───────────────────────────────────────── */
+        const cursor = document.getElementById('custom-cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+
+        let mouseX = 0, mouseY = 0;
+        let dotX = 0, dotY = 0;
+
+        document.addEventListener('mousemove', function (e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+
+        // Smooth trailing dot
+        function animateDot() {
+            dotX += (mouseX - dotX) * 0.18;
+            dotY += (mouseY - dotY) * 0.18;
+            cursorDot.style.left = dotX + 'px';
+            cursorDot.style.top = dotY + 'px';
+            requestAnimationFrame(animateDot);
+        }
+        animateDot();
+
+        // Cursor scale on hoverable elements
+        document.querySelectorAll('a, button, input, label, .char-purple, .char-black, .char-orange, .char-yellow')
+            .forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursorDot.style.width = '16px';
+                    cursorDot.style.height = '16px';
+                    cursorDot.style.background = 'rgba(201,169,110,0.5)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursorDot.style.width = '6px';
+                    cursorDot.style.height = '6px';
+                    cursorDot.style.background = 'var(--vintage-gold)';
+                });
+            });
+
+        /* ─────────────────────────────────────────
+           EYE TRACKING
+        ───────────────────────────────────────── */
         const scene = document.getElementById('scene');
         const passwordEl = document.getElementById('password');
         const pwToggleBtn = document.getElementById('pwToggle');
         const pwIcon = document.getElementById('pwIcon');
 
-        // All trackable pupils (id → element)
-        const pupils = {
-            'pp-l': document.getElementById('pp-l'),
-            'pp-r': document.getElementById('pp-r'),
-            'pb-l': document.getElementById('pb-l'),
-            'pb-r': document.getElementById('pb-r'),
-            'py-l': document.getElementById('py-l'),
-            'py-r': document.getElementById('py-r'),
-        };
-
-        // Max offset (px) a pupil can drift
         const MAX_OFFSET = 5;
         let isShyMode = false;
 
-        /* ── Helpers ─────────────────────────────────── */
         function eyeCenter(eyeEl) {
             const r = eyeEl.getBoundingClientRect();
             return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
         }
 
-        /**
-         * Move a pupil toward (tx, ty) in screen space,
-         * clamped to MAX_OFFSET px from eye centre.
-         */
         function aimPupil(pupilEl, eyeEl, tx, ty) {
             const { x: ex, y: ey } = eyeCenter(eyeEl);
             const dx = tx - ex;
@@ -675,70 +1036,82 @@
             pupilEl.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px))`;
         }
 
-        /** Aim all trackable characters' pupils at a screen point. */
         function aimAll(tx, ty) {
-            document.querySelectorAll('.scene .eye').forEach(eyeEl => {
+            document.querySelectorAll('.scene .eye, .scene .orange-eye').forEach(eyeEl => {
                 const pupil = eyeEl.querySelector('.pupil');
                 if (pupil) aimPupil(pupil, eyeEl, tx, ty);
             });
         }
 
-        /** Snap pupils to a fixed offset (animated). */
         function snapAll(offsetX, offsetY) {
-            Object.values(pupils).forEach(p => {
-                if (!p) return;
+            document.querySelectorAll('.scene .pupil').forEach(p => {
                 p.classList.add('snap');
                 p.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
                 setTimeout(() => p.classList.remove('snap'), 450);
             });
         }
 
-        /** Reset pupils to centre. */
         function centreAll() {
-            Object.values(pupils).forEach(p => {
-                if (!p) return;
+            document.querySelectorAll('.scene .pupil').forEach(p => {
                 p.classList.add('snap');
                 p.style.transform = 'translate(-50%, -50%)';
                 setTimeout(() => p.classList.remove('snap'), 450);
             });
         }
 
-        /* ── Mouse tracking ──────────────────────────── */
+        /* Mouse tracking */
         document.addEventListener('mousemove', function (e) {
             if (isShyMode) return;
             aimAll(e.clientX, e.clientY);
         });
 
-        /* ── Email field: look at the input ─────────── */
+        /* Email field → look at it */
         document.getElementById('email').addEventListener('focus', function () {
             if (isShyMode) return;
             const r = this.getBoundingClientRect();
-            const cx = r.left + r.width / 2;
-            const cy = r.top + r.height / 2;
-            // Snap once toward email input, then resume free tracking on mousemove
-            aimAll(cx, cy);
+            aimAll(r.left + r.width / 2, r.top + r.height / 2);
         });
 
-        /* ── Password field: shy mode ───────────────── */
+        /* Password field → shy mode */
         passwordEl.addEventListener('focus', function () {
             isShyMode = true;
-            scene.classList.add('shy');         // closes eyelids via CSS
-            snapAll(MAX_OFFSET, -MAX_OFFSET);   // pupils dart up-right (looking away)
+            scene.classList.add('shy');
+            snapAll(MAX_OFFSET, -MAX_OFFSET);
         });
 
         passwordEl.addEventListener('blur', function () {
             isShyMode = false;
             scene.classList.remove('shy');
             centreAll();
-            // Next mousemove will resume natural tracking
         });
 
-        /* ── Password visibility toggle ─────────────── */
+        /* Password toggle */
         pwToggleBtn.addEventListener('click', function () {
             const isHidden = passwordEl.type === 'password';
             passwordEl.type = isHidden ? 'text' : 'password';
             pwIcon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
         });
+
+        /* ─────────────────────────────────────────
+           CHARACTER CLICK REACTIONS
+        ───────────────────────────────────────── */
+        function addClickReaction(selector, anim, duration) {
+            const el = document.querySelector(selector);
+            if (!el) return;
+            el.addEventListener('click', () => {
+                el.style.animation = 'none';
+                el.style.transform = 'scale(1.12) rotate(-6deg)';
+                setTimeout(() => {
+                    el.style.transform = '';
+                    el.style.animation = '';
+                }, duration || 300);
+            });
+        }
+
+        addClickReaction('.char-purple', null, 350);
+        addClickReaction('.char-black', null, 300);
+        addClickReaction('.char-orange', null, 280);
+        addClickReaction('.char-yellow', null, 320);
     </script>
 
 </body>

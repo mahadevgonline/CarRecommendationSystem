@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-#($vm97g=cnc8yoo4@**17lakos66q1992i@=@6rlo&c@g-%22
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -123,3 +123,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Email Configuration (Console Backend for testing without SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Google Gemini API Key for AI Car Recommendations
+# Get your free key from: https://aistudio.google.com/apikey
+GEMINI_API_KEY = 'AIzaSyDUPQ0FT8XJHVUFJVijfBcIk_7trV8jcKE'  # <-- Paste your Gemini API key here

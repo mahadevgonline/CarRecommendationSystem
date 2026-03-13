@@ -3,6 +3,12 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClassicAuto - Vintage Car Recommendations</title>
@@ -650,7 +656,7 @@
                 <nav>
                     <ul>
                         <li><a href="/user/">Home</a></li>
-                        <li><a href="/recommendations/">Discover</a></li>
+                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -663,7 +669,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>

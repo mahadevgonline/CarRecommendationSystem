@@ -1,8 +1,14 @@
-{% load currency_filters %}
+﻿{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart - ClassicAuto Parts</title>
@@ -827,7 +833,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/marketplace/">Marketplace</a></li>
@@ -898,7 +904,7 @@
                             </div>
 
                             <div class="unit-price">
-                                $<span id="unitPrice-{{ item.part.id }}">{{ item.part.price }}</span>
+                                ₹<span id="unitPrice-{{ item.part.id }}">{{ item.part.price }}</span>
                             </div>
 
                             <div class="quantity-controls">
@@ -908,7 +914,7 @@
                             </div>
 
                             <div class="item-total">
-                                $<span id="itemTotal-{{ item.id }}">{{ item.total_price|floatformat:2 }}</span>
+                                ₹<span id="itemTotal-{{ item.id }}">{{ item.total_price|floatformat:2 }}</span>
                             </div>
                             <div>
                                 <button class="btn" type="submit">
@@ -962,7 +968,7 @@
                         </div>
                         <div class="summary-row">
                             <span class="summary-label">Tax</span>
-                            <span class="summary-value" id="tax">$0</span>
+                            <span class="summary-value" id="tax">₹0</span>
                         </div>
 
                         <div class="summary-row summary-total">
@@ -1008,7 +1014,7 @@
             <!-- Promo Banner -->
             {% if cart_items %}
             <div class="promo-banner">
-                <h3>Free Shipping on Orders Over $100</h3>
+                <h3>Free Shipping on Orders Over ₹100</h3>
                 <p>Add <span id="remainingAmount">{{ remaining|inr }}</span> more to your cart to qualify for free
                     shipping</p>
                 <a href="/marketplace/" class="btn btn-gold">Shop More Parts</a>
@@ -1045,7 +1051,7 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/marketplace/">Browse Parts</a></li>
                         <li><a href="/sell-part/">Sell Parts</a></li>
                         <li><a href="/collections/">My Collection</a></li>

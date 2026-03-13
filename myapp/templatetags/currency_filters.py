@@ -48,3 +48,12 @@ def to_inr_raw(value):
         return int(round(float(value) * USD_TO_INR))
     except (TypeError, ValueError):
         return value
+
+
+@register.filter(name='dict_get')
+def dict_get(dictionary, key):
+    """Look up a key in a dictionary. Usage: {{ mydict|dict_get:key }}"""
+    if isinstance(dictionary, dict):
+        return dictionary.get(key, 0)
+    return 0
+

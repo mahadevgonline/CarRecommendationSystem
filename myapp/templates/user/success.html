@@ -1,6 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Success - ClassicAuto Parts</title>
@@ -629,7 +635,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/marketplace/">Marketplace</a></li>
@@ -728,7 +734,7 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/marketplace/">Browse Parts</a></li>
                         <li><a href="/sell-part/">Sell Parts</a></li>
                         <li><a href="/collections/">My Collection</a></li>

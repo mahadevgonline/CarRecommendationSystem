@@ -1,8 +1,14 @@
-{% load currency_filters %}
+﻿{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders - ClassicAuto Parts</title>
@@ -967,7 +973,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -980,7 +986,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -1072,7 +1078,7 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/marketplace/">Browse Parts</a></li>
                         <li><a href="/sell-part/">Sell Parts</a></li>
                         <li><a href="/collections/">My Collection</a></li>
@@ -1111,8 +1117,8 @@
             {% for i in ord %}
         {
             id: "CP-2025-{{i.id}}",
-                date: "{{i.date}}",
-                    status: "{{i.status}}",
+                date: "{{i.date|escapejs}}",
+                    status: "{{i.status|escapejs}}",
                         statusText: {
                 'Processing': '⏳ Pending',
                     'Accepted': '✅ Order Confirmed',
@@ -1121,17 +1127,17 @@
                                 'Out for Delivery': '🛵 Out for Delivery',
                                     'Delivered': '🎉 Delivered',
                                         'Rejected': '❌ Rejected',
-                } ["{{i.status}}"] || "{{i.status}}",
+                } ["{{i.status|escapejs}}"] || "{{i.status|escapejs}}",
                 items: [
                     {% for j in i.orderitems_set.all %}
-        { name: "{{j.item.name}}", specs: "{{j.item.vehicle.year}} {{j.item.vehicle}} • New", quantity: { { j.quantity } }, price: { { j.item.price | inr_raw } }, image: "{{j.item.image.url}}" },
+        { name: "{{j.item.name|escapejs}}", specs: "{{j.item.vehicle.year}} {{j.item.vehicle|escapejs}} • New", quantity: {{j.quantity}}, price: {{j.item.price | inr_raw}}, image: "{{j.item.image.url|escapejs}}" },
         {% endfor %}
                 ],
-        subtotal: [{% for k in i.orderitems_set.all %} { { k.total_price | inr_raw } }, {% endfor %} 0].reduce((a, b) => a + b, 0),
+        subtotal: [{% for k in i.orderitems_set.all %} {{k.total_price | inr_raw}}, {% endfor %} 0].reduce((a, b) => a + b, 0),
             shipping: 0,
                 tax: 0,
-                    total: [{% for k in i.orderitems_set.all %} { { k.total_price | inr_raw } }, {% endfor %} 0].reduce((a, b) => a + b, 0),
-                        shippingAddress: "{{i.fname}} {{i.lname}}, {{i.address}}, {{i.city}}, {{i.state}} {{i.zip}}",
+                    total: [{% for k in i.orderitems_set.all %} {{k.total_price | inr_raw}}, {% endfor %} 0].reduce((a, b) => a + b, 0),
+                        shippingAddress: "{{i.fname|escapejs}} {{i.lname|escapejs}}, {{i.address|escapejs}}, {{i.city|escapejs}}, {{i.state|escapejs}} {{i.zip|escapejs}}",
                             tracking: "UPS: 1Z999AA1234567890",
                                 paymentMethod: "Visa ending in 4242"
             },

@@ -6,8 +6,11 @@ class Register(models.Model):
     phone=models.IntegerField()
     password=models.CharField(max_length=100)
     rights=models.CharField(max_length=100,default='User')
+    otp=models.CharField(max_length=6, null=True, blank=True)
+    otp_expiry=models.DateTimeField(null=True, blank=True)
     def __str__(self):
         return self.name
+
 
 class Seller(models.Model):
     name=models.CharField(max_length=100)
@@ -101,3 +104,41 @@ class Notification(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Notification for {self.seller.name} - Order #{self.order.id}"
+
+
+class PartNotifyRequest(models.Model):
+    """Stores a request to be notified when an out-of-stock part is restocked."""
+    part = models.ForeignKey(VehiclePart, on_delete=models.CASCADE, related_name='notify_requests')
+    email = models.EmailField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # Prevent duplicate requests for the same part+email
+        unique_together = ('part', 'email')
+        indexes = [
+            models.Index(fields=['part', 'email']),
+        ]
+
+    def __str__(self):
+        return f"Notify {self.email} when {self.part.name} is back in stock"
+
+
+class PartReview(models.Model):
+    """User review/comment on a vehicle part, including optional image upload."""
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
+
+    part = models.ForeignKey(VehiclePart, on_delete=models.CASCADE, related_name='reviews')
+    user_name = models.CharField(max_length=100)
+    user_email = models.EmailField()
+    rating = models.IntegerField(choices=RATING_CHOICES)
+    comment = models.TextField()
+    image = models.ImageField(upload_to='review_images/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        # One review per email per part
+        unique_together = ('part', 'user_email')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user_name} — {self.part.name} ({self.rating}★)"

@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - AutoSelect</title>
@@ -91,7 +98,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -449,7 +457,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #f0f0f0;
@@ -541,7 +550,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -584,6 +594,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -609,7 +620,7 @@
                     <i class="fas fa-chart-line"></i>
                     <span>View Orders</span>
                 </a>
-                <a href="/" class="menu-item">
+                <a href="/logout/" class="menu-item">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -681,7 +692,7 @@
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>$24,580</h3>
+                            <h3>₹24,580</h3>
                             <p>Total Revenue</p>
                         </div>
                     </div>
@@ -803,7 +814,7 @@
                                     </div>
                                 </td>
                                 <td>Sedan</td>
-                                <td>$26,420</td>
+                                <td>₹26,420</td>
                                 <td>342</td>
                                 <td><span class="status active">Active</span></td>
                                 <td>
@@ -825,7 +836,7 @@
                                     </div>
                                 </td>
                                 <td>SUV</td>
-                                <td>$29,500</td>
+                                <td>₹29,500</td>
                                 <td>298</td>
                                 <td><span class="status active">Active</span></td>
                                 <td>
@@ -847,7 +858,7 @@
                                     </div>
                                 </td>
                                 <td>SUV</td>
-                                <td>$36,760</td>
+                                <td>₹36,760</td>
                                 <td>267</td>
                                 <td><span class="status active">Active</span></td>
                                 <td>
@@ -869,7 +880,7 @@
                                     </div>
                                 </td>
                                 <td>Luxury Sedan</td>
-                                <td>$43,800</td>
+                                <td>₹43,800</td>
                                 <td>198</td>
                                 <td><span class="status pending">Pending</span></td>
                                 <td>
@@ -891,7 +902,7 @@
                                     </div>
                                 </td>
                                 <td>Electric</td>
-                                <td>$42,990</td>
+                                <td>₹42,990</td>
                                 <td>312</td>
                                 <td><span class="status active">Active</span></td>
                                 <td>
@@ -909,7 +920,7 @@
 
     <script>
         // Initialize Charts
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // User Activity Chart
             const userActivityCtx = document.getElementById('userActivityChart').getContext('2d');
             const userActivityChart = new Chart(userActivityCtx, {
@@ -993,11 +1004,12 @@
 
         // Add interactivity to menu items
         document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function () {
                 document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
                 this.classList.add('active');
             });
         });
     </script>
 </body>
+
 </html>

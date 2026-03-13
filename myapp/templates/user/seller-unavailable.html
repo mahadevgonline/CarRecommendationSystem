@@ -1,0 +1,269 @@
+{% load currency_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Unavailable — ClassicAuto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --vintage-dark: #3e2723;
+            --vintage-brown: #5d4037;
+            --vintage-light: #d7ccc8;
+            --vintage-gold: #c9a96e;
+            --vintage-cream: #f5f1e6;
+            --vintage-red: #8b4513;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background: var(--vintage-cream);
+            color: var(--vintage-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%235d4037' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .card {
+            background: white;
+            border-radius: 4px;
+            padding: 60px 50px;
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+            border: 1px solid var(--vintage-light);
+            border-top: 5px solid var(--vintage-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--vintage-dark), var(--vintage-gold), var(--vintage-dark));
+        }
+
+        .icon-stack {
+            font-size: 5rem;
+            margin-bottom: 24px;
+            display: block;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            color: var(--vintage-dark);
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--vintage-gold);
+            font-family: 'Cinzel', serif;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--vintage-gold), transparent);
+            margin: 0 auto 30px;
+        }
+
+        .funny-text {
+            color: var(--vintage-brown);
+            line-height: 1.9;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .funny-text strong {
+            color: var(--vintage-dark);
+        }
+
+        .status-box {
+            background: var(--vintage-cream);
+            border: 1px solid var(--vintage-light);
+            border-left: 4px solid var(--vintage-gold);
+            border-radius: 2px;
+            padding: 20px 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .status-box .status-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--vintage-light);
+            color: var(--vintage-dark);
+            font-size: 0.95rem;
+        }
+
+        .status-box .status-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-box i {
+            color: var(--vintage-gold);
+            width: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            border: none;
+            text-transform: uppercase;
+        }
+
+        .btn-gold {
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .btn-gold:hover {
+            background: #b89446;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 169, 110, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--vintage-dark);
+            color: var(--vintage-dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .footer-note {
+            margin-top: 35px;
+            font-size: 0.85rem;
+            color: var(--vintage-brown);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <span class="icon-stack">🏎️💨</span>
+
+        <h1>Where Did the Seller Go?</h1>
+        <p class="subtitle">Status: Mysteriously Unavailable</p>
+        <div class="divider"></div>
+
+        <p class="funny-text">
+            Our seller appears to have <strong>taken their vintage roadster for a spin</strong>
+            and hasn't returned yet. Rumour has it they spotted a rare 1967 Mustang on the highway
+            and simply had to follow it.<br><br>
+            Fear not, fellow classic car enthusiast — <strong>they shall return!</strong>
+            (Probably after the next pit stop.)
+        </p>
+
+        <div class="status-box">
+            <div class="status-row">
+                <i class="fas fa-car-side"></i>
+                <span><strong>Current Location:</strong> Unknown — possibly Route 66</span>
+            </div>
+            <div class="status-row">
+                <i class="fas fa-clock"></i>
+                <span><strong>Expected Return:</strong> When the fuel runs out</span>
+            </div>
+            <div class="status-row">
+                <i class="fas fa-wifi"></i>
+                <span><strong>Signal Strength:</strong> Zero bars in the middle of nowhere</span>
+            </div>
+            <div class="status-row">
+                <i class="fas fa-envelope"></i>
+                <span><strong>Inbox Status:</strong> Full of unanswered emails, as usual</span>
+            </div>
+            <div class="status-row">
+                <i class="fas fa-phone"></i>
+                <span><strong>Phone:</strong> On silent (they hate being interrupted mid-drive)</span>
+            </div>
+        </div>
+
+        <p class="funny-text">
+            In the meantime, why not browse other parts or check back later?
+            We've forwarded your request to the seller via <em>"message in a bottle technology"</em>. 📬
+        </p>
+
+        <div class="btn-group">
+            {% if part_id %}
+            <a href="/part-detail/{{ part_id }}/" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Part
+            </a>
+            {% endif %}
+            <a href="/vehicle-parts/" class="btn btn-gold">
+                <i class="fas fa-cogs"></i> Browse All Parts
+            </a>
+        </div>
+
+        <p class="footer-note">
+            <i class="fas fa-info-circle"></i>
+            If this is urgent, contact ClassicAuto Support at <strong>parts@classicauto.com</strong>
+        </p>
+    </div>
+</body>
+
+</html>

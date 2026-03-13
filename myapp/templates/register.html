@@ -760,7 +760,7 @@
             </div>
             {% endif %}
 
-            <form id="registrationForm" method="post">
+            <form id="registrationForm" method="post" autocomplete="off">
                 {% csrf_token %}
 
                 <div class="form-row">
@@ -768,7 +768,7 @@
                         <label for="fullName">Full Name</label>
                         <div class="input-wrap">
                             <input type="text" id="fullName" name="name" class="form-control"
-                                placeholder="Your full name" required>
+                                placeholder="Your full name" autocomplete="off" required>
                             <i class="fas fa-user input-icon"></i>
                         </div>
                     </div>
@@ -776,7 +776,7 @@
                         <label for="phone">Phone Number</label>
                         <div class="input-wrap">
                             <input type="number" id="phone" name="phone" class="form-control"
-                                placeholder="Your phone number" required>
+                                placeholder="Your phone number" autocomplete="off" required>
                             <i class="fas fa-phone input-icon"></i>
                         </div>
                     </div>
@@ -786,7 +786,7 @@
                     <label for="email">Email Address</label>
                     <div class="input-wrap">
                         <input type="email" id="email" name="email" class="form-control" placeholder="your@email.com"
-                            required>
+                            autocomplete="new-email" required>
                         <i class="fas fa-envelope input-icon"></i>
                     </div>
                 </div>
@@ -794,8 +794,8 @@
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="input-wrap">
-                        <input type="password" id="password" class="form-control" placeholder="Create a strong password"
-                            required>
+                        <input type="password" id="password" name="password" class="form-control"
+                            placeholder="Create a strong password" autocomplete="new-password" required>
                         <i class="fas fa-lock input-icon"></i>
                         <span class="password-toggle" id="togglePassword">
                             <i class="fas fa-eye"></i>
@@ -813,8 +813,8 @@
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password</label>
                     <div class="input-wrap">
-                        <input type="password" id="confirmPassword" name="password" class="form-control"
-                            placeholder="Repeat your password" required>
+                        <input type="password" id="confirmPassword" name="confirm_password" class="form-control"
+                            placeholder="Repeat your password" autocomplete="new-password" required>
                         <i class="fas fa-lock input-icon"></i>
                     </div>
                 </div>
@@ -987,6 +987,18 @@
             });
             label.textContent = this.value ? `Strength: ${levels[score].text}` : '';
         });
+
+        // ── Force-clear all fields on load (defeats browser autofill) ──
+        function clearRegistrationForm() {
+            ['fullName', 'phone', 'email', 'password', 'confirmPassword'].forEach(function (id) {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+        document.addEventListener('DOMContentLoaded', clearRegistrationForm);
+        window.addEventListener('load', clearRegistrationForm);
+        // Delayed clear catches late-injected autofill (Chrome quirk)
+        setTimeout(clearRegistrationForm, 100);
 
         // Form validation
         document.getElementById('registrationForm').addEventListener('submit', function (e) {

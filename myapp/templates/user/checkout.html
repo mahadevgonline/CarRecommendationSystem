@@ -1,8 +1,14 @@
-{% load currency_filters %}
+﻿{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - ClassicAuto Parts</title>
@@ -1063,7 +1069,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/marketplace/">Marketplace</a></li>
@@ -1455,7 +1461,7 @@
                         </div>
                         <div class="summary-row">
                             <span>Tax</span>
-                            <span id="summaryTax">$0</span>
+                            <span id="summaryTax">₹0</span>
                         </div>
                         <div class="summary-row total">
                             <span>Total</span>
@@ -1500,7 +1506,7 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/marketplace/">Browse Parts</a></li>
                         <li><a href="/sell-part/">Sell Parts</a></li>
                         <li><a href="/collections/">My Collection</a></li>
@@ -1658,11 +1664,11 @@
             } else if (method === 'expedited') {
                 shippingCost = 14.99;
                 document.getElementById('shippingCost').value = '14.99';
-                document.getElementById('summaryShipping').textContent = '$14.99';
+                document.getElementById('summaryShipping').textContent = '₹14.99';
             } else if (method === 'overnight') {
                 shippingCost = 29.99;
                 document.getElementById('shippingCost').value = '29.99';
-                document.getElementById('summaryShipping').textContent = '$29.99';
+                document.getElementById('summaryShipping').textContent = '₹29.99';
             }
 
             // Recalculate total

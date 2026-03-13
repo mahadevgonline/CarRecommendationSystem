@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - AutoSelect</title>
@@ -690,7 +696,7 @@
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                         <div class="stat-info">
-                            <h3>${{ total_revenue|floatformat:0 }}</h3>
+                            <h3>₹{{ total_revenue|floatformat:0 }}</h3>
                             <p>Total Revenue</p>
                         </div>
                     </div>
@@ -811,7 +817,7 @@
                                     </div>
                                 </td>
                                 <td>{{ car.category }}</td>
-                                <td>${{ car.price|floatformat:0 }}</td>
+                                <td>₹{{ car.price|floatformat:0 }}</td>
                                 <td>{{ car.fuel_type }}</td>
                                 <td><span class="status active">{{ car.fav_count }} &#9829;</span></td>
                                 <td>

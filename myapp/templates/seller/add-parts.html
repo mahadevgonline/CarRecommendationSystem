@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Vehicle Part - AutoSelect Admin</title>
@@ -91,7 +98,8 @@
             border-left: 3px solid transparent;
         }
 
-        .menu-item:hover, .menu-item.active {
+        .menu-item:hover,
+        .menu-item.active {
             background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: var(--secondary);
@@ -497,7 +505,8 @@
                 width: 70px;
             }
 
-            .sidebar-header h2, .menu-item span {
+            .sidebar-header h2,
+            .menu-item span {
                 display: none;
             }
 
@@ -558,6 +567,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -583,7 +593,7 @@
                     <i class="fas fa-chart-line"></i>
                     <span>View Orders</span>
                 </a>
-                <a href="/" class="menu-item">
+                <a href="/logout/" class="menu-item">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                 </a>
@@ -641,7 +651,8 @@
                                 <label for="partName" class="required">Part Name</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-cog"></i>
-                                    <input type="text" id="partName" name="name" class="form-control" placeholder="e.g., Brake Pads, Alternator, Spark Plugs" required>
+                                    <input type="text" id="partName" name="name" class="form-control"
+                                        placeholder="e.g., Brake Pads, Alternator, Spark Plugs" required>
                                 </div>
                             </div>
 
@@ -649,7 +660,8 @@
                                 <label for="partNumber" class="required">Part Number</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-barcode"></i>
-                                    <input type="text" id="partNumber" name="number" class="form-control" placeholder="e.g., BP-1234-ABCD" required>
+                                    <input type="text" id="partNumber" name="number" class="form-control"
+                                        placeholder="e.g., BP-1234-ABCD" required>
                                 </div>
                             </div>
                         </div>
@@ -659,7 +671,8 @@
                                 <label for="brand" class="required">Brand/Manufacturer</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-industry"></i>
-                                    <input type="text" id="brand" name="brand" class="form-control" placeholder="e.g., Bosch, ACDelco, Denso" required>
+                                    <input type="text" id="brand" name="brand" class="form-control"
+                                        placeholder="e.g., Bosch, ACDelco, Denso" required>
                                 </div>
                             </div>
 
@@ -688,10 +701,11 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="price" class="required">Price ($)</label>
+                                <label for="price" class="required">Price (₹)</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-dollar-sign"></i>
-                                    <input type="number" id="price" name="price" class="form-control" placeholder="e.g., 89.99" min="0" step="0.01" required>
+                                    <input type="number" id="price" name="price" class="form-control"
+                                        placeholder="e.g., 89.99" min="0" step="0.01" required>
                                 </div>
                             </div>
 
@@ -699,7 +713,8 @@
                                 <label for="quantity" class="required">Quantity in Stock</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-boxes"></i>
-                                    <input type="number" id="quantity" name="stock" class="form-control" placeholder="e.g., 50" min="0" required>
+                                    <input type="number" id="quantity" name="stock" class="form-control"
+                                        placeholder="e.g., 50" min="0" required>
                                 </div>
                             </div>
                         </div>
@@ -735,7 +750,7 @@
                                 <select id="vehicle" name="vehicle" class="form-control" required>
                                     <option selected disabled>Select Vehicle</option>
                                     {% for car in car %}
-                                        <option value="{{ car.id }}">{{ car.year }} {{ car.make }} {{ car.model }}</option>
+                                    <option value="{{ car.id }}">{{ car.year }} {{ car.make }} {{ car.model }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -744,7 +759,9 @@
 
                         <div class="form-group">
                             <label for="description" class="required">Description</label>
-                            <textarea id="description" class="form-control" name="description" placeholder="Enter detailed description of the part including specifications, features, and usage..." required></textarea>
+                            <textarea id="description" class="form-control" name="description"
+                                placeholder="Enter detailed description of the part including specifications, features, and usage..."
+                                required></textarea>
                         </div>
                     </div>
 
@@ -782,7 +799,7 @@
     <script>
         // Condition selector functionality
         document.querySelectorAll('.condition-option').forEach(option => {
-            option.addEventListener('click', function() {
+            option.addEventListener('click', function () {
                 document.querySelectorAll('.condition-option').forEach(opt => {
                     opt.classList.remove('selected');
                 });
@@ -795,7 +812,7 @@
         const imageInput = document.getElementById('imageInput');
         const imagePreview = document.getElementById('imagePreview');
 
-        imageInput.addEventListener('change', function() {
+        imageInput.addEventListener('change', function () {
             imagePreview.innerHTML = '';
             const files = this.files;
 
@@ -803,7 +820,7 @@
                 const file = files[i];
                 const reader = new FileReader();
 
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const previewItem = document.createElement('div');
                     previewItem.className = 'preview-item';
 
@@ -814,7 +831,7 @@
                     const removeBtn = document.createElement('div');
                     removeBtn.className = 'preview-remove';
                     removeBtn.innerHTML = '<i class="fas fa-times"></i>';
-                    removeBtn.addEventListener('click', function() {
+                    removeBtn.addEventListener('click', function () {
                         previewItem.remove();
                     });
 
@@ -828,14 +845,14 @@
         });
 
         // Cancel button
-        document.getElementById('cancelBtn').addEventListener('click', function() {
+        document.getElementById('cancelBtn').addEventListener('click', function () {
             if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
                 window.location.href = '/parts/';
             }
         });
 
         // Form validation
-        document.getElementById('partForm').addEventListener('submit', function(e) {
+        document.getElementById('partForm').addEventListener('submit', function (e) {
             const condition = document.getElementById('condition').value;
             if (!condition) {
                 e.preventDefault();
@@ -861,4 +878,5 @@
     <script>alert('Part Added Successfully');</script>
     {% endif %}
 </body>
+
 </html>

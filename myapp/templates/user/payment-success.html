@@ -1,0 +1,502 @@
+{% load currency_filters static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Payment Successful — ClassicAuto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --dark: #3e2723;
+            --brown: #5d4037;
+            --light: #d7ccc8;
+            --gold: #c9a96e;
+            --cream: #f5f1e6;
+            --green: #27ae60;
+            --green-dark: #1e8449;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background: var(--dark);
+            color: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23c9a96e' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .card {
+            background: var(--cream);
+            color: var(--dark);
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .6), 0 0 0 2px var(--gold);
+            animation: slideUp .5s ease both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Success Banner ── */
+        .success-banner {
+            background: linear-gradient(135deg, var(--green-dark), var(--green));
+            padding: 36px 24px 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.1), transparent 60%);
+        }
+
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2.2rem;
+            color: white;
+            animation: pop .4s .3s cubic-bezier(.4, 0, .2, 1.5) both;
+        }
+
+        @keyframes pop {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-banner h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.6rem;
+            color: white;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .success-banner p {
+            color: rgba(255, 255, 255, .85);
+            font-size: 0.9rem;
+        }
+
+        /* ── Amount highlight ── */
+        .amount-block {
+            background: var(--dark);
+            padding: 18px 24px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .amount-label {
+            font-size: 0.8rem;
+            color: var(--light);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .amount-value {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        /* ── Body ── */
+        .card-body {
+            padding: 24px;
+        }
+
+        /* ── Transaction card ── */
+        .txn-card {
+            background: white;
+            border: 1px solid var(--light);
+            border-radius: 3px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .txn-card h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--dark);
+            border-bottom: 1px solid var(--light);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .txn-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 6px 0;
+            font-size: 0.85rem;
+            color: var(--brown);
+        }
+
+        .txn-row .val {
+            color: var(--dark);
+            font-weight: 600;
+            text-align: right;
+            max-width: 60%;
+        }
+
+        .txn-row.success .val {
+            color: var(--green);
+        }
+
+        /* ── Part summary ── */
+        .part-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--cream);
+            border: 1px solid var(--light);
+            border-radius: 3px;
+            padding: 14px;
+            margin-bottom: 20px;
+        }
+
+        .part-row img {
+            width: 58px;
+            height: 58px;
+            object-fit: cover;
+            border-radius: 2px;
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+        }
+
+        .part-row h3 {
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 3px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .part-row p {
+            font-size: 0.8rem;
+            color: var(--brown);
+        }
+
+        /* ── Confetti effect ── */
+        .confetti-row {
+            text-align: center;
+            font-size: 1.6rem;
+            letter-spacing: 10px;
+            padding: 8px 0;
+            animation: wiggle 1s ease infinite alternate;
+        }
+
+        @keyframes wiggle {
+            from {
+                transform: translateX(-4px);
+            }
+
+            to {
+                transform: translateX(4px);
+            }
+        }
+
+        /* ── Action buttons ── */
+        .action-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 16px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 0.82rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .btn-gold:hover {
+            background: #b89446;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--dark);
+            color: var(--dark);
+        }
+
+        .btn-outline:hover {
+            background: var(--dark);
+            color: var(--cream);
+            transform: translateY(-2px);
+        }
+
+        /* ── Happy Cat ── */
+        .happy-cat-container {
+            text-align: center;
+            margin: -5px 0 15px;
+        }
+
+        .happy-cat {
+            width: 140px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--gold);
+        }
+
+        /* ── Guest Note ── */
+        .guest-note {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px dashed #e74c3c;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .guest-note i {
+            font-size: 1rem;
+            margin-right: 4px;
+        }
+
+        /* ── Footer ── */
+        .card-footer {
+            background: var(--light);
+            padding: 12px 24px;
+            text-align: center;
+            border-top: 1px dashed var(--brown);
+            font-size: 0.72rem;
+            color: var(--brown);
+        }
+
+        /* ── Mobile Adjustments ── */
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .success-banner {
+                padding: 24px 16px 20px;
+            }
+
+            .checkmark-circle {
+                width: 60px;
+                height: 60px;
+                font-size: 1.6rem;
+                margin-bottom: 12px;
+            }
+
+            .success-banner h1 {
+                font-size: 1.3rem;
+            }
+
+            .amount-block {
+                padding: 14px 16px;
+            }
+
+            .amount-value {
+                font-size: 1.6rem;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .part-row {
+                padding: 10px;
+                gap: 10px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .part-row img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .txn-card {
+                padding: 14px;
+            }
+
+            .action-btns {
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+
+        <!-- Success Banner -->
+        <div class="success-banner">
+            <div class="checkmark-circle" id="checkmark">
+                <i class="fas fa-check"></i>
+            </div>
+            <h1>Payment Successful!</h1>
+            <p>Your transaction has been processed successfully</p>
+        </div>
+
+        <!-- Amount Paid -->
+        <div class="amount-block">
+            <div class="amount-label">Amount Paid</div>
+            <div class="amount-value">{{ part.price|inr }}</div>
+        </div>
+
+        <div class="card-body">
+
+            <!-- Confetti -->
+            <div class="confetti-row">🎉 🎊 ✨ 🎉</div>
+
+            <!-- Happy Cat Meme -->
+            <div class="happy-cat-container" onclick="document.getElementById('catVideo').play()">
+                <video id="catVideo" autoplay loop playsinline class="happy-cat">
+                    <source src="/media/images/happy-cat.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p style="font-size:0.6rem; color:var(--brown); margin-top:4px;">Tap cat to play audio!</p>
+            </div>
+
+            <!-- Part Summary -->
+            <div class="part-row">
+                <img src="{{ part.image.url }}" alt="{{ part.name }}">
+                <div>
+                    <h3>{{ part.name }}</h3>
+                    <p><i class="fas fa-tag"></i> {{ part.category }} &nbsp;|&nbsp; {{ part.brand }}<br>
+                        <i class="fas fa-user"></i> Seller: {{ part.seller.name }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Transaction Details -->
+            <div class="txn-card">
+                <h4><i class="fas fa-receipt" style="color:var(--gold);margin-right:8px;"></i>Transaction Details</h4>
+                <div class="txn-row">
+                    <span>Transaction ID</span>
+                    {% if order %}
+                    <span class="val">CA-ORD-{{ order.id|stringformat:"04d" }}</span>
+                    {% else %}
+                    <span class="val">CA-GST-{% now "His" %}</span>
+                    {% endif %}
+                </div>
+                <div class="txn-row">
+                    <span>Date &amp; Time</span>
+                    <span class="val">{% now "d M Y, h:i A" %}</span>
+                </div>
+                <div class="txn-row">
+                    <span>Payment Method</span>
+                    <span class="val">UPI / QR Code</span>
+                </div>
+                <div class="txn-row">
+                    <span>Seller</span>
+                    <span class="val">{{ part.seller.name }}</span>
+                </div>
+                <div class="txn-row success">
+                    <span>Status</span>
+                    <span class="val"><i class="fas fa-check-circle"></i> Completed</span>
+                </div>
+
+                {% if guest %}
+                <div class="guest-note">
+                    <i class="fas fa-info-circle"></i>
+                    You checked out as a guest. Log in next time to track your orders!
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-btns">
+                {% if not guest %}
+                <a href="/orders/" class="btn btn-gold">
+                    <i class="fas fa-box"></i> View My Orders
+                </a>
+                {% else %}
+                <a href="/login/" class="btn btn-gold">
+                    <i class="fas fa-sign-in-alt"></i> Log In To Track
+                </a>
+                {% endif %}
+                <a href="/vehicle-parts/" class="btn btn-outline">
+                    <i class="fas fa-cogs"></i> Browse More
+                </a>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <i class="fas fa-shield-alt"></i>
+            ClassicAuto Marketplace &nbsp;&middot;&nbsp; parts@classicauto.com
+        </div>
+    </div>
+
+    <script>
+        // Trigger confetti animation after page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Pulse the checkmark
+            const ck = document.getElementById('checkmark');
+            setTimeout(() => {
+                ck.style.transform = 'scale(1.15)';
+                setTimeout(() => { ck.style.transform = 'scale(1)'; }, 200);
+            }, 600);
+        });
+    </script>
+</body>
+
+</html>

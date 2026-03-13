@@ -2,6 +2,12 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit {{car.make}} {{car.model}} - AutoSelect Admin</title>
@@ -779,7 +785,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="price" class="required">Price ($)</label>
+                                <label for="price" class="required">Price (₹)</label>
                                 <div class="input-with-icon">
                                     <i class="fas fa-dollar-sign"></i>
                                     <input type="number" id="price" class="form-control" name="price"

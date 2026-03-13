@@ -1,0 +1,1244 @@
+{% load currency_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Car Finder — ClassicAuto</title>
+    <meta name="description" content="Use AI to discover your perfect car. Describe what you want or use filters to get personalized car recommendations from around the world.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vintage-dark: #3e2723;
+            --vintage-brown: #5d4037;
+            --vintage-light: #d7ccc8;
+            --vintage-gold: #c9a96e;
+            --vintage-cream: #f5f1e6;
+            --vintage-red: #8b4513;
+            --vintage-green: #2e4c3a;
+            --transition: all 0.4s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Lora', serif;
+            color: var(--vintage-dark);
+            background-color: var(--vintage-cream);
+            line-height: 1.6;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%235d4037' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        h1, h2, h3, h4, h5 { font-family: 'Cinzel', serif; font-weight: 600; line-height: 1.3; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* ── Buttons ─────────────────────────────────────────── */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: var(--vintage-brown);
+            color: var(--vintage-cream);
+            border: none;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn:before {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+            transition: var(--transition);
+        }
+        .btn:hover { background: var(--vintage-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .btn:hover:before { left: 100%; }
+        .btn-gold { background: var(--vintage-gold); color: var(--vintage-dark); }
+        .btn-gold:hover { background: #b89446; }
+        .btn-outline { background: transparent; color: var(--vintage-brown); border: 1px solid var(--vintage-brown); }
+        .btn-outline:hover { background: var(--vintage-brown); color: var(--vintage-cream); }
+        .btn-sm { padding: 8px 16px; font-size: 0.9rem; }
+
+        /* Header */
+        header {
+            background-color: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-bottom: 3px solid var(--vintage-gold);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.8rem;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--vintage-gold);
+            font-size: 2.2rem;
+        }
+
+        .logo h1 {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--vintage-cream);
+            margin: 0;
+            font-family: 'Cinzel', serif;
+        }
+
+        .logo span {
+            color: var(--vintage-gold);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--vintage-cream);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding: 5px 10px;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--vintage-gold);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--vintage-gold);
+        }
+
+        nav a:hover:after, nav a.active:after {
+            width: 100%;
+        }
+
+        .user-actions { display: flex; align-items: center; gap: 20px; }
+        .cart-icon { position: relative; cursor: pointer; color: var(--vintage-cream); font-size: 1.3rem; transition: var(--transition); }
+        .cart-icon:hover { color: var(--vintage-gold); }
+
+        /* ── Hero / Page Header ──────────────────────────────── */
+        .page-hero {
+            background: linear-gradient(135deg, var(--vintage-dark) 0%, #1a0a08 60%, #2c1a15 100%);
+            color: var(--vintage-cream);
+            padding: 55px 0 40px;
+            text-align: center;
+            border-bottom: 3px solid var(--vintage-gold);
+            position: relative;
+            overflow: hidden;
+        }
+        .page-hero::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23c9a96e' fill-opacity='0.06' fill-rule='evenodd'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+        .page-hero-content { position: relative; z-index: 1; }
+        .page-hero h1 { font-size: 2.6rem; margin-bottom: 12px; letter-spacing: 1px; }
+        .page-hero h1 i { color: var(--vintage-gold); margin-right: 14px; }
+        .page-hero p { font-size: 1.1rem; font-style: italic; color: var(--vintage-light); max-width: 600px; margin: 0 auto; }
+        .hero-divider {
+            width: 80px; height: 3px;
+            background: var(--vintage-gold);
+            margin: 18px auto 0;
+        }
+
+        /* ── Breadcrumb ─────────────────────────────────────── */
+        .breadcrumb {
+            padding: 14px 0;
+            background: var(--vintage-light);
+            border-bottom: 1px solid var(--vintage-brown);
+        }
+        .breadcrumb-content { display: flex; align-items: center; gap: 10px; color: var(--vintage-brown); }
+        .breadcrumb a { color: var(--vintage-brown); text-decoration: none; transition: var(--transition); }
+        .breadcrumb a:hover { color: var(--vintage-dark); }
+
+        /* ── Search Section ──────────────────────────────────── */
+        .search-section { padding: 40px 0 10px; }
+        .search-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--vintage-brown);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-label::before, .search-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--vintage-light);
+        }
+        .search-box {
+            display: flex;
+            gap: 0;
+            max-width: 820px;
+            margin: 0 auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border: 2px solid var(--vintage-brown);
+            border-radius: 2px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .search-box:focus-within { border-color: var(--vintage-gold); }
+        .search-input {
+            flex: 1;
+            padding: 16px 22px;
+            font-family: 'Lora', serif;
+            font-size: 1rem;
+            border: none;
+            background: white;
+            color: var(--vintage-dark);
+            outline: none;
+        }
+        .search-input::placeholder { color: #aaa; font-style: italic; }
+        .search-btn {
+            padding: 16px 32px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            border: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .search-btn:hover { background: #b89446; }
+        .search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* ── Floating Sticky Search Bar ──────────────────────── */
+        .bottom-search-wrapper {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(245, 241, 230, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 3px solid var(--vintage-gold);
+            padding: 15px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bottom-search-wrapper.visible {
+            transform: translateY(0);
+        }
+        .bottom-search-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .bottom-search-box {
+            flex: 1;
+            display: flex;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid var(--vintage-brown);
+            border-radius: 30px;
+            overflow: hidden;
+            background: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .bottom-search-box:focus-within {
+            border-color: var(--vintage-gold);
+            box-shadow: 0 6px 20px rgba(201,169,110,0.2);
+        }
+        .bottom-search-input {
+            flex: 1;
+            padding: 14px 24px;
+            font-family: 'Lora', serif;
+            font-size: 1.05rem;
+            border: none;
+            outline: none;
+            color: var(--vintage-dark);
+        }
+        .bottom-search-input::placeholder { color: #aaa; font-style: italic; }
+        .bottom-search-btn {
+            padding: 0 35px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            border: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bottom-search-btn:hover { background: var(--vintage-dark); color: var(--vintage-gold); }
+        .bottom-search-btn:disabled { opacity: 0.6; cursor: not-allowed; background: #ccc; color: #666; }
+        
+        .pulse-btn {
+            animation: pulse-gold 2s infinite;
+        }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(201,169,110, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(201,169,110, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(201,169,110, 0); }
+        }
+
+        /* ── Filter Pills ──────────────────────────────────── */
+        .filter-section { padding: 10px 0 30px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--vintage-brown);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-group-label i { color: var(--vintage-gold); }
+        .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 16px;
+            background: white;
+            border: 1px solid var(--vintage-light);
+            border-radius: 1px;
+            font-family: 'Lora', serif;
+            font-size: 0.85rem;
+            color: var(--vintage-brown);
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+        .pill:hover {
+            border-color: var(--vintage-brown);
+            color: var(--vintage-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+        }
+        .pill.active {
+            background: var(--vintage-dark);
+            color: var(--vintage-gold);
+            border-color: var(--vintage-dark);
+        }
+        .pill i { font-size: 0.78rem; }
+        .active-filters-bar {
+            max-width: 820px;
+            margin: 10px auto 0;
+            padding: 8px 14px;
+            background: rgba(201,169,110,0.1);
+            border: 1px solid rgba(201,169,110,0.3);
+            border-radius: 2px;
+            font-size: 0.85rem;
+            color: var(--vintage-brown);
+            font-style: italic;
+            display: none;
+        }
+        .active-filters-bar.visible { display: block; }
+
+        /* ── Loading (Typing Animation) ────────────────────── */
+        .loading-container {
+            display: none;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .loading-container.active { display: block; }
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: white;
+            padding: 20px 35px;
+            border-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--vintage-light);
+        }
+        .typing-avatar {
+            width: 45px; height: 45px;
+            background: var(--vintage-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vintage-dark);
+            font-size: 1.5rem;
+        }
+        .typing-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .typing-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--vintage-brown);
+            animation: typeBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typeBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        .loading-text { 
+            font-family: 'Cinzel', serif; 
+            color: var(--vintage-dark); 
+            font-size: 1.1rem; 
+            letter-spacing: 0.5px; 
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        /* ── Error ─────────────────────────────────────────── */
+        .error-box {
+            display: none;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 16px 20px;
+            background: #fff3f3;
+            border-left: 4px solid var(--vintage-red);
+            color: #721c24;
+            font-size: 0.95rem;
+            border-radius: 2px;
+        }
+        .error-box.active { display: flex; gap: 12px; align-items: flex-start; }
+        .error-box i { color: var(--vintage-red); margin-top: 2px; }
+
+        /* ── Results ───────────────────────────────────────── */
+        .results-section { padding: 20px 0 70px; }
+        .results-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .results-header h2 { font-size: 1.6rem; color: var(--vintage-dark); }
+        .results-header .divider { flex: 1; height: 1px; background: var(--vintage-light); max-width: 200px; }
+        .results-grid { display: grid; grid-template-columns: 1fr; gap: 35px; }
+
+        /* ── Result Card ────────────────────────────────────── */
+        .result-card {
+            background: white;
+            border: 1px solid var(--vintage-light);
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+            transition: var(--transition);
+            animation: cardFadeIn 0.5s ease both;
+        }
+        .result-card:hover { box-shadow: 0 12px 35px rgba(0,0,0,0.1); transform: translateY(-3px); }
+        @keyframes cardFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Card header bar */
+        .card-header-bar {
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 18px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--vintage-gold);
+        }
+        .card-car-name { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
+        .card-car-name span { color: var(--vintage-gold); }
+        .card-year-body { font-size: 0.85rem; color: var(--vintage-light); font-style: italic; }
+        .match-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--vintage-gold);
+            color: var(--vintage-dark);
+            padding: 6px 16px;
+            border-radius: 1px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Card body: two columns */
+        .card-body { display: grid; grid-template-columns: 1fr 1fr; }
+        .card-left { padding: 28px; border-right: 1px solid var(--vintage-light); }
+        .card-right { padding: 28px; background: rgba(245,241,230,0.4); }
+
+        .price-range {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--vintage-gold);
+            margin-bottom: 18px;
+        }
+        .price-range small { font-size: 0.8rem; color: var(--vintage-brown); font-weight: 400; display: block; margin-bottom: 4px; }
+
+        .why-rec {
+            font-size: 0.95rem;
+            color: var(--vintage-brown);
+            font-style: italic;
+            line-height: 1.7;
+            border-left: 3px solid var(--vintage-gold);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+
+        .db-match-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(46,76,58,0.1);
+            border: 1px solid var(--vintage-green);
+            color: var(--vintage-green);
+            padding: 6px 14px;
+            border-radius: 2px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        /* Spec table */
+        .specs-table { width: 100%; border-collapse: collapse; }
+        .specs-table tr:not(:last-child) td { border-bottom: 1px solid var(--vintage-light); }
+        .specs-table td { padding: 9px 0; font-size: 0.88rem; vertical-align: top; }
+        .specs-table td:first-child {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #999;
+            width: 42%;
+            padding-right: 12px;
+        }
+        .specs-table td:last-child { font-weight: 600; color: var(--vintage-dark); }
+
+        /* Pros/Cons */
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--vintage-light); }
+        .pros, .cons { padding: 20px 28px; }
+        .cons { border-left: 1px solid var(--vintage-light); background: rgba(245,241,230,0.3); }
+        .pros-cons-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pros .pros-cons-title { color: var(--vintage-green); }
+        .cons .pros-cons-title { color: var(--vintage-red); }
+        .pros-cons-list { list-style: none; }
+        .pros-cons-list li { font-size: 0.88rem; padding: 3px 0 3px 20px; position: relative; color: var(--vintage-dark); }
+        .pros .pros-cons-list li::before { content: '✓'; position: absolute; left: 0; color: var(--vintage-green); font-weight: 700; }
+        .cons .pros-cons-list li::before { content: '✗'; position: absolute; left: 0; color: var(--vintage-red); font-weight: 700; }
+
+        /* Actions row */
+        .card-actions {
+            padding: 16px 28px;
+            background: rgba(201,169,110,0.07);
+            border-top: 2px solid var(--vintage-gold);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Parts row */
+        .parts-row { padding: 18px 28px; border-top: 1px solid var(--vintage-light); }
+        .parts-row-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--vintage-brown);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .parts-row-title i { color: var(--vintage-gold); }
+        .parts-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+        .part-chip {
+            min-width: 170px;
+            padding: 12px 14px;
+            background: var(--vintage-cream);
+            border: 1px solid var(--vintage-light);
+            border-radius: 2px;
+            text-decoration: none;
+            color: var(--vintage-dark);
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .part-chip:hover { border-color: var(--vintage-gold); transform: translateY(-2px); }
+        .part-chip-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 2px; }
+        .part-chip-brand { font-size: 0.75rem; color: #888; margin-bottom: 5px; }
+        .part-chip-price { font-size: 0.9rem; font-weight: 700; color: var(--vintage-gold); font-family: 'Cinzel', serif; }
+
+        /* ── Empty State ───────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 70px 20px;
+        }
+        .empty-state .icon-ring {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: var(--vintage-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .empty-state .icon-ring i { font-size: 2.5rem; color: var(--vintage-gold); }
+        .empty-state h3 { font-size: 1.5rem; color: var(--vintage-dark); margin-bottom: 12px; }
+        .empty-state p { color: var(--vintage-brown); max-width: 420px; margin: 0 auto; font-size: 0.95rem; font-style: italic; }
+
+        /* ── Footer ────────────────────────────────────────── */
+        footer {
+            background: var(--vintage-dark);
+            color: var(--vintage-cream);
+            padding: 70px 0 30px;
+            border-top: 3px solid var(--vintage-gold);
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 22px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            width: 40px; height: 3px;
+            background: var(--vintage-gold);
+            bottom: 0; left: 0;
+        }
+        .footer-column p { color: var(--vintage-light); margin-bottom: 20px; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: var(--vintage-light); text-decoration: none; transition: var(--transition); }
+        .footer-links a:hover { color: var(--vintage-gold); padding-left: 5px; }
+        .social-links { display: flex; gap: 12px; margin-top: 18px; }
+        .social-links a {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px;
+            background: rgba(201,169,110,0.15);
+            border-radius: 50%; color: var(--vintage-cream);
+            transition: var(--transition);
+            border: 1px solid var(--vintage-gold);
+        }
+        .social-links a:hover { background: var(--vintage-gold); color: var(--vintage-dark); transform: translateY(-3px); }
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(201,169,110,0.2);
+            color: var(--vintage-light);
+            font-size: 0.9rem;
+        }
+
+        /* ── Responsive ────────────────────────────────────── */
+        @media (max-width: 900px) {
+            .card-body { grid-template-columns: 1fr; }
+            .card-left { border-right: none; border-bottom: 1px solid var(--vintage-light); }
+        }
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 14px; }
+            nav ul { gap: 12px; justify-content: center; }
+            .page-hero h1 { font-size: 1.9rem; }
+            .search-box { flex-direction: column; }
+            .search-btn { justify-content: center; width: 100%; }
+            .pros-cons { grid-template-columns: 1fr; }
+            .cons { border-left: none; border-top: 1px solid var(--vintage-light); }
+            .card-header-bar { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .card-actions { justify-content: center; }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-car-side"></i>
+                    <div class="logo-text">Classic<span>Auto</span></div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/ai-car-finder/" class="active">AI Finder</a></li>
+                        <li><a href="/collections/">Collection</a></li>
+                        <li><a href="/compare/">Compare</a></li>
+                        <li><a href="/favorites/">Favorites</a></li>
+                        <li><a href="/vehicle-parts/">Parts</a></li>
+                        <li><a href="/orders/">Orders</a></li>
+                        <li><a href="/profile/">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions">
+                    <div class="cart-icon" onclick="window.location.href='/cart/'">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <div class="page-hero">
+        <div class="container">
+            <div class="page-hero-content">
+                <h1><i class="fas fa-brain"></i> AI Car Finder</h1>
+                <p>Describe the car you dream of — or pick from the filters — and our AI will recommend the world's finest matches</p>
+                <div class="hero-divider"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-content">
+                <a href="/user/">Home</a>
+                <i class="fas fa-chevron-right" style="font-size:0.75rem;"></i>
+                <span>AI Car Finder</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initial Static Search (Hides when floating appears) -->
+    <section class="search-section" id="topSearchSection">
+        <div class="container">
+            <div class="search-label">Describe Your Ideal Car</div>
+            <div class="search-box">
+                <input type="text" class="search-input" id="topSearchInput"
+                    placeholder="e.g. fast sports car under ₹50k with good fuel economy..."
+                    autocomplete="off">
+                <button class="search-btn" id="topSearchBtn" onclick="sendQuery()">
+                    <i class="fas fa-magic"></i> Find Cars
+                </button>
+            </div>
+            <div class="active-filters-bar" id="activeFiltersBar"></div>
+        </div>
+    </section>
+
+    <!-- Floating Bottom Search (Appears on scroll) -->
+    <div class="bottom-search-wrapper" id="floatingSearch">
+        <div class="bottom-search-container">
+            <div class="bottom-search-box">
+                <input type="text" class="bottom-search-input" id="bottomSearchInput"
+                    placeholder="Describe your ideal car..."
+                    autocomplete="off">
+                <button class="bottom-search-btn pulse-btn" id="bottomSearchBtn" onclick="sendQuery()">
+                    <i class="fas fa-magic"></i> Find
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Pills -->
+    <section class="filter-section">
+        <div class="container">
+
+            <div class="filter-group">
+                <div class="filter-group-label"><i class="fas fa-car"></i> Body Type</div>
+                <div class="pill-row">
+                    <span class="pill" data-value="Sports Car"><i class="fas fa-flag-checkered"></i> Sports Car</span>
+                    <span class="pill" data-value="Sedan"><i class="fas fa-car-side"></i> Sedan</span>
+                    <span class="pill" data-value="SUV">SUV</span>
+                    <span class="pill" data-value="Coupe">Coupe</span>
+                    <span class="pill" data-value="Hatchback">Hatchback</span>
+                    <span class="pill" data-value="Convertible"><i class="fas fa-wind"></i> Convertible</span>
+                    <span class="pill" data-value="Truck"><i class="fas fa-truck-pickup"></i> Truck</span>
+                    <span class="pill" data-value="Wagon">Wagon</span>
+                    <span class="pill" data-value="Minivan">Minivan</span>
+                    <span class="pill" data-value="Crossover">Crossover</span>
+                    <span class="pill" data-value="Supercar"><i class="fas fa-bolt"></i> Supercar</span>
+                    <span class="pill" data-value="Muscle Car"><i class="fas fa-fire"></i> Muscle Car</span>
+                    <span class="pill" data-value="Pickup Truck">Pickup Truck</span>
+                    <span class="pill" data-value="Microcar">Microcar</span>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-label"><i class="fas fa-tachometer-alt"></i> Performance</div>
+                <div class="pill-row">
+                    <span class="pill" data-value="High Horsepower (400+ HP)"><i class="fas fa-bolt"></i> High Horsepower</span>
+                    <span class="pill" data-value="Turbocharged">Turbocharged</span>
+                    <span class="pill" data-value="Supercharged">Supercharged</span>
+                    <span class="pill" data-value="Fast 0-60 under 4 seconds">Fast 0–60</span>
+                    <span class="pill" data-value="Track-Ready">Track-Ready</span>
+                    <span class="pill" data-value="V8 Engine">V8 Engine</span>
+                    <span class="pill" data-value="V6 Engine">V6 Engine</span>
+                    <span class="pill" data-value="All-Wheel Drive AWD">AWD</span>
+                    <span class="pill" data-value="Rear-Wheel Drive RWD">RWD</span>
+                    <span class="pill" data-value="Off-Road Capable"><i class="fas fa-mountain"></i> Off-Road</span>
+                    <span class="pill" data-value="Heavy Towing Capacity">Heavy Towing</span>
+                    <span class="pill" data-value="High Top Speed">High Top Speed</span>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-label"><i class="fas fa-gas-pump"></i> Fuel & Efficiency</div>
+                <div class="pill-row">
+                    <span class="pill" data-value="Fuel Efficient 30+ MPG"><i class="fas fa-leaf"></i> Fuel Efficient</span>
+                    <span class="pill" data-value="Electric Vehicle"><i class="fas fa-charging-station"></i> Electric</span>
+                    <span class="pill" data-value="Hybrid">Hybrid</span>
+                    <span class="pill" data-value="Plug-in Hybrid PHEV"><i class="fas fa-plug"></i> Plug-in Hybrid</span>
+                    <span class="pill" data-value="Diesel">Diesel</span>
+                    <span class="pill" data-value="Gasoline">Gasoline</span>
+                    <span class="pill" data-value="Hydrogen Fuel Cell">Hydrogen</span>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-label"><i class="fas fa-dollar-sign"></i> Budget</div>
+                <div class="pill-row">
+                    <span class="pill" data-value="Budget under ₹20,000"><i class="fas fa-coins"></i> Under ₹20K</span>
+                    <span class="pill" data-value="Mid-Range ₹20,000 to ₹40,000">₹20K – ₹40K</span>
+                    <span class="pill" data-value="Premium ₹40,000 to ₹70,000">₹40K – ₹70K</span>
+                    <span class="pill" data-value="Luxury ₹70,000 to ₹120,000"><i class="fas fa-crown"></i> ₹70K – ₹120K</span>
+                    <span class="pill" data-value="Ultra Luxury over ₹120,000"><i class="fas fa-star"></i> ₹120K+</span>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-label"><i class="fas fa-sliders-h"></i> Use Case & Features</div>
+                <div class="pill-row">
+                    <span class="pill" data-value="Family Friendly"><i class="fas fa-people-roof"></i> Family</span>
+                    <span class="pill" data-value="Luxury Interior">Luxury Interior</span>
+                    <span class="pill" data-value="Top Safety Ratings">Top Safety</span>
+                    <span class="pill" data-value="Great for Road Trips">Road Trip</span>
+                    <span class="pill" data-value="City Car Easy Parking">City Car</span>
+                    <span class="pill" data-value="Daily Commuter">Daily Commuter</span>
+                    <span class="pill" data-value="Weekend Toy Fun">Weekend Fun</span>
+                    <span class="pill" data-value="Best Tech and Infotainment">Best Tech</span>
+                    <span class="pill" data-value="Low Maintenance Cost">Low Maintenance</span>
+                    <span class="pill" data-value="Good Resale Value">Resale Value</span>
+                    <span class="pill" data-value="Classic Vintage Style"><i class="fas fa-hourglass-half"></i> Classic / Vintage</span>
+                    <span class="pill" data-value="Reliable and Durable">Reliable</span>
+                    <span class="pill" data-value="Spacious Cargo">Spacious Cargo</span>
+                    <span class="pill" data-value="Best First Car">Best First Car</span>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-label"><i class="fas fa-award"></i> Popular Brands</div>
+                <div class="pill-row">
+                    <span class="pill" data-value="Toyota">Toyota</span>
+                    <span class="pill" data-value="Honda">Honda</span>
+                    <span class="pill" data-value="BMW">BMW</span>
+                    <span class="pill" data-value="Mercedes-Benz">Mercedes-Benz</span>
+                    <span class="pill" data-value="Ford">Ford</span>
+                    <span class="pill" data-value="Tesla">Tesla</span>
+                    <span class="pill" data-value="Porsche">Porsche</span>
+                    <span class="pill" data-value="Audi">Audi</span>
+                    <span class="pill" data-value="Chevrolet">Chevrolet</span>
+                    <span class="pill" data-value="Dodge">Dodge</span>
+                    <span class="pill" data-value="Lamborghini">Lamborghini</span>
+                    <span class="pill" data-value="Ferrari">Ferrari</span>
+                    <span class="pill" data-value="Hyundai">Hyundai</span>
+                    <span class="pill" data-value="Jeep">Jeep</span>
+                    <span class="pill" data-value="Subaru">Subaru</span>
+                    <span class="pill" data-value="Mazda">Mazda</span>
+                    <span class="pill" data-value="Volkswagen">Volkswagen</span>
+                    <span class="pill" data-value="Kia">Kia</span>
+                    <span class="pill" data-value="Lexus">Lexus</span>
+                    <span class="pill" data-value="Range Rover">Range Rover</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Error -->
+    <div class="error-box" id="errorBox">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorText"></span>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-container" id="loadingContainer">
+        <div class="typing-indicator">
+            <div class="typing-avatar"><i class="fas fa-robot"></i></div>
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        <div class="loading-text" id="loadingTextMsg">Consulting our AI automotive expert...</div>
+    </div>
+
+    <!-- Results -->
+    <section class="results-section" id="resultsSection" style="display:none;">
+        <div class="container">
+            <div class="results-header">
+                <div class="divider"></div>
+                <h2><i class="fas fa-car-side" style="color:var(--vintage-gold);margin-right:10px;"></i> AI Recommendations</h2>
+                <div class="divider"></div>
+            </div>
+            <div class="results-grid" id="resultsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+        <div class="icon-ring">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3>Discover Your Perfect Car</h3>
+        <p>Select filters above, type a description, or combine both. Our AI will recommend the world's finest cars that match your needs.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About ClassicAuto</h3>
+                    <p>ClassicAuto is dedicated to preserving automotive heritage and connecting enthusiasts with their dream vehicles.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Classic Eras</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Pre-War Classics</a></li>
+                        <li><a href="#">1950s Automobiles</a></li>
+                        <li><a href="#">1960s Muscle Cars</a></li>
+                        <li><a href="#">1970s Icons</a></li>
+                        <li><a href="#">1980s Sports Cars</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Classic Car Appraisal</a></li>
+                        <li><a href="#">Restoration Consultation</a></li>
+                        <li><a href="#">Investment Advice</a></li>
+                        <li><a href="#">Shipping & Transport</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Heritage Drive, Auburn, IN</li>
+                        <li><i class="fas fa-phone"></i> (555) 321-OLDS</li>
+                        <li><i class="fas fa-envelope"></i> info@classicauto.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 ClassicAuto Heritage Collection. Preserving Automotive History.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ─── State ───────────────────────────────────────────
+        const activePills = new Set();
+        const topSearchInput = document.getElementById('topSearchInput');
+        const bottomSearchInput = document.getElementById('bottomSearchInput');
+        const topSearchBtn = document.getElementById('topSearchBtn');
+        const bottomSearchBtn = document.getElementById('bottomSearchBtn');
+        const loadingContainer = document.getElementById('loadingContainer');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const errorBox = document.getElementById('errorBox');
+        const activeFiltersBar = document.getElementById('activeFiltersBar');
+        const floatingSearch = document.getElementById('floatingSearch');
+        const topSearchSection = document.getElementById('topSearchSection');
+
+        // ─── CSRF ────────────────────────────────────────────
+        function getCookie(name) {
+            let v = null;
+            if (document.cookie) {
+                document.cookie.split(';').forEach(c => {
+                    c = c.trim();
+                    if (c.startsWith(name + '=')) v = decodeURIComponent(c.slice(name.length + 1));
+                });
+            }
+            return v;
+        }
+
+        // ─── Sync Search Inputs ──────────────────────────────
+        topSearchInput.addEventListener('input', (e) => bottomSearchInput.value = e.target.value);
+        bottomSearchInput.addEventListener('input', (e) => topSearchInput.value = e.target.value);
+
+        // ─── Floating Bar Visibility ─────────────────────────
+        window.addEventListener('scroll', () => {
+            const topSearchRect = topSearchSection.getBoundingClientRect();
+            // Show floating bar when top search bar scrolls out of view
+            if (topSearchRect.bottom < 0) {
+                floatingSearch.classList.add('visible');
+            } else {
+                floatingSearch.classList.remove('visible');
+            }
+        });
+        document.querySelectorAll('.pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                const val = pill.dataset.value;
+                if (activePills.has(val)) { activePills.delete(val); pill.classList.remove('active'); }
+                else { activePills.add(val); pill.classList.add('active'); }
+                updateFiltersBar();
+            });
+        });
+
+        function updateFiltersBar() {
+            if (activePills.size === 0) {
+                activeFiltersBar.classList.remove('visible');
+            } else {
+                activeFiltersBar.innerHTML = '<i class="fas fa-filter" style="margin-right:6px;color:var(--vintage-gold);"></i>' + [...activePills].join(' &bull; ');
+                activeFiltersBar.classList.add('visible');
+            }
+        }
+
+        // ─── Enter key ───────────────────────────────────────
+        topSearchInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendQuery(); });
+        bottomSearchInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendQuery(); });
+
+        // ─── Build query ─────────────────────────────────────
+        function buildQuery() {
+            const parts = [];
+            if (activePills.size > 0) parts.push('Filters selected: ' + [...activePills].join(', '));
+            const text = topSearchInput.value.trim();
+            if (text) parts.push(text);
+            return parts.join('. Additional requirements: ');
+        }
+
+        // ─── Loading Animation Text ──────────────────────────
+        const loadingMsgs = [
+            "Consulting our AI automotive expert...",
+            "Searching global classic car databases...",
+            "Analyzing performance specs and historical data...",
+            "Matching your preferences with the perfect vehicle...",
+            "Just a moment, preparing your results..."
+        ];
+        let msgInterval;
+
+        // ─── Send to API ─────────────────────────────────────
+        function sendQuery() {
+            const query = buildQuery();
+            if (!query) {
+                showError('Please select a filter or describe the car you are looking for.');
+                return;
+            }
+            hideError();
+            setLoading(true);
+
+            // Cycle loading messages
+            let msgIdx = 0;
+            document.getElementById('loadingTextMsg').textContent = loadingMsgs[0];
+            msgInterval = setInterval(() => {
+                msgIdx = (msgIdx + 1) % loadingMsgs.length;
+                document.getElementById('loadingTextMsg').textContent = loadingMsgs[msgIdx];
+            }, 2500);
+
+            const fd = new FormData();
+            fd.append('query', query);
+
+            fetch('/ai-car-recommend/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') },
+                body: fd
+            })
+            .then(r => r.json())
+            .then(data => {
+                setLoading(false);
+                if (data.ok) renderResults(data.cars);
+                else showError(data.error || 'Something went wrong. Please try again.');
+            })
+            .catch(() => {
+                setLoading(false);
+                showError('Network error. Please check your connection and try again.');
+            });
+        }
+
+        function setLoading(on) {
+            topSearchBtn.disabled = on;
+            bottomSearchBtn.disabled = on;
+            
+            if (on) {
+                loadingContainer.classList.add('active');
+                resultsSection.style.display = 'none';
+                emptyState.style.display = 'none';
+                // Scroll to loading indicator
+                loadingContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                loadingContainer.classList.remove('active');
+                clearInterval(msgInterval);
+            }
+        }
+
+        function showError(msg) {
+            document.getElementById('errorText').textContent = msg;
+            errorBox.classList.add('active');
+        }
+        function hideError() { errorBox.classList.remove('active'); }
+
+        // ─── Render ──────────────────────────────────────────
+        function renderResults(cars) {
+            resultsGrid.innerHTML = '';
+            if (!cars || cars.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            resultsSection.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            cars.forEach((car, idx) => {
+                const el = document.createElement('div');
+                el.className = 'result-card';
+                el.style.animationDelay = (idx * 0.1) + 's';
+
+                const pMin = car.price_min ? '₹' + Number(car.price_min).toLocaleString() : '—';
+                const pMax = car.price_max ? '₹' + Number(car.price_max).toLocaleString() : '—';
+
+                // DB actions
+                let dbBadge = '';
+                let dbActions = '';
+                if (car.in_database && car.db_id) {
+                    dbBadge = `<div class="db-match-box"><i class="fas fa-check-circle"></i> Found in Our Collection</div>`;
+                    dbActions = `
+                    <div class="card-actions">
+                        <a href="/car-detail/${car.db_id}/" class="btn btn-gold btn-sm"><i class="fas fa-eye"></i> View Details</a>
+                        <a href="/add-favorite/${car.db_id}/" class="btn btn-sm"><i class="far fa-heart"></i> Add to Favorites</a>
+                        <a href="/compare/" class="btn btn-outline btn-sm"><i class="fas fa-balance-scale"></i> Compare</a>
+                    </div>`;
+                }
+
+                // Parts
+                let partsHtml = '';
+                if (car.parts && car.parts.length > 0) {
+                    const chips = car.parts.map(p => `
+                        <a href="/part-detail/${p.id}/" class="part-chip">
+                            <div class="part-chip-name">${esc(p.name)}</div>
+                            <div class="part-chip-brand">${esc(p.brand)} &bull; ${esc(p.category)}</div>
+                            <div class="part-chip-price">₹${Number(p.price).toLocaleString()}</div>
+                        </a>`).join('');
+                    partsHtml = `<div class="parts-row">
+                        <div class="parts-row-title"><i class="fas fa-cogs"></i> Available Parts for This Car</div>
+                        <div class="parts-scroll">${chips}</div>
+                    </div>`;
+                }
+
+                el.innerHTML = `
+                    <div class="card-header-bar">
+                        <div>
+                            <div class="card-car-name">${esc(car.make)} <span>${esc(car.model)}</span></div>
+                            <div class="card-year-body">${esc(car.year_range || '')} &bull; ${esc(car.body_type || '')}</div>
+                        </div>
+                        <div class="match-badge"><i class="fas fa-star"></i> ${car.match_score || 0}% Match</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-left">
+                            ${dbBadge}
+                            <div class="price-range">
+                                <small>Estimated Price Range</small>
+                                ${pMin} — ${pMax}
+                            </div>
+                            <div class="why-rec">${esc(car.why_recommended || '')}</div>
+                        </div>
+                        <div class="card-right">
+                            <table class="specs-table">
+                                <tr><td>Horsepower</td><td>${car.horsepower || 'N/A'} HP</td></tr>
+                                <tr><td>Engine</td><td>${esc(car.engine || 'N/A')}</td></tr>
+                                <tr><td>Transmission</td><td>${esc(car.transmission || 'N/A')}</td></tr>
+                                <tr><td>Fuel</td><td>${esc(car.fuel_type || 'N/A')}</td></tr>
+                                <tr><td>MPG</td><td>${esc(car.mpg || 'N/A')}</td></tr>
+                                <tr><td>Top Speed</td><td>${esc(car.top_speed || 'N/A')}</td></tr>
+                                <tr><td>0–60 mph</td><td>${esc(car.zero_to_sixty || 'N/A')}</td></tr>
+                                <tr><td>Drivetrain</td><td>${esc(car.drivetrain || 'N/A')}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <div class="pros-cons-title"><i class="fas fa-thumbs-up"></i> Pros</div>
+                            <ul class="pros-cons-list">${(car.pros||[]).map(p=>`<li>${esc(p)}</li>`).join('')}</ul>
+                        </div>
+                        <div class="cons">
+                            <div class="pros-cons-title"><i class="fas fa-thumbs-down"></i> Cons</div>
+                            <ul class="pros-cons-list">${(car.cons||[]).map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+                        </div>
+                    </div>
+                    ${dbActions}
+                    ${partsHtml}
+                `;
+                resultsGrid.appendChild(el);
+            });
+
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function esc(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+    </script>
+</body>
+</html>

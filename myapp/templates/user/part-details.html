@@ -1,8 +1,14 @@
-{% load currency_filters %}
+﻿{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ part.name }} - ClassicAuto Parts</title>
@@ -1242,6 +1248,198 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* â”€â”€ Hide browser number-input spinner arrows â”€â”€ */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* â”€â”€ Review stars â”€â”€ */
+        .star-rating {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .star-rating .star {
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: var(--vintage-light);
+            transition: color 0.15s, transform 0.15s;
+        }
+
+        .star-rating .star:hover,
+        .star-rating .star.selected {
+            color: var(--vintage-gold);
+            transform: scale(1.2);
+        }
+
+        .star-rating .star.hover-fill {
+            color: var(--vintage-gold);
+        }
+
+        /* â”€â”€ Review form & display â”€â”€ */
+        .review-form-wrap {
+            background: var(--vintage-cream);
+            padding: 28px;
+            border-radius: 2px;
+            border: 1px solid var(--vintage-light);
+            margin-top: 30px;
+        }
+
+        .review-form-wrap h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--vintage-dark);
+        }
+
+        .review-form-wrap input,
+        .review-form-wrap textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--vintage-light);
+            border-radius: 2px;
+            font-family: 'Lora', serif;
+            font-size: 0.95rem;
+            background: white;
+            color: var(--vintage-dark);
+            margin-bottom: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .review-form-wrap input:focus,
+        .review-form-wrap textarea:focus {
+            outline: none;
+            border-color: var(--vintage-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.15);
+        }
+
+        .review-form-wrap textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .review-form-wrap label {
+            display: block;
+            font-weight: 600;
+            color: var(--vintage-brown);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .file-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            background: var(--vintage-light);
+            border: 1px dashed var(--vintage-brown);
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--vintage-brown);
+            transition: all 0.3s;
+        }
+
+        .file-upload-btn:hover {
+            background: white;
+            border-color: var(--vintage-gold);
+            color: var(--vintage-dark);
+        }
+
+        .review-image-preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 2px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* â”€â”€ QR Modal â”€â”€ */
+        .qr-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 5000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-modal-overlay.open {
+            display: flex;
+        }
+
+        .qr-modal {
+            background: var(--vintage-cream);
+            border-radius: 2px;
+            padding: 40px 35px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            border-top: 4px solid var(--vintage-gold);
+            position: relative;
+        }
+
+        .qr-modal h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: var(--vintage-dark);
+        }
+
+        .qr-modal p {
+            color: var(--vintage-brown);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .qr-modal img {
+            width: 220px;
+            height: 220px;
+            border: 3px solid var(--vintage-dark);
+            border-radius: 2px;
+            margin-bottom: 20px;
+        }
+
+        .qr-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--vintage-brown);
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .qr-modal-close:hover {
+            color: var(--vintage-dark);
+        }
+
+        .qr-modal .price-tag {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--vintage-gold);
+            margin-bottom: 6px;
+        }
+
+        .qr-modal .qr-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
     </style>
 </head>
 
@@ -1255,7 +1453,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -1268,7 +1466,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -1350,27 +1548,54 @@
                             <label for="quantity"
                                 style="font-weight: 500; color: var(--vintage-dark);">Quantity:</label>
                             <div class="quantity-controls">
-                                <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                                <button class="quantity-btn" id="btnDecrease" aria-label="Decrease quantity"
+                                    onclick="decreaseQuantity()" style="font-weight: 700; font-size: 1.3rem;">âˆ’</button>
                                 <input type="number" id="quantity" class="quantity-input" value="1" min="1"
-                                    max="{{ part.stock }}">
-                                <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                                    max="{{ part.stock }}" readonly aria-label="Quantity">
+                                <button class="quantity-btn" id="btnIncrease" aria-label="Increase quantity"
+                                    onclick="increaseQuantity()" style="font-weight: 700; font-size: 1.3rem;">+</button>
                             </div>
-                            <span style="color: var(--vintage-brown);">
-                                Max: {{ part.stock }}
-                            </span>
+                            <span style="color: var(--vintage-brown);">Max: {{ part.stock }}</span>
                         </div>
 
                         <div class="action-buttons">
                             <button class="btn btn-gold" onclick="addToCart()">
                                 <i class="fas fa-cart-plus"></i> Add to Cart
                             </button>
-
+                            <button class="btn btn-outline" onclick="openQRModal()"
+                                style="display:flex;align-items:center;gap:8px;">
+                                <i class="fas fa-qrcode"></i> Pay via QR
+                            </button>
                         </div>
                         {% else %}
+                        <!-- OUT OF STOCK: Notify Me -->
+                        {% if already_notified %}
+                        <div
+                            style="background: rgba(46,204,113,0.1); border: 1px solid #27ae60; border-radius: 2px; padding: 14px 18px; margin-bottom: 15px; color: #27ae60; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-check-circle"></i> <span>You're on the notification list! We'll email you
+                                when this part is back.</span>
+                        </div>
+                        {% else %}
+                        <div id="notifySection" style="margin-bottom: 15px;">
+                            <p style="color: var(--vintage-brown); margin-bottom: 10px; font-size: 0.9rem;">
+                                <i class="fas fa-bell" style="color: var(--vintage-gold);"></i>
+                                Enter your email and we'll notify you the moment this is back in stock.
+                            </p>
+                            <form id="notifyForm" style="display: flex; gap: 8px; flex-wrap: wrap;"
+                                onsubmit="submitNotify(event)">
+                                {% csrf_token %}
+                                <input type="email" id="notifyEmail" placeholder="your@email.com"
+                                    value="{{ user_email }}" required aria-label="Email for stock notification"
+                                    style="flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--vintage-light); border-radius: 2px; font-family: 'Lora', serif;">
+                                <button type="submit" class="btn btn-gold" style="padding: 10px 20px;">
+                                    <i class="fas fa-bell"></i> Notify Me
+                                </button>
+                            </form>
+                            <div id="notifyMsg"
+                                style="display:none; margin-top: 10px; padding: 10px 15px; border-radius: 2px;"></div>
+                        </div>
+                        {% endif %}
                         <div class="action-buttons">
-                            <button class="btn btn-gold" disabled style="opacity: 0.7;">
-                                <i class="fas fa-bell"></i> Notify When Available
-                            </button>
                             <button class="btn btn-outline" onclick="contactSeller()">
                                 <i class="fas fa-envelope"></i> Contact Seller
                             </button>
@@ -1471,47 +1696,119 @@
                 <!-- Compatibility Tab -->
                 <div class="tab-content" id="compatibility">
                     <div class="compatibility-content">
-                        <h3 style="margin-bottom: 20px; color: var(--vintage-dark);">Vehicle Compatibility</h3>
-                        <p style="margin-bottom: 30px; color: var(--vintage-brown);">
-                            This part is compatible with the following vehicles. Please verify fitment before
-                            purchasing.
+                        <h3 style="margin-bottom: 8px; color: var(--vintage-dark);">Vehicle Compatibility</h3>
+                        <p style="margin-bottom: 30px; color: var(--vintage-brown); font-size: 0.95rem;">
+                            <i class="fas fa-info-circle" style="color: var(--vintage-gold);"></i>
+                            This <strong>{{ part.category }}</strong> part is verified for the vehicles listed below.
+                            Always double-check against your specific trim level and build date.
                         </p>
 
-                        <div class="vehicle-card">
-                            <div class="vehicle-icon">
-                                <i class="fas fa-car"></i>
+                        <!-- Primary Vehicle  -->
+                        <h4
+                            style="margin-bottom: 12px; color: var(--vintage-dark); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+                            <i class="fas fa-star" style="color: var(--vintage-gold); margin-right: 6px;"></i>
+                            Primary Compatible Vehicle
+                        </h4>
+                        <div class="vehicle-card"
+                            style="border: 2px solid var(--vintage-gold); background: linear-gradient(135deg, var(--vintage-cream), #ede8d5); margin-bottom: 25px;">
+                            <div class="vehicle-icon" style="background: var(--vintage-dark);">
+                                <i class="fas fa-car" style="color: var(--vintage-gold);"></i>
                             </div>
-                            <div class="vehicle-details">
-                                <h4>{{ part.vehicle }}</h4>
-                                <p>Primary compatible vehicle</p>
+                            <div class="vehicle-details" style="flex:1;">
+                                <h4 style="color: var(--vintage-dark); font-size: 1.25rem; margin-bottom: 4px;">
+                                    {{ part.vehicle.year }} {{ part.vehicle.make }} {{ part.vehicle.model }}
+                                </h4>
+                                <p style="margin-bottom: 4px;">
+                                    <span
+                                        style="background: var(--vintage-gold); color: var(--vintage-dark); padding: 2px 10px; border-radius: 2px; font-size: 0.8rem; font-weight: 600; font-family: 'Cinzel', serif;">
+                                        {{ part.vehicle.category }}
+                                    </span>
+                                </p>
+                                <p style="color: var(--vintage-brown); font-size: 0.9rem; margin-top: 6px;">
+                                    <i class="fas fa-cogs" style="color: var(--vintage-gold); margin-right: 5px;"></i>{{
+                                    part.vehicle.engine }}
+                                    &nbsp;|&nbsp;
+                                    <i class="fas fa-gas-pump"
+                                        style="color: var(--vintage-gold); margin-right: 5px;"></i>{{
+                                    part.vehicle.fuel_type }}
+                                    &nbsp;|&nbsp;
+                                    <i class="fas fa-tachometer-alt"
+                                        style="color: var(--vintage-gold); margin-right: 5px;"></i>{{
+                                    part.vehicle.horse_power }} HP
+                                </p>
+                            </div>
+                            <div style="text-align: right; flex-shrink: 0;">
+                                <a href="/car-detail/{{ part.vehicle.id }}/" class="btn btn-sm"
+                                    style="font-size: 0.8rem;">
+                                    <i class="fas fa-eye"></i> View Car
+                                </a>
                             </div>
                         </div>
 
-                        {% if part.other_compatible_vehicles %}
-                        <h4 style="margin: 30px 0 15px; color: var(--vintage-dark);">Also Compatible With</h4>
-                        {% for vehicle in part.other_compatible_vehicles %}
+                        <!-- Other Compatible Cars -->
+                        {% if compatible_cars %}
+                        <h4
+                            style="margin-bottom: 12px; color: var(--vintage-dark); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">
+                            <i class="fas fa-cars" style="color: var(--vintage-gold); margin-right: 6px;"></i>
+                            Also Compatible With
+                        </h4>
+                        <p
+                            style="margin-bottom: 18px; color: var(--vintage-brown); font-size: 0.88rem; font-style: italic;">
+                            These vehicles share the same part category and are known to use identical or equivalent
+                            parts.
+                        </p>
+                        {% for car in compatible_cars %}
                         <div class="vehicle-card">
                             <div class="vehicle-icon">
                                 <i class="fas fa-car-side"></i>
                             </div>
-                            <div class="vehicle-details">
-                                <h4>{{ vehicle }}</h4>
-                                <p>Verified compatibility</p>
+                            <div class="vehicle-details" style="flex: 1;">
+                                <h4 style="color: var(--vintage-dark);">{{ car.year }} {{ car.make }} {{ car.model }}
+                                </h4>
+                                <p style="color: var(--vintage-brown); font-size: 0.88rem;">
+                                    <span style="margin-right: 12px;"><i class="fas fa-tag"
+                                            style="color: var(--vintage-gold);"></i> {{ car.category }}</span>
+                                    <span><i class="fas fa-gas-pump" style="color: var(--vintage-gold);"></i> {{
+                                        car.fuel_type }}</span>
+                                </p>
+                            </div>
+                            <div style="flex-shrink: 0;">
+                                <a href="/car-detail/{{ car.id }}/" class="btn btn-outline btn-sm"
+                                    style="font-size: 0.8rem;">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
                         {% endfor %}
+                        {% else %}
+                        <div
+                            style="padding: 30px; text-align: center; background: var(--vintage-cream); border-radius: 2px; border: 1px dashed var(--vintage-gold);">
+                            <i class="fas fa-car"
+                                style="font-size: 2.5rem; color: var(--vintage-gold); margin-bottom: 12px; display: block;"></i>
+                            <p style="color: var(--vintage-brown); margin-bottom: 0;">
+                                This part is exclusively designed for the <strong>{{ part.vehicle.year }} {{
+                                    part.vehicle.make }} {{ part.vehicle.model }}</strong>.
+                                No other vehicles in our database currently use this specific part category.
+                            </p>
+                        </div>
                         {% endif %}
 
+                        <!-- Fitment Disclaimer -->
                         <div
-                            style="margin-top: 30px; padding: 20px; background: var(--vintage-cream); border-radius: 2px; border: 1px solid var(--vintage-light);">
-                            <h5 style="color: var(--vintage-dark); margin-bottom: 10px;">
-                                <i class="fas fa-exclamation-triangle" style="color: var(--vintage-gold);"></i>
+                            style="margin-top: 30px; padding: 18px 20px; background: #fffbf0; border-radius: 2px; border-left: 4px solid var(--vintage-gold);">
+                            <h5 style="color: var(--vintage-dark); margin-bottom: 8px; font-size: 0.95rem;">
+                                <i class="fas fa-exclamation-triangle"
+                                    style="color: var(--vintage-gold); margin-right: 6px;"></i>
                                 Fitment Disclaimer
                             </h5>
-                            <p style="color: var(--vintage-brown); font-size: 0.9rem; margin-bottom: 0;">
-                                While we strive to provide accurate compatibility information, it is your responsibility
-                                to verify that this part fits your specific vehicle before purchasing. Compatibility may
-                                vary based on model year, trim level, and optional equipment.
+                            <p
+                                style="color: var(--vintage-brown); font-size: 0.88rem; margin-bottom: 0; line-height: 1.7;">
+                                While we strive to provide accurate compatibility information, please verify that this
+                                part
+                                fits your specific vehicle before purchasing. Compatibility may vary based on model
+                                year,
+                                trim level, engine variant, and optional equipment. When in doubt, consult a qualified
+                                mechanic.
                             </p>
                         </div>
                     </div>
@@ -1520,74 +1817,316 @@
                 <!-- Shipping Tab -->
                 <div class="tab-content" id="shipping">
                     <div class="shipping-content">
-                        <h3 style="margin-bottom: 20px; color: var(--vintage-dark);">Shipping & Returns</h3>
+                        <h3 style="margin-bottom: 8px; color: var(--vintage-dark);">Shipping &amp; Returns</h3>
+                        <p style="margin-bottom: 25px; color: var(--vintage-brown); font-size: 0.95rem;">
+                            <i class="fas fa-map-marker-alt" style="color: var(--vintage-gold); margin-right: 5px;"></i>
+                            Dispatched from our partner warehouse. Estimated delivery times shown below apply to most
+                            Indian addresses.
+                        </p>
 
+                        <!-- Shipping Methods -->
                         <div class="shipping-methods">
-                            <div class="shipping-method">
-                                <h4>Standard Shipping</h4>
+                            <div class="shipping-method" style="border-left: 4px solid var(--vintage-gold);">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-gold); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                        <i class="fas fa-truck" style="color: var(--vintage-dark);"></i>
+                                    </div>
+                                    <h4 style="margin: 0;">Standard Delivery</h4>
+                                </div>
                                 <div class="shipping-price">FREE</div>
-                                <div class="shipping-estimate">Estimated delivery: 5-7 business days</div>
+                                <div class="shipping-estimate">
+                                    <i class="fas fa-calendar-alt" style="color: var(--vintage-brown);"></i>
+                                    5â€“7 business days
+                                </div>
+                                <p
+                                    style="font-size:0.82rem; color: var(--vintage-brown); margin-top: 8px; margin-bottom:0;">
+                                    Reliable nationwide delivery. Tracking number provided after dispatch.
+                                </p>
                             </div>
-                            <div class="shipping-method">
-                                <h4>Expedited Shipping</h4>
-                                <div class="shipping-price">₹1,275</div>
-                                <div class="shipping-estimate">Estimated delivery: 2-3 business days</div>
+
+                            <div class="shipping-method" style="border-left: 4px solid var(--vintage-brown);">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-brown); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                        <i class="fas fa-shipping-fast" style="color: var(--vintage-cream);"></i>
+                                    </div>
+                                    <h4 style="margin: 0;">Expedited Delivery</h4>
+                                </div>
+                                <div class="shipping-price">â‚¹499</div>
+                                <div class="shipping-estimate">
+                                    <i class="fas fa-calendar-alt" style="color: var(--vintage-brown);"></i>
+                                    2â€“3 business days
+                                </div>
+                                <p
+                                    style="font-size:0.82rem; color: var(--vintage-brown); margin-top: 8px; margin-bottom:0;">
+                                    Priority handling and faster carrier service.
+                                </p>
                             </div>
-                            <div class="shipping-method">
-                                <h4>Overnight Shipping</h4>
-                                <div class="shipping-price">₹2,549</div>
-                                <div class="shipping-estimate">Estimated delivery: Next business day</div>
+
+                            <div class="shipping-method" style="border-left: 4px solid var(--vintage-dark);">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                        <i class="fas fa-bolt" style="color: var(--vintage-gold);"></i>
+                                    </div>
+                                    <h4 style="margin: 0;">Overnight Delivery</h4>
+                                </div>
+                                <div class="shipping-price">â‚¹999</div>
+                                <div class="shipping-estimate">
+                                    <i class="fas fa-calendar-alt" style="color: var(--vintage-brown);"></i>
+                                    Next business day by 10 AM
+                                </div>
+                                <p
+                                    style="font-size:0.82rem; color: var(--vintage-brown); margin-top: 8px; margin-bottom:0;">
+                                    Guaranteed next-day delivery. Available for select pin-codes only.
+                                </p>
                             </div>
                         </div>
 
-                        <div style="margin-top: 40px;">
-                            <h4 style="margin-bottom: 15px; color: var(--vintage-dark);">Return Policy</h4>
+                        <!-- Delivery Timeline -->
+                        <div style="margin-top: 35px; margin-bottom: 30px;">
+                            <h4 style="margin-bottom: 18px; color: var(--vintage-dark);">
+                                <i class="fas fa-route" style="color: var(--vintage-gold); margin-right: 8px;"></i>
+                                Delivery Timeline
+                            </h4>
                             <div
-                                style="background: var(--vintage-cream); padding: 20px; border-radius: 2px; border: 1px solid var(--vintage-light);">
-                                <ul style="list-style-type: none; padding-left: 0;">
-                                    <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check"
-                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>30-Day Return Window:</strong> Returns accepted within 30 days of
-                                        delivery
+                                style="display: flex; gap: 0; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px;">
+                                {% for step in "ORDERPICKPACKSHIP"|make_list %}{% endfor %}
+                                <div style="flex:1; text-align:center; min-width: 90px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-gold); display:flex; align-items:center; justify-content:center; margin: 0 auto 8px; color:var(--vintage-dark);">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div
+                                        style="font-size:0.8rem; font-family:'Cinzel',serif; color:var(--vintage-dark); font-weight:600;">
+                                        Order Placed</div>
+                                    <div style="font-size:0.75rem; color:var(--vintage-brown);">Day 0</div>
+                                </div>
+                                <div
+                                    style="flex:0 0 30px; display:flex; align-items:flex-start; padding-top:18px; color:var(--vintage-gold); font-size:1.2rem;">
+                                    &#8594;</div>
+                                <div style="flex:1; text-align:center; min-width: 90px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-brown); display:flex; align-items:center; justify-content:center; margin: 0 auto 8px; color:var(--vintage-cream);">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <div
+                                        style="font-size:0.8rem; font-family:'Cinzel',serif; color:var(--vintage-dark); font-weight:600;">
+                                        Packed</div>
+                                    <div style="font-size:0.75rem; color:var(--vintage-brown);">Day 1</div>
+                                </div>
+                                <div
+                                    style="flex:0 0 30px; display:flex; align-items:flex-start; padding-top:18px; color:var(--vintage-gold); font-size:1.2rem;">
+                                    &#8594;</div>
+                                <div style="flex:1; text-align:center; min-width: 90px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-brown); display:flex; align-items:center; justify-content:center; margin: 0 auto 8px; color:var(--vintage-cream);">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div
+                                        style="font-size:0.8rem; font-family:'Cinzel',serif; color:var(--vintage-dark); font-weight:600;">
+                                        Shipped</div>
+                                    <div style="font-size:0.75rem; color:var(--vintage-brown);">Day 2</div>
+                                </div>
+                                <div
+                                    style="flex:0 0 30px; display:flex; align-items:flex-start; padding-top:18px; color:var(--vintage-gold); font-size:1.2rem;">
+                                    &#8594;</div>
+                                <div style="flex:1; text-align:center; min-width: 90px;">
+                                    <div
+                                        style="width:40px; height:40px; border-radius:50%; background:var(--vintage-dark); display:flex; align-items:center; justify-content:center; margin: 0 auto 8px; color:var(--vintage-gold);">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div
+                                        style="font-size:0.8rem; font-family:'Cinzel',serif; color:var(--vintage-dark); font-weight:600;">
+                                        Delivered</div>
+                                    <div style="font-size:0.75rem; color:var(--vintage-brown);">Day 5â€“7</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Return Policy -->
+                        <div style="margin-top: 35px;">
+                            <h4 style="margin-bottom: 15px; color: var(--vintage-dark);">
+                                <i class="fas fa-undo-alt" style="color: var(--vintage-gold); margin-right: 8px;"></i>
+                                Return Policy
+                            </h4>
+                            <div
+                                style="background: var(--vintage-cream); padding: 22px; border-radius: 2px; border: 1px solid var(--vintage-light);">
+                                <ul style="list-style-type: none; padding-left: 0; margin: 0;">
+                                    <li
+                                        style="padding: 10px 0; color: var(--vintage-dark); border-bottom: 1px solid var(--vintage-light); display: flex; gap: 12px; align-items: flex-start;">
+                                        <i class="fas fa-check-circle"
+                                            style="color: #27ae60; margin-top: 3px; flex-shrink:0;"></i>
+                                        <div><strong>30-Day Return Window</strong> â€” Returns accepted within 30 days of
+                                            delivery, no questions asked for unused parts.</div>
                                     </li>
-                                    <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check"
-                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>Condition Requirements:</strong> Item must be in original condition with
-                                        all packaging
+                                    <li
+                                        style="padding: 10px 0; color: var(--vintage-dark); border-bottom: 1px solid var(--vintage-light); display: flex; gap: 12px; align-items: flex-start;">
+                                        <i class="fas fa-check-circle"
+                                            style="color: #27ae60; margin-top: 3px; flex-shrink:0;"></i>
+                                        <div><strong>Original Condition Required</strong> â€” Item must be uninstalled and
+                                            in original packaging for a full refund.</div>
                                     </li>
-                                    <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check"
-                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>Return Shipping:</strong> Buyer responsible for return shipping costs
-                                        unless item is defective
+                                    <li
+                                        style="padding: 10px 0; color: var(--vintage-dark); border-bottom: 1px solid var(--vintage-light); display: flex; gap: 12px; align-items: flex-start;">
+                                        <i class="fas fa-info-circle"
+                                            style="color: var(--vintage-gold); margin-top: 3px; flex-shrink:0;"></i>
+                                        <div><strong>Return Shipping</strong> â€” Buyer covers return shipping unless the
+                                            item is defective, damaged, or not as described.</div>
                                     </li>
-                                    <li style="padding: 8px 0; color: var(--vintage-dark);">
-                                        <i class="fas fa-check"
-                                            style="color: var(--vintage-gold); margin-right: 10px;"></i>
-                                        <strong>Refund Processing:</strong> Refunds processed within 3-5 business days
-                                        after item is received
+                                    <li
+                                        style="padding: 10px 0; color: var(--vintage-dark); display: flex; gap: 12px; align-items: flex-start;">
+                                        <i class="fas fa-check-circle"
+                                            style="color: #27ae60; margin-top: 3px; flex-shrink:0;"></i>
+                                        <div><strong>Refund Processing</strong> â€” Refunds processed within 3â€“5 business
+                                            days after the returned item is received and inspected.</div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
+                        <!-- Buyer Protection -->
                         <div
-                            style="margin-top: 30px; padding: 20px; background: var(--vintage-cream); border-radius: 2px; border: 1px solid var(--vintage-light);">
-                            <h5 style="color: var(--vintage-dark); margin-bottom: 10px;">
-                                <i class="fas fa-shield-alt" style="color: var(--vintage-gold);"></i>
-                                Buyer Protection
+                            style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #f0f8f0, #e8f5e9); border-radius: 2px; border: 1px solid #a5d6a7;">
+                            <h5 style="color: #2e7d32; margin-bottom: 10px;">
+                                <i class="fas fa-shield-alt" style="margin-right: 8px;"></i>
+                                ClassicAuto Buyer Protection
                             </h5>
-                            <p style="color: var(--vintage-brown); font-size: 0.9rem; margin-bottom: 0;">
-                                All purchases through ClassicParts are protected by our Buyer Protection Guarantee.
-                                If your item doesn't arrive or isn't as described, we'll help you get a full refund.
+                            <p style="color: #388e3c; font-size: 0.9rem; margin-bottom: 0; line-height: 1.7;">
+                                Every purchase through ClassicAuto is covered by our <strong>Buyer Protection
+                                    Guarantee</strong>.
+                                If your item doesn't arrive, arrives damaged, or isn't as described â€” we'll issue a full
+                                refund.
+                                Our support team is available Monâ€“Fri, 9 AMâ€“6 PM IST.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Reviews Tab -->
+                <!-- Reviews / Comments Tab -->
+                <div class="tab-content" id="reviews">
+                    <div class="reviews-content">
+
+                        {% if total_reviews > 0 %}
+                        <!-- Average Rating Summary -->
+                        <div class="review-stats">
+                            <div class="average-rating">
+                                <div class="rating-number">{{ avg_rating }}</div>
+                                <div class="rating-stars">
+                                    {% for i in "12345" %}
+                                    <i
+                                        class="{% if forloop.counter <= avg_rating|floatformat:0|add:0 %}fas{% else %}far{% endif %} fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                                <div class="total-reviews">{{ total_reviews }} review{{ total_reviews|pluralize }}</div>
+                            </div>
+                            <div class="rating-bars">
+                                {% for star in "54321" %}
+                                {% with s=forloop.counter|add:0 %}
+                                <div class="rating-bar-item">
+                                    <span class="rating-label">{{ star }} â˜…</span>
+                                    <div class="rating-bar">
+                                        <div class="rating-fill" style="width: {{ rating_dist|default:0 }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endwith %}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Reviews List -->
+                        <div class="reviews-list">
+                            {% for review in reviews %}
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <div class="reviewer-info">
+                                        <div class="reviewer-avatar">{{ review.user_name|first|upper }}</div>
+                                        <div>
+                                            <div class="reviewer-name">{{ review.user_name }}</div>
+                                            <div class="review-date"><i class="fas fa-calendar-alt"
+                                                    style="font-size:0.8rem;"></i> {{ review.created_at|date:"M d, Y" }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="review-rating">
+                                        {% for i in "12345" %}
+                                        <i
+                                            class="{% if forloop.counter <= review.rating %}fas{% else %}far{% endif %} fa-star"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="review-content">
+                                    <p>{{ review.comment }}</p>
+                                    {% if review.image %}
+                                    <img src="{{ review.image.url }}" alt="Review image by {{ review.user_name }}"
+                                        style="max-width: 100%; max-height: 250px; border-radius: 2px; margin-top: 14px; border: 1px solid var(--vintage-light);">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div style="text-align: center; padding: 40px; color: var(--vintage-brown);">
+                            <i class="fas fa-comments"
+                                style="font-size: 3rem; color: var(--vintage-gold); display: block; margin-bottom: 15px;"></i>
+                            <h4 style="margin-bottom: 10px; color: var(--vintage-dark);">No Reviews Yet</h4>
+                            <p>Be the first to share your experience with this part!</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Write a Review Form -->
+                        <div class="review-form-wrap" id="reviewFormWrap">
+                            <h4><i class="fas fa-pencil-alt"
+                                    style="color: var(--vintage-gold); margin-right: 8px;"></i>Write a Review</h4>
+                            <form id="reviewForm" enctype="multipart/form-data" onsubmit="submitReview(event)">
+                                {% csrf_token %}
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                                    <div>
+                                        <label for="rName">Your Name *</label>
+                                        <input type="text" id="rName" name="user_name" placeholder="John Smith"
+                                            required>
+                                    </div>
+                                    <div>
+                                        <label for="rEmail">Email * <small style="font-weight:400;">(not
+                                                published)</small></label>
+                                        <input type="email" id="rEmail" name="user_email" placeholder="you@example.com"
+                                            value="{{ user_email }}" required>
+                                    </div>
+                                </div>
+                                <label>Rating *</label>
+                                <div class="star-rating" id="starRating" role="group" aria-label="Rating">
+                                    {% for i in "12345" %}
+                                    <span class="star" data-value="{{ forloop.counter }}"
+                                        aria-label="{{ forloop.counter }} star">â˜…</span>
+                                    {% endfor %}
+                                </div>
+                                <input type="hidden" id="rRating" name="rating" value="0">
+                                <label for="rComment">Comment *</label>
+                                <textarea id="rComment" name="comment"
+                                    placeholder="Share your honest experience with this part..." required></textarea>
+                                <label>Photo (optional â€” JPG/PNG/WebP, max 2MB)</label>
+                                <label class="file-upload-btn" for="rImage">
+                                    <i class="fas fa-camera"></i> Choose Image
+                                </label>
+                                <input type="file" id="rImage" name="image" accept="image/jpeg,image/png,image/webp"
+                                    style="display:none;" onchange="previewImage(this)">
+                                <small id="rImageName"
+                                    style="display:block; margin-top:5px; color: var(--vintage-brown);"></small>
+                                <img id="rImagePreview" class="review-image-preview" alt="Preview">
+                                <div id="reviewError"
+                                    style="display:none; background: rgba(231,76,60,0.1); color:#e74c3c; padding: 10px 14px; border-radius: 2px; margin-top: 10px; border: 1px solid #e74c3c;">
+                                </div>
+                                <button type="submit" class="btn btn-gold"
+                                    style="width: 100%; margin-top: 15px; padding: 14px;">
+                                    <i class="fas fa-paper-plane"></i> Submit Review
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -1661,7 +2200,7 @@
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/marketplace/">Browse Parts</a></li>
                         <li><a href="/sell-part/">Sell Parts</a></li>
                         <li><a href="/collections/">My Collection</a></li>
@@ -1694,204 +2233,293 @@
         </div>
     </footer>
 
+    <!-- QR Payment Modal -->
+    <div class="qr-modal-overlay" id="qrModalOverlay" onclick="closeQRModal(event)">
+        <div class="qr-modal">
+            <button class="qr-modal-close" onclick="closeQRModal()" aria-label="Close modal">&times;</button>
+            <h3><i class="fas fa-qrcode" style="color: var(--vintage-gold); margin-right: 8px;"></i>Scan to Pay</h3>
+            <p>Scan with Google Pay, PhonePe, Paytm, or any UPI app</p>
+            <div class="price-tag">{{ part.price|inr }}</div>
+            <div style="font-size: 0.85rem; color: var(--vintage-brown); margin-bottom: 16px;">{{
+                part.name|truncatechars:40 }}</div>
+            <img src="/part-qr/{{ part.id }}/" alt="QR Code for {{ part.name }}" id="qrImage">
+            <div class="qr-btns">
+                <a href="/part-payment/{{ part.id }}/" class="btn btn-gold" target="_blank"
+                    style="padding: 10px 20px; font-size: 0.85rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; border-radius:2px;">
+                    <i class="fas fa-receipt"></i> View Full Invoice
+                </a>
+                <a href="/part-qr/{{ part.id }}/" download="qrcode-{{ part.id }}.png" class="btn btn-outline"
+                    style="padding: 10px 20px; font-size: 0.85rem; display:inline-flex; align-items:center; gap:8px; text-decoration:none; border-radius:2px; border: 2px solid var(--vintage-dark); color: var(--vintage-dark);">
+                    <i class="fas fa-download"></i> Download QR
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification -->
     <div class="notification" id="notification"></div>
 
     <script>
-        // Shopping Cart
+        // â”€â”€ Cart (localStorage) â”€â”€
         let cart = JSON.parse(localStorage.getItem('classicPartsCart')) || [];
 
         function updateCartCount() {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cartCount').textContent = totalItems;
+            const el = document.getElementById('cartCount');
+            if (el) el.textContent = cart.reduce((s, i) => s + i.quantity, 0);
         }
 
         function addToCart() {
-            const quantity = parseInt(document.getElementById('quantity').value);
-            const partData = {
-                id: '{{ part.id }}',
-                name: '{{ part.name|escapejs }}',
-                price: {{ part.price }
-        },
-        image: '{{ part.main_image.url }}',
-            quantity: quantity
-            };
-
-        const existingItem = cart.find(item => item.id === partData.id);
-
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            cart.push(partData);
-        }
-
+            const qty = parseInt(document.getElementById('quantity').value) || 1;
+            const existing = cart.find(i => i.id === '{{ part.id }}');
+            if (existing) {
+                existing.quantity += qty;
+            } else {
+                cart.push({
+                    id: '{{ part.id }}',
+                    name: '{{ part.name|escapejs }}',
+                    price: {{ part.price|default:0 }},
+            image: '{{ part.image.url }}',
+                quantity: qty
+        });
+            }
         updateCartCount();
         showNotification('Added to cart!', 'success');
-        window.location.href = `/add-cart/{{part.id}}/`;
+        window.location.href = `/add-cart/{{ part.id }}/`;
         }
 
-        function addToCartDirect(partId, name, price, image) {
-            const partData = {
-                id: partId,
-                name: name,
-                price: price,
-                image: image,
-                quantity: 1
-            };
+        function openCart() { window.location.href = '/cart/'; }
 
-            const existingItem = cart.find(item => item.id === partData.id);
-
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push(partData);
-            }
-
-            localStorage.setItem('classicPartsCart', JSON.stringify(cart));
-            updateCartCount();
-            showNotification(`${name} added to cart!`, 'success');
-        }
-
-        function openCart() {
-            window.location.href = '/cart/';
-        }
-
-        // Image Gallery
-        function changeImage(src, element) {
+        // â”€â”€ Image Gallery â”€â”€
+        function changeImage(src, el) {
             document.getElementById('currentImage').src = src;
-
-            // Update active thumbnail
-            document.querySelectorAll('.thumbnail').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-            element.classList.add('active');
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
         }
 
-        // Quantity Controls
+        // â”€â”€ Quantity Controls â”€â”€
         function increaseQuantity() {
             const input = document.getElementById('quantity');
             const max = parseInt(input.max);
-            if (parseInt(input.value) < max) {
-                input.value = parseInt(input.value) + 1;
+            const cur = parseInt(input.value);
+            if (cur < max) {
+                input.value = cur + 1;
+                document.getElementById('btnDecrease').disabled = false;
+                if (cur + 1 >= max) document.getElementById('btnIncrease').disabled = true;
             }
         }
 
         function decreaseQuantity() {
             const input = document.getElementById('quantity');
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
+            const cur = parseInt(input.value);
+            if (cur > 1) {
+                input.value = cur - 1;
+                document.getElementById('btnIncrease').disabled = false;
+                if (cur - 1 <= 1) document.getElementById('btnDecrease').disabled = true;
             }
         }
 
-        // Tab Navigation
+        // â”€â”€ Tab Navigation â”€â”€
         function openTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            // Remove active class from all tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Show selected tab content
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
-
-            // Add active class to clicked tab button
             event.currentTarget.classList.add('active');
         }
 
-        // Wishlist
-        function addToWishlist() {
-            const wishlist = JSON.parse(localStorage.getItem('classicPartsWishlist')) || [];
-            const partData = {
-                id: '{{ part.id }}',
-                name: '{{ part.name|escapejs }}',
-                price: {{ part.price }
-        },
-        image: '{{ part.main_image.url }}'
-            };
-
-        if (!wishlist.find(item => item.id === partData.id)) {
-            wishlist.push(partData);
-            localStorage.setItem('classicPartsWishlist', JSON.stringify(wishlist));
-            showNotification('Added to wishlist!', 'success');
-        } else {
-            showNotification('Already in wishlist!', 'info');
-        }
-        }
-
-        // Contact Seller
+        // â”€â”€ Contact Seller â†’ funny page â”€â”€
         function contactSeller() {
-            window.location.href = '/messages/new/?seller={{ part.seller.id }}&part={{ part.id }}';
+            window.location.href = '/seller-unavailable/?seller={{ part.seller.id }}&part={{ part.id }}';
         }
 
-        function viewSellerProfile() {
-            window.location.href = '/seller/{{ part.seller.id }}/';
+        // â”€â”€ Notify Me (AJAX) â”€â”€
+        function submitNotify(e) {
+            e.preventDefault();
+            const email = document.getElementById('notifyEmail').value.trim();
+            const csrfToken = document.querySelector('#notifyForm [name=csrfmiddlewaretoken]').value;
+            const msgEl = document.getElementById('notifyMsg');
+
+            fetch('/part-notify/{{ part.id }}/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `csrfmiddlewaretoken=${encodeURIComponent(csrfToken)}&email=${encodeURIComponent(email)}`
+            })
+                .then(r => r.json())
+                .then(data => {
+                    msgEl.style.display = 'block';
+                    if (data.ok) {
+                        msgEl.style.background = 'rgba(46,204,113,0.1)';
+                        msgEl.style.color = '#27ae60';
+                        msgEl.style.border = '1px solid #27ae60';
+                        msgEl.innerHTML = '<i class="fas fa-check-circle"></i> ' + data.message;
+                        document.getElementById('notifyForm').style.display = 'none';
+                    } else {
+                        msgEl.style.background = 'rgba(231,76,60,0.1)';
+                        msgEl.style.color = '#e74c3c';
+                        msgEl.style.border = '1px solid #e74c3c';
+                        msgEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + data.error;
+                    }
+                })
+                .catch(() => {
+                    msgEl.style.display = 'block';
+                    msgEl.style.color = '#e74c3c';
+                    msgEl.textContent = 'Network error. Please try again.';
+                });
         }
 
-        function viewAllReviews() {
-            window.location.href = '/part/{{ part.id }}/reviews/';
+        // â”€â”€ Star Rating â”€â”€
+        (function () {
+            const stars = document.querySelectorAll('#starRating .star');
+            if (!stars.length) return;
+            stars.forEach(star => {
+                star.addEventListener('mouseenter', function () {
+                    const val = parseInt(this.dataset.value);
+                    stars.forEach(s => s.classList.toggle('hover-fill', parseInt(s.dataset.value) <= val));
+                });
+                star.addEventListener('mouseleave', function () {
+                    stars.forEach(s => s.classList.remove('hover-fill'));
+                });
+                star.addEventListener('click', function () {
+                    const val = parseInt(this.dataset.value);
+                    document.getElementById('rRating').value = val;
+                    stars.forEach(s => s.classList.toggle('selected', parseInt(s.dataset.value) <= val));
+                });
+            });
+        })();
+
+        // â”€â”€ Review Image Preview â”€â”€
+        function previewImage(input) {
+            const nameEl = document.getElementById('rImageName');
+            const preview = document.getElementById('rImagePreview');
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                // Client-side size check
+                if (file.size > 2 * 1024 * 1024) {
+                    document.getElementById('reviewError').style.display = 'block';
+                    document.getElementById('reviewError').textContent = 'Image must be under 2MB';
+                    input.value = '';
+                    preview.style.display = 'none';
+                    nameEl.textContent = '';
+                    return;
+                }
+                nameEl.textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+                reader.readAsDataURL(file);
+            }
         }
 
-        function writeReview() {
-            window.location.href = '/part/{{ part.id }}/review/';
+        // â”€â”€ Submit Review (AJAX) â”€â”€
+        function submitReview(e) {
+            e.preventDefault();
+            const errEl = document.getElementById('reviewError');
+            errEl.style.display = 'none';
+
+            const rating = document.getElementById('rRating').value;
+            if (!rating || parseInt(rating) < 1) {
+                errEl.style.display = 'block';
+                errEl.textContent = 'Please select a star rating before submitting.';
+                return;
+            }
+
+            const form = document.getElementById('reviewForm');
+            const fd = new FormData(form);
+
+            const submitBtn = form.querySelector('[type=submit]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            fetch('/part-review/{{ part.id }}/', {
+                method: 'POST',
+                body: fd,
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        // Inject review into DOM
+                        const r = data.review;
+                        const wrap = document.querySelector('.reviews-content');
+                        let list = wrap.querySelector('.reviews-list');
+                        if (!list) {
+                            // Remove empty state if present
+                            const empty = wrap.querySelector('[style*="text-align: center"]');
+                            if (empty) empty.remove();
+                            list = document.createElement('div');
+                            list.className = 'reviews-list';
+                            wrap.insertBefore(list, document.getElementById('reviewFormWrap'));
+                        }
+                        const starsHtml = Array.from({ length: 5 }, (_, i) =>
+                            `<i class="${i < r.rating ? 'fas' : 'far'} fa-star"></i>`).join('');
+                        const imgHtml = r.image_url
+                            ? `<img src="${r.image_url}" alt="Your review image" style="max-width:100%; max-height:200px; border-radius:2px; margin-top:12px; border:1px solid var(--vintage-light);">`
+                            : '';
+                        const reviewEl = document.createElement('div');
+                        reviewEl.className = 'review-item';
+                        reviewEl.innerHTML = `
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">${r.user_name[0].toUpperCase()}</div>
+                                <div>
+                                    <div class="reviewer-name">${r.user_name}</div>
+                                    <div class="review-date"><i class="fas fa-calendar-alt" style="font-size:0.8rem;"></i> ${r.created_at}</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">${starsHtml}</div>
+                        </div>
+                        <div class="review-content"><p>${r.comment}</p>${imgHtml}</div>`;
+                        list.insertBefore(reviewEl, list.firstChild);
+                        form.reset();
+                        document.querySelectorAll('#starRating .star').forEach(s => s.classList.remove('selected'));
+                        document.getElementById('rRating').value = 0;
+                        document.getElementById('rImagePreview').style.display = 'none';
+                        document.getElementById('rImageName').textContent = '';
+                        showNotification('Review submitted! Thank you.', 'success');
+                    } else {
+                        errEl.style.display = 'block';
+                        errEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + data.error;
+                    }
+                })
+                .catch(() => {
+                    errEl.style.display = 'block';
+                    errEl.textContent = 'Network error. Please try again.';
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
+                });
         }
 
-        // Notification System
+        // â”€â”€ QR Modal â”€â”€
+        function openQRModal() {
+            document.getElementById('qrModalOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeQRModal(e) {
+            if (!e || e.target === document.getElementById('qrModalOverlay') || e.target.classList.contains('qr-modal-close')) {
+                document.getElementById('qrModalOverlay').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close QR modal with Escape
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeQRModal({ target: document.getElementById('qrModalOverlay') }); });
+
+        // â”€â”€ Notification Banner â”€â”€
         function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            notification.style.background = type === 'success' ? 'var(--vintage-green)' :
-                type === 'info' ? 'var(--vintage-gold)' :
-                    'var(--vintage-red)';
-
-            // Add icon
-            const icon = type === 'success' ? 'fa-check-circle' :
-                type === 'info' ? 'fa-info-circle' :
-                    'fa-exclamation-triangle';
-            notification.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
-
+            const el = document.getElementById('notification');
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'info' ? 'fa-info-circle' : 'fa-exclamation-triangle';
+            el.style.background = type === 'success' ? 'var(--vintage-green)' : type === 'info' ? 'var(--vintage-gold)' : 'var(--vintage-red)';
+            el.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+            el.style.display = 'block';
+            el.style.animation = 'slideIn 0.3s ease';
             setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                    notification.style.animation = '';
-                }, 300);
+                el.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => { el.style.display = 'none'; el.style.animation = ''; }, 300);
             }, 3000);
         }
 
-        // Initialize cart count
+        // Init
         updateCartCount();
-
-        // Add CSS for notification animations
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-
-            @keyframes slideOut {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 

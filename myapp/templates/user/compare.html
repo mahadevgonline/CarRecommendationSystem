@@ -1,8 +1,14 @@
-{% load currency_filters %}
+﻿{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+    <script>
+        // Session Guard: Prevent navigating back to authenticated pages after logout
+        function preventBack() { window.history.forward(); }
+        setTimeout('preventBack()', 0);
+        window.onunload = function () { null };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare Vehicles - ClassicAuto</title>
@@ -946,7 +952,7 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -959,7 +965,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -969,9 +975,9 @@
     <div class="breadcrumb">
         <div class="container">
             <div class="breadcrumb-content">
-                <a href="index.html">Home</a>
+                <a href="/user/">Home</a>
                 <i class="fas fa-chevron-right"></i>
-                <a href="collection.html">Collection</a>
+                <a href="/collections/">Collection</a>
                 <i class="fas fa-chevron-right"></i>
                 <span>Compare Vehicles</span>
             </div>
@@ -1007,77 +1013,7 @@
 
             <!-- Comparison Table -->
             <div class="comparison-table" id="comparisonTable">
-                <div class="comparison-header">
-                    <div class="comparison-cell">
-                        <h3>Specification</h3>
-                        <p>Key vehicle details</p>
-                    </div>
-                    <div class="comparison-cell" id="vehicle1Header">
-                        <h3>Vehicle 1</h3>
-                        <p>Select a vehicle</p>
-                    </div>
-                    <div class="comparison-cell" id="vehicle2Header">
-                        <h3>Vehicle 2</h3>
-                        <p>Select a vehicle</p>
-                    </div>
-                </div>
-
-                <div class="comparison-row">
-                    <div class="comparison-category">
-                        <div class="spec-icon">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        Make, Model & Year
-                    </div>
-                    <div class="comparison-value" id="vehicle1MakeModelYear">-</div>
-                    <div class="comparison-value" id="vehicle2MakeModelYear">-</div>
-                </div>
-
-                <div class="comparison-row">
-                    <div class="comparison-category">
-                        <div class="spec-icon">
-                            <i class="fas fa-tags"></i>
-                        </div>
-                        Category & Fuel Type
-                    </div>
-                    <div class="comparison-value" id="vehicle1CategoryFuel">-</div>
-                    <div class="comparison-value" id="vehicle2CategoryFuel">-</div>
-                </div>
-
-                <div class="comparison-row">
-                    <div class="comparison-category">
-                        <div class="spec-icon">
-                            <i class="fas fa-tachometer-alt"></i>
-                        </div>
-                        Engine & Horse Power
-                    </div>
-                    <div class="comparison-value" id="vehicle1EngineHorsepower">-</div>
-                    <div class="comparison-value" id="vehicle2EngineHorsepower">-</div>
-                </div>
-
-                <div class="comparison-row">
-                    <div class="comparison-category">
-                        <div class="spec-icon">
-                            <i class="fas fa-cogs"></i>
-                        </div>
-                        Transmission
-                    </div>
-                    <div class="comparison-value" id="vehicle1Transmission">-</div>
-                    <div class="comparison-value" id="vehicle2Transmission">-</div>
-                </div>
-
-                <div class="comparison-row">
-                    <div class="comparison-category">
-                        <div class="spec-icon">
-                            <i class="fas fa-gas-pump"></i>
-                        </div>
-                        MPG (City/Highway)
-                    </div>
-                    <div class="comparison-value" id="vehicle1MPG">-</div>
-                    <div class="comparison-value" id="vehicle2MPG">-</div>
-                </div>
-
-
+                <!-- The entire table content will be injected by JavaScript -->
             </div>
 
             <!-- Features Comparison -->
@@ -1197,21 +1133,21 @@
             {% for i in cars %}
         {
             id: { { i.id } },
-            make: "{{ i.make }}",
-                model: "{{ i.model }}",
+            make: "{{i.make}}",
+                model: "{{i.model}}",
                     year: { { i.year } },
-            price: "{{ i.price|inr }}",
-                category: "{{ i.category }}",
-                    fuelType: "{{ i.fuel_type }}",
-                        description: "{{ i.description }}",
-                            engine: "{{ i.engine }}",
-                                horsePower: "{{ i.horse_power }} HP",
-                                    transmission: "{{ i.transmission }}",
-                                        mpgCity: { { i.mpg_city } },
-            mpgHighway: { { i.mpg_hway } },
-            features: { { i.features | safe } },
-            image: "{{ i.image.url }}",
-            } {% if not forloop.last %}, {% endif %}
+            price: "{{i.price|inr}}",
+                category: "{{i.category}}",
+                    fuelType: "{{i.fuel_type}}",
+                        description: "{{i.description|truncatewords:15}}",
+                            engine: "{{i.engine}}",
+                                horsePower: "{{i.horse_power}} HP",
+                                    transmission: "{{i.transmission}}",
+                                        mpgCity: "{{i.mpg_city}}",
+                                            mpgHighway: "{{i.mpg_hway}}",
+                                                features: { { i.features | safe } },
+            image: "{{i.image.url}}",
+        } {% if not forloop.last %}, {% endif %}
         {% endfor %}
         ];
 
@@ -1409,31 +1345,59 @@
             });
         }
 
-        // Update the comparison table with vehicle data
+        // Update the comparison table with dynamic columns
         function updateComparisonTable() {
+            // Setup the grid layout based on number of vehicles + 1 for category column
+            const numCols = selectedVehicles.length + 1;
+
+            let html = `
+                <div class="comparison-header" style="grid-template-columns: 1fr repeat(${selectedVehicles.length}, 1fr);">
+                    <div class="comparison-cell">
+                        <h3>Specification</h3>
+                        <p>Key vehicle details</p>
+                    </div>
+            `;
+
+            // Output headers
             selectedVehicles.forEach((vehicleId, index) => {
                 const vehicle = vehicleData.find(v => v.id === vehicleId);
                 if (vehicle) {
-                    // Update header
-                    const headerElement = document.getElementById(`vehicle${index + 1}Header`);
-                    if (headerElement) {
-                        headerElement.querySelector('h3').textContent = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-                        headerElement.querySelector('p').textContent = vehicle.category;
-                    }
-
-                    // Update rows
-                    document.getElementById(`vehicle${index + 1}MakeModelYear`).textContent =
-                        `${vehicle.make} ${vehicle.model} • ${vehicle.year}`;
-                    document.getElementById(`vehicle${index + 1}CategoryFuel`).textContent =
-                        `${vehicle.category} • ${vehicle.fuelType}`;
-                    document.getElementById(`vehicle${index + 1}EngineHorsepower`).textContent =
-                        `${vehicle.engine} • ${vehicle.horsePower}`;
-                    document.getElementById(`vehicle${index + 1}Transmission`).textContent =
-                        vehicle.transmission;
-                    document.getElementById(`vehicle${index + 1}MPG`).textContent =
-                        `${vehicle.mpgCity} MPG / ${vehicle.mpgHighway} MPG`;
+                    html += `
+                        <div class="comparison-cell">
+                            <h3>${vehicle.make} ${vehicle.model}</h3>
+                            <p>${vehicle.category}</p>
+                        </div>
+                    `;
                 }
             });
+            html += `</div>`;
+
+            // Helper function to render a single row
+            const renderRow = (icon, title, valueFunc) => {
+                let rowHtml = `
+                <div class="comparison-row" style="grid-template-columns: 1fr repeat(${selectedVehicles.length}, 1fr);">
+                    <div class="comparison-category">
+                        <div class="spec-icon"><i class="${icon}"></i></div>
+                        ${title}
+                    </div>
+                `;
+                selectedVehicles.forEach((vehicleId) => {
+                    const vehicle = vehicleData.find(v => v.id === vehicleId);
+                    rowHtml += `<div class="comparison-value">${vehicle ? valueFunc(vehicle) : '-'}</div>`;
+                });
+                rowHtml += `</div>`;
+                return rowHtml;
+            };
+
+            // Render all rows
+            html += renderRow('fas fa-calendar-alt', 'Make, Model & Year', v => `${v.make} ${v.model} • ${v.year}`);
+            html += renderRow('fas fa-tags', 'Category & Fuel Type', v => `${v.category} • ${v.fuelType}`);
+            html += renderRow('fas fa-tachometer-alt', 'Engine & Horse Power', v => `${v.engine} • ${v.horsePower}`);
+            html += renderRow('fas fa-cogs', 'Transmission', v => v.transmission);
+            html += renderRow('fas fa-gas-pump', 'MPG (City/Highway)', v => `${v.mpgCity} / ${v.mpgHighway}`);
+
+            // Replace table content
+            comparisonTable.innerHTML = html;
         }
 
         // Update the features comparison section

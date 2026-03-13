@@ -1,0 +1,536 @@
+{% load currency_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Pay for {{ part.name }} — ClassicAuto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --dark: #3e2723;
+            --brown: #5d4037;
+            --light: #d7ccc8;
+            --gold: #c9a96e;
+            --cream: #f5f1e6;
+            --green: #27ae60;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', serif;
+            background: var(--dark);
+            color: var(--cream);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 24px 16px 40px;
+        }
+
+        /* ── Header bar ── */
+        .top-bar {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity .2s;
+        }
+
+        .back-link:hover {
+            opacity: 0.75;
+        }
+
+        .site-logo {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            color: var(--gold);
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: var(--cream);
+            color: var(--dark);
+            border-radius: 4px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 560px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .5), 0 0 0 2px var(--gold);
+        }
+
+        /* ── Card header ── */
+        .card-header {
+            background: var(--dark);
+            border-bottom: 3px solid var(--gold);
+            padding: 22px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .part-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 3px;
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+        }
+
+        .part-meta h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--cream);
+            margin-bottom: 4px;
+        }
+
+        .part-meta p {
+            color: var(--light);
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        .part-meta .price-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 3px 14px;
+            border-radius: 2px;
+            margin-top: 6px;
+        }
+
+        /* ── Body ── */
+        .card-body {
+            padding: 24px;
+        }
+
+        /* ── QR section ── */
+        .qr-section {
+            text-align: center;
+            background: white;
+            border: 1px solid var(--light);
+            border-radius: 3px;
+            padding: 24px 16px;
+            margin-bottom: 20px;
+        }
+
+        .qr-section h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .qr-section p {
+            font-size: 0.8rem;
+            color: var(--brown);
+            margin-bottom: 16px;
+        }
+
+        .qr-img {
+            width: 200px;
+            height: 200px;
+            border: 3px solid var(--dark);
+            border-radius: 3px;
+            display: block;
+            margin: 0 auto 14px;
+        }
+
+        .scan-note {
+            font-size: 0.78rem;
+            color: var(--brown);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* ── Divider ── */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 18px 0;
+            color: var(--brown);
+            font-size: 0.85rem;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--light);
+        }
+
+        /* ── UPI ID copy box ── */
+        .upi-box {
+            background: var(--cream);
+            border: 1px dashed var(--brown);
+            border-radius: 2px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 18px;
+            cursor: pointer;
+            transition: border-color .2s;
+        }
+
+        .upi-box:hover {
+            border-color: var(--gold);
+        }
+
+        .upi-box .label {
+            font-size: 0.78rem;
+            color: var(--brown);
+            margin-bottom: 2px;
+        }
+
+        .upi-box .value {
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .copy-btn {
+            background: var(--gold);
+            border: none;
+            border-radius: 2px;
+            padding: 6px 14px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .2s;
+        }
+
+        .copy-btn:hover {
+            background: #b89446;
+        }
+
+        .copy-msg {
+            font-size: 0.78rem;
+            color: var(--green);
+            margin: -12px 0 12px;
+            min-height: 18px;
+        }
+
+        /* ── UPI apps ── */
+        .upi-apps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .upi-app {
+            background: white;
+            border: 1px solid var(--light);
+            border-radius: 3px;
+            padding: 10px 6px 8px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--brown);
+            cursor: pointer;
+            transition: border-color .2s, transform .2s;
+        }
+
+        .upi-app:hover {
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .upi-app .app-icon {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ── PAY NOW button ── */
+        .pay-btn {
+            display: block;
+            width: 100%;
+            padding: 17px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 6px 20px rgba(39, 174, 96, .4);
+            transition: all .3s;
+        }
+
+        .pay-btn:hover {
+            background: linear-gradient(135deg, #219a52, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(39, 174, 96, .5);
+        }
+
+        .pay-btn i {
+            font-size: 1.1rem;
+        }
+
+        .secure-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--brown);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* ── Breakdown ── */
+        .breakdown {
+            border-top: 1px dashed var(--light);
+            margin: 18px 0 0;
+            padding-top: 16px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.88rem;
+            color: var(--brown);
+            border-bottom: 1px solid #eee;
+        }
+
+        .breakdown-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1rem;
+            padding-top: 10px;
+        }
+
+        .breakdown-row .amount {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* ── Card footer ── */
+        .card-footer {
+            background: var(--light);
+            padding: 12px 24px;
+            text-align: center;
+            border-top: 1px dashed var(--brown);
+            font-size: 0.72rem;
+            color: var(--brown);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px 12px 24px;
+            }
+
+            .card-header {
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .part-img {
+                width: 55px;
+                height: 55px;
+            }
+
+            .part-meta h2 {
+                font-size: 1rem;
+            }
+
+            .qr-img {
+                width: 160px;
+                height: 160px;
+            }
+
+            .upi-apps {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .pay-btn {
+                padding: 14px;
+                font-size: 1rem;
+            }
+
+            .upi-box {
+                padding: 8px 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+
+            .copy-btn {
+                width: 100%;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <a href="/part-detail/{{ part.id }}/" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Part
+        </a>
+        <div class="site-logo"><i class="fas fa-car-side"></i> ClassicAuto</div>
+    </div>
+
+    <div class="card">
+        <!-- Header: Part Info -->
+        <div class="card-header">
+            <img src="{{ part.image.url }}" alt="{{ part.name }}" class="part-img">
+            <div class="part-meta">
+                <h2>{{ part.name }}</h2>
+                <p><i class="fas fa-tag"></i> {{ part.category }} &nbsp;|&nbsp; {{ part.brand }}<br>
+                    <i class="fas fa-user"></i> Seller: {{ part.seller.name }}
+                </p>
+                <span class="price-badge">{{ part.price|inr }}</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <!-- QR Code Section -->
+            <div class="qr-section">
+                <h3><i class="fas fa-qrcode" style="color:var(--gold);"></i> Scan &amp; Pay</h3>
+                <p>Open any UPI app on your phone and scan this code</p>
+                <img src="{{ qr_url }}" alt="Payment QR Code" class="qr-img" id="qrImg">
+                <div class="scan-note">
+                    <i class="fas fa-wifi" style="color:var(--gold);"></i>
+                    Works on any device connected to this WiFi network
+                </div>
+            </div>
+
+            <!-- Or Divider -->
+            <div class="or-divider">OR PAY USING UPI ID</div>
+
+            <!-- UPI ID Copy Box -->
+            <div class="upi-box" onclick="copyUPI()">
+                <div>
+                    <div class="label">UPI ID</div>
+                    <div class="value" id="upiId">classicauto@upi</div>
+                </div>
+                <button class="copy-btn" id="copyBtn">COPY</button>
+            </div>
+            <div class="copy-msg" id="copyMsg"></div>
+
+            <!-- UPI App Icons -->
+            <div class="upi-apps">
+                <div class="upi-app"><span class="app-icon">📱</span>Google Pay</div>
+                <div class="upi-app"><span class="app-icon">💳</span>PhonePe</div>
+                <div class="upi-app"><span class="app-icon">💸</span>Paytm</div>
+                <div class="upi-app"><span class="app-icon">🏦</span>BHIM</div>
+            </div>
+
+            <!-- PAY NOW Button -->
+            <a href="/part-payment-success/{{ part.id }}/" class="pay-btn">
+                <i class="fas fa-lock"></i>
+                PAY {{ part.price|inr }} NOW
+            </a>
+            <div class="secure-note">
+                <i class="fas fa-shield-alt" style="color:var(--gold);"></i>
+                Secure payment &nbsp;·&nbsp; 256-bit SSL encrypted
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="breakdown">
+                <div class="breakdown-row">
+                    <span>Part Price</span>
+                    <span class="amount">{{ part.price|inr }}</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>Shipping</span>
+                    <span style="color:var(--green);font-weight:600;">FREE</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>Total Payable</span>
+                    <span class="amount">{{ part.price|inr }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <i class="fas fa-shield-alt"></i>
+            ClassicAuto Marketplace &nbsp;&middot;&nbsp; parts@classicauto.com
+        </div>
+    </div>
+
+    <script>
+        function copyUPI() {
+            const id = document.getElementById('upiId').textContent.trim();
+            navigator.clipboard.writeText(id).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const msg = document.getElementById('copyMsg');
+                btn.textContent = 'COPIED!';
+                msg.textContent = '✓ UPI ID copied to clipboard';
+                setTimeout(() => { btn.textContent = 'COPY'; msg.textContent = ''; }, 2500);
+            }).catch(() => {
+                // Fallback for older mobile browsers
+                const ta = document.createElement('textarea');
+                ta.value = id;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                document.getElementById('copyMsg').textContent = '✓ Copied!';
+                setTimeout(() => { document.getElementById('copyMsg').textContent = ''; }, 2500);
+            });
+        }
+    </script>
+
+</body>
+
+</html>

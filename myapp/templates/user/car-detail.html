@@ -3,6 +3,12 @@
 <html lang="en">
 
 <head>
+    <script>
+    // Session Guard: Prevent navigating back to authenticated pages after logout
+    function preventBack() { window.history.forward(); }
+    setTimeout('preventBack()', 0);
+    window.onunload = function() { null };
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>1965 Ford Mustang - ClassicAuto</title>
@@ -420,11 +426,32 @@
             border-radius: 3px;
             border: 1px solid var(--vintage-brown);
             transition: var(--transition);
+            cursor: pointer;
+            position: relative;
         }
 
         .feature-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border-color: var(--vintage-gold);
+            background: linear-gradient(135deg, var(--vintage-cream), #ede8d5);
+        }
+
+        .feature-item .feature-hint {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: var(--vintage-gold);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: 'Lora', serif;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-item:hover .feature-hint {
+            opacity: 1;
         }
 
         .feature-icon {
@@ -437,6 +464,14 @@
             justify-content: center;
             color: var(--vintage-dark);
             font-size: 1.3rem;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .feature-item:hover .feature-icon {
+            background: var(--vintage-dark);
+            color: var(--vintage-gold);
+            transform: scale(1.1);
         }
 
         .feature-content h4 {
@@ -447,6 +482,139 @@
 
         .feature-content p {
             color: var(--vintage-brown);
+            font-size: 0.9rem;
+        }
+
+        /* ── Feature Modal ── */
+        .feature-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(62, 39, 35, 0.72);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .feature-modal-overlay.active {
+            display: flex;
+            animation: overlayFadeIn 0.3s ease;
+        }
+
+        @keyframes overlayFadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .feature-modal {
+            background: var(--vintage-cream);
+            border: 2px solid var(--vintage-gold);
+            border-radius: 6px;
+            max-width: 520px;
+            width: 100%;
+            padding: 0;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            animation: modalSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .feature-modal-header {
+            background: var(--vintage-dark);
+            padding: 28px 32px 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            border-bottom: 3px solid var(--vintage-gold);
+        }
+
+        .feature-modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--vintage-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--vintage-dark);
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .feature-modal-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--vintage-cream);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-modal-body {
+            padding: 28px 32px 32px;
+        }
+
+        .feature-modal-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--vintage-gold);
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .feature-modal-desc {
+            color: var(--vintage-brown);
+            font-size: 1.05rem;
+            line-height: 1.85;
+            font-family: 'Lora', serif;
+        }
+
+        .feature-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            background: transparent;
+            border: none;
+            color: var(--vintage-light);
+            font-size: 1.4rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s, transform 0.2s;
+            z-index: 1;
+        }
+
+        .feature-modal-close:hover {
+            color: var(--vintage-gold);
+            transform: rotate(90deg);
+        }
+
+        .feature-modal-footer {
+            padding: 0 32px 24px;
+            text-align: right;
+        }
+
+        .feature-modal-footer .btn {
+            padding: 10px 24px;
             font-size: 0.9rem;
         }
 
@@ -818,6 +986,7 @@
                 <nav>
                     <ul>
                         <li><a href="/user/">Home</a></li>
+                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -830,7 +999,7 @@
                     <div class="cart-icon" onclick="window.location.href='/cart/'">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
-                    <a href="/" class="btn btn-gold btn-sm">Logout</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -934,13 +1103,14 @@
             </div>
             <div class="features-grid">
                 {% for i in car.features %}
-                <div class="feature-item">
+                <div class="feature-item" onclick="openFeatureModal('{{i}}')">
                     <div class="feature-icon">
                         <i class="fas fa-certificate"></i>
                     </div>
                     <div class="feature-content">
                         <h4>{{i}}</h4>
                     </div>
+                    <span class="feature-hint">click to learn more ›</span>
                 </div>
                 {% endfor %}
 
@@ -953,22 +1123,28 @@
         <div class="container">
             <div class="history-content">
                 <div class="history-text">
-                    <h3>Historical Significance</h3>
-                    <p>The 1965 Ford Mustang, often referred to as the 1964½ model, launched the "pony car" class of
-                        American automobiles and created a sensation in the automotive world. This particular example
-                        represents the early production with its unique features that distinguish it from later 1965
-                        models.</p>
-                    <p>With its long hood, short deck design, and affordable price point, the Mustang appealed to a
-                        broad demographic and sold over one million units in its first 18 months of production. The 289
-                        V8 engine provided spirited performance while maintaining reliability for daily driving.</p>
-                    <p>This car has been part of a private collection for the past 15 years, stored in a
-                        climate-controlled facility and driven only occasionally for maintenance and enjoyment. It
-                        represents an excellent opportunity to acquire a well-preserved example of automotive history.
+                    <h3>Historical Significance & Vehicle Details</h3>
+                    <p>The <strong>{{car.year}} {{car.make}} {{car.model}}</strong> holds a special place in the
+                        automotive world. As a prominent representative of the {{car.category}} class, it perfectly
+                        showcases the engineering advancements, distinct aesthetic, and design ethos of its era.</p>
+                    <p>Under the hood, it features a robust <strong>{{car.engine}}</strong> engine paired with a
+                        <strong>{{car.transmission}}</strong> transmission. Pushing out an impressive
+                        <strong>{{car.horse_power}} HP</strong>, this setup was engineered to deliver spirited
+                        performance. <em>Horsepower (HP)</em> is a measurement of the engine's power
+                        output—specifically,
+                        the rate at which work is done. One unit of horsepower equates to the power needed to lift 550
+                        pounds by one foot in one second. Higher horsepower generally translates to faster acceleration
+                        and a higher top speed.
                     </p>
+                    <p>In terms of efficiency, this classic achieves approximately <strong>{{car.mpg_city}} MPG in the
+                            city</strong> and <strong>{{car.mpg_hway}} MPG on the highway</strong>. <em>MPG (Miles Per
+                            Gallon)</em> measures fuel economy, indicating how far a vehicle can travel on a single
+                        gallon of {{car.fuel_type}}. These metrics highlight the balance between the mechanical tuning
+                        for robust performance and the fuel management standards of the classic auto boom.</p>
+                    <p><em>Vehicle Highlights:</em> {{car.description}}</p>
                 </div>
                 <div class="history-image">
-                    <img src="https://images.unsplash.com/photo-1580274437635-d4f2174d4b57?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                        alt="Classic Mustang History">
+                    <img src="{{car.image.url}}" alt="{{car.make}} {{car.model}} History">
                 </div>
             </div>
         </div>
@@ -1064,6 +1240,26 @@
         </div>
     </footer>
 
+    <!-- Feature Description Modal -->
+    <div class="feature-modal-overlay" id="featureModalOverlay" onclick="closeFeatureModalOnOverlay(event)">
+        <div class="feature-modal" id="featureModal">
+            <button class="feature-modal-close" onclick="closeFeatureModal()" aria-label="Close">&times;</button>
+            <div class="feature-modal-header">
+                <div class="feature-modal-icon">
+                    <i class="fas fa-certificate" id="featureModalIcon"></i>
+                </div>
+                <div class="feature-modal-title" id="featureModalTitle">Feature Name</div>
+            </div>
+            <div class="feature-modal-body">
+                <span class="feature-modal-label">About This Feature</span>
+                <p class="feature-modal-desc" id="featureModalDesc"></p>
+            </div>
+            <div class="feature-modal-footer">
+                <button class="btn" onclick="closeFeatureModal()">Got It</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Image Gallery Functionality
         document.querySelectorAll('.gallery-thumb').forEach(thumb => {
@@ -1080,6 +1276,111 @@
                 const mainImage = document.getElementById('mainImage');
                 mainImage.src = this.getAttribute('data-image');
             });
+        });
+
+        // ── Feature Modal ──
+        const FEATURE_DATA = {
+            // Audio & Entertainment
+            "JBL Audio": { icon: "fas fa-music", desc: "JBL Audio is a premium sound system engineered by Harman International — a world leader in high-fidelity acoustics. It delivers concert-quality sound inside your cabin with precisely tuned speakers, dedicated subwoofers, and an amplifier optimised for the vehicle's acoustics. Expect deep bass, crisp highs, and a rich surround experience on every drive." },
+            "Bose Audio": { icon: "fas fa-volume-up", desc: "Bose AudioPilot® technology uses microphones throughout the cabin to monitor road and wind noise in real time, automatically adjusting the audio to compensate. The result is studio-grade clarity whether you are on a quiet street or a noisy highway." },
+            "Harman Kardon Audio": { icon: "fas fa-headphones", desc: "Harman Kardon is a legendary audio brand with roots in concert hall acoustics. The in-car system uses Logic7® surround sound processing to create a three-dimensional soundstage, placing instruments and vocals exactly where the artist intended." },
+            "Bang & Olufsen Audio": { icon: "fas fa-compact-disc", desc: "Bang & Olufsen (B&O) sound systems are handcrafted in Denmark and feature aluminium speaker grilles, active noise cancellation, and up to 23 individually tuned speakers. Each installation is custom-designed for the specific vehicle model to achieve acoustic perfection." },
+            "Apple CarPlay": { icon: "fab fa-apple", desc: "Apple CarPlay mirrors your iPhone's essential apps — Maps, Messages, Phone, Music, and third-party apps — directly onto the car's touch-screen. You can use Siri voice commands to keep your eyes on the road and hands on the wheel, making it the safest way to stay connected while driving." },
+            "Android Auto": { icon: "fab fa-android", desc: "Android Auto projects your Android phone's interface onto the dashboard display. Google Maps, Google Assistant, Spotify, WhatsApp, and more are all accessible through large touch targets and voice commands, so you never need to pick up your phone while driving." },
+            "Wireless CarPlay": { icon: "fas fa-wifi", desc: "Wireless CarPlay connects your iPhone to the car's infotainment system over Wi-Fi and Bluetooth — no cable required. Simply get in the car and your phone pairs automatically, giving you full CarPlay functionality without fumbling for a USB cord." },
+
+            // Comfort & Climate
+            "Heated Seats": { icon: "fas fa-temperature-high", desc: "Heated seats use thin resistive heating elements embedded beneath the seat upholstery to warm the cushion and backrest. They are particularly useful in cold climates, providing immediate comfort within seconds of activation. Most systems offer two or three heat levels so you can fine-tune the warmth to your preference." },
+            "Ventilated Seats": { icon: "fas fa-wind", desc: "Ventilated (or cooled) seats pull air through small perforations in the leather or fabric, evaporating moisture and cooling the surface. During hot weather this prevents the uncomfortable feeling of a hot seat and keeps you comfortable on long journeys." },
+            "Heated Steering Wheel": { icon: "fas fa-steering-wheel", desc: "A heated steering wheel contains a thin heating element wrapped into the rim. In cold mornings it warms up within seconds, eliminating the discomfort of gripping an ice-cold wheel and reducing the urge to wear thick gloves that reduce tactile feedback." },
+            "Climate Control": { icon: "fas fa-sliders-h", desc: "Automatic dual-zone climate control uses interior temperature sensors and software to maintain your exact set temperature without manual adjustment. Dual-zone means the driver and front passenger can each choose a different temperature, while the blower speed and vent direction adjust automatically year-round." },
+            "Panoramic Sunroof": { icon: "fas fa-sun", desc: "A panoramic sunroof is a large glass panel — sometimes spanning nearly the entire roof — that floods the cabin with natural light and can usually tilt or slide open for fresh air. It transforms the feel of the interior, making it feel far more spacious and airy, and offers a breathtaking open-air experience without the mess of a full convertible." },
+            "Sunroof": { icon: "fas fa-sun", desc: "A sunroof is a panel in the roof that can be tilted or opened to bring in fresh air and natural light. Unlike a panoramic roof it typically covers only a portion of the roof above the front seats, but provides the same enjoyable open-air feel." },
+            "Moonroof": { icon: "fas fa-moon", desc: "A moonroof is a type of sunroof made entirely of tinted glass. It typically tilts or slides into the roof lining and is designed to let in light at night as well as during the day. The tinted glass reduces glare and UV radiation while still offering a bright, airy ambiance." },
+            "Ambient Lighting": { icon: "fas fa-lightbulb", desc: "Ambient interior lighting uses LED strips placed along the dashboard, door panels, and footwells to create a soft, customisable glow. You can often choose from millions of colours. It enhances the premium feel of the cabin and reduces eye strain during night driving by softly illuminating controls." },
+
+            // Safety & Driver Assistance
+            "Blind Spot Monitor": { icon: "fas fa-eye", desc: "A Blind Spot Monitoring (BSM) system uses radar sensors in the rear bumper to detect vehicles in your blind spots — the areas on either side that mirrors do not cover. An alert light in the door mirror flashes whenever a car is detected there, and many systems add an audible chime if you signal to change lanes while a vehicle is present." },
+            "Blind Spot Monitoring": { icon: "fas fa-eye", desc: "A Blind Spot Monitoring (BSM) system uses radar sensors in the rear bumper to detect vehicles in your blind spots — the areas on either side that mirrors do not cover. An alert light in the door mirror flashes whenever a car is detected there, and many systems add an audible chime if you signal to change lanes while a vehicle is present." },
+            "Lane Keep Assist": { icon: "fas fa-road", desc: "Lane Keep Assist uses a forward-facing camera to track lane markings. If the car begins to drift out of its lane without a turn signal, the system gently steers the car back inside the lane. It acts as a safety net to prevent unintentional lane departure, which is a leading cause of highway accidents." },
+            "Lane Departure Warning": { icon: "fas fa-exclamation-triangle", desc: "Lane Departure Warning (LDW) monitors the car's position within lane markings using a camera. If the car drifts over a lane line — when the blinker has not been activated — the system alerts the driver with a visual, audible, or vibrating steering wheel warning." },
+            "Adaptive Cruise Control": { icon: "fas fa-tachometer-alt", desc: "Adaptive Cruise Control (ACC) builds on standard cruise control by using radar or lidar to maintain a set following distance from the car ahead. If traffic slows, ACC automatically reduces speed; when the road clears it accelerates back up to your set speed — all without touching the pedals." },
+            "Backup Camera": { icon: "fas fa-camera", desc: "A backup (reversing) camera is mounted on the rear of the car and displays a live video feed on the dashboard screen whenever reverse gear is selected. Dynamic guide lines overlay the image to show the car's predicted path. It dramatically improves visibility of low obstacles, children, and pets directly behind the vehicle." },
+            "Rear-View Camera": { icon: "fas fa-camera", desc: "A rear-view camera provides a live video feed of the area behind the vehicle on the central display whenever you shift into reverse. Guide lines show the projected turning path, helping you reverse into tight parking spaces and avoid unseen obstacles safely." },
+            "360° Camera": { icon: "fas fa-circle", desc: "A 360° (surround-view) camera system stitches together feeds from four fisheye cameras — front, rear, and both sides — to create a bird's-eye top-down view of the car and its immediate surroundings. This makes parking, manoeuvring in tight spaces, and navigating narrow streets significantly easier and safer." },
+            "Automatic Emergency Braking": { icon: "fas fa-stop-circle", desc: "Automatic Emergency Braking (AEB) uses radar, cameras, or lidar to monitor the road ahead. If the system detects an imminent collision and the driver has not reacted, it pre-charges the brakes and then applies full braking force automatically to reduce impact speed — or avoid the collision entirely." },
+            "Forward Collision Warning": { icon: "fas fa-car-crash", desc: "Forward Collision Warning (FCW) uses sensors to monitor the distance and closing speed of the vehicle ahead. When a potential front-end collision is detected, the system alerts the driver through a combination of visual, audible, and sometimes haptic (steering wheel vibration) warnings." },
+            "Cross Traffic Alert": { icon: "fas fa-arrows-alt-h", desc: "Rear Cross Traffic Alert (RCTA) uses radar to detect vehicles approaching from the side when you are reversing — for example, out of a parking space. An audible warning and mirror indicators alert you to cross-traffic you cannot see, giving you time to brake before backing into it." },
+            "Traffic Sign Recognition": { icon: "fas fa-sign", desc: "Traffic Sign Recognition uses a forward-facing camera to read road signs — speed limits, no-entry, stop signs, and more — and displays them on the instrument cluster or HUD so the driver is always aware of the current regulations without having to watch for signs." },
+            "Driver Attention Monitor": { icon: "fas fa-user", desc: "Driver Attention (or Drowsiness) Monitoring analyses steering input patterns to detect fatigue or inattention. If erratic, micro-corrective steering is detected — a hallmark of drowsy driving — the system sounds a coffee cup alert and recommends taking a break." },
+
+            // Connectivity & Technology
+            "Navigation": { icon: "fas fa-map-marker-alt", desc: "The built-in navigation system provides turn-by-turn directions on the central display using onboard maps. Unlike a phone, it works without a mobile signal in remote areas. Many systems also display real-time traffic data, speed limits, and points of interest, and automatically calculate the fastest re-route when you miss a turn." },
+            "Wireless Charging": { icon: "fas fa-bolt", desc: "A wireless (Qi) charging pad lets you charge compatible smartphones by simply placing them on a pad in the centre console tray — no cable required. The car supplies power via electromagnetic induction, keeping your phone topped up throughout your journey without cable clutter." },
+            "USB Ports": { icon: "fas fa-plug", desc: "USB ports allow you to charge devices, connect media players, or link your phone for CarPlay/Android Auto via cable. Modern cars often include both Type-A and the faster USB-C standard, and many provide multiple ports throughout the cabin for front and rear passengers." },
+            "Wi-Fi Hotspot": { icon: "fas fa-wifi", desc: "An integrated 4G/5G Wi-Fi Hotspot turns the car into a mobile internet router, giving all passengers access to broadband-speed internet. It is particularly useful on long journeys, allowing passengers to stream video or work online on their tablets and laptops." },
+            "Head-Up Display": { icon: "fas fa-desktop", desc: "A Head-Up Display (HUD) projects key driving data — speed, navigation arrows, speed limits, and driver assistance alerts — onto the windshield or a small transparent screen in the driver's line of sight. This keeps your eyes on the road rather than looking down at the dashboard." },
+            "Digital Instrument Cluster": { icon: "fas fa-tachometer-alt", desc: "A fully digital instrument cluster replaces traditional analogue dials with a large, high-resolution screen. It can display a customisable layout of speed, RPM, navigation map, fuel level, ADAS status, and media controls, and can change its visual theme to match different driving modes." },
+            "Remote Start": { icon: "fas fa-key", desc: "Remote start allows you to start the engine from outside the car — via a key fob button or a smartphone app — before you get in. This is especially useful in winter (to warm the cabin and defrost the windows) or in summer (to cool it down with the air conditioning running)." },
+            "Keyless Entry": { icon: "fas fa-lock-open", desc: "Keyless Entry (also called Passive Entry) allows you to unlock the car simply by walking up to it with the key fob in your pocket or bag. A sensor in the door handle detects the fob's signal and unlocks automatically — no button press required. You can typically lock the car by touching a sensor on the door handle." },
+            "Push Button Start": { icon: "fas fa-circle", desc: "Push Button Start (also called keyless ignition) lets you start the engine by pressing a button on the dashboard as long as the smart key fob is inside the vehicle. There is no physical key to insert and turn — just press the brake pedal and push the button." },
+
+            // Performance & Handling
+            "All-Wheel Drive": { icon: "fas fa-car", desc: "All-Wheel Drive (AWD) continuously distributes engine torque to all four wheels. An electronic control unit monitors wheel slip and seamlessly transfers power to whichever wheels have the most grip. This improves traction in rain, snow, and on loose surfaces, and can enhance cornering stability on dry roads." },
+            "Four-Wheel Drive": { icon: "fas fa-truck", desc: "Four-Wheel Drive (4WD) is a driver-selectable system that locks front and rear axles together for equal torque split. It provides maximum traction in severe off-road conditions — mud, sand, and rock crawling — but is typically not intended for continuous on-road use at high speeds." },
+            "Sport Mode": { icon: "fas fa-flag-checkered", desc: "Sport Mode alters several vehicle parameters simultaneously: throttle response becomes sharper, gear changes in the automatic transmission are held at higher revs, the steering weight increases, and the suspension (if adaptive) firms up. The result is a more dynamic, engaging driving experience." },
+            "Adaptive Suspension": { icon: "fas fa-car-side", desc: "Adaptive (or continuously variable) suspension uses electronically controlled dampers that can change their stiffness within milliseconds. In Comfort mode the dampers are softer, absorbing bumps smoothly. In Sport mode they firm up to reduce body roll during hard cornering. The system can adjust in real time to changing road conditions." },
+            "Sport Exhaust": { icon: "fas fa-fire", desc: "A sport exhaust system uses a wider diameter pipe, less restrictive baffling inside the muffler, and often electronically controlled bypass valves to increase exhaust flow. The result is improved engine breathing (which can boost power), a deeper, more characterful exhaust note, and a lighter overall exhaust assembly." },
+            "Launch Control": { icon: "fas fa-rocket", desc: "Launch Control is an electronic system that manages throttle, clutch, and traction control to deliver the fastest possible standing start acceleration. The driver holds the brake, applies full throttle, then releases the brake — the system maximises wheel grip and minimises wheel spin for optimal tyre-to-road contact off the line." },
+
+            // Exterior Features
+            "LED Headlights": { icon: "fas fa-lightbulb", desc: "LED (Light Emitting Diode) headlights are far brighter and more energy-efficient than halogen bulbs. They produce a cool white light that closely resembles daylight, improving the driver's ability to see and be seen at night. They also last significantly longer — often the lifetime of the vehicle — and consume less power from the alternator." },
+            "Adaptive Headlights": { icon: "fas fa-adjust", desc: "Adaptive (or dynamic) headlights pivot in the direction the steering wheel turns, illuminating the road around corners before the car arrives at them. Traditional fixed headlights only shine straight ahead, leaving the inside of a curve in darkness. Adaptive headlights eliminate this blind spot and significantly improve night cornering safety." },
+            "Auto High Beams": { icon: "fas fa-car", desc: "Automatic High Beams use a forward camera to detect the headlights of oncoming vehicles and the taillights of vehicles ahead. High beams are turned on automatically when the road is clear for maximum visibility, and instantly dimmed when another vehicle is detected — so you always have the best illumination without dazzling other drivers." },
+            "Power Tailgate": { icon: "fas fa-door-open", desc: "A power (hands-free) tailgate opens and closes automatically at the touch of a button on the key fob or the dashboard. Many systems are also hands-free: detecting a kicking motion under the rear bumper to open when your arms are full of shopping. It is especially convenient when loading luggage." },
+            "Roof Rails": { icon: "fas fa-grip-lines", desc: "Roof rails are longitudinal bars mounted flush along the roof of an SUV or estate car. They serve as attachment points for crossbars, which in turn can carry roof boxes, bike racks, kayak holders, or ski carriers — dramatically expanding the car's cargo capacity beyond the boot." },
+            "Tow Package": { icon: "fas fa-truck-loading", desc: "A tow package bundles together the components needed to tow a trailer: a tow hitch receiver, trailer wiring harness (to power the trailer's lights and brakes), trailer brake controller wiring, and sometimes an upgraded cooling system. The vehicle's maximum tow rating depends on its engine and chassis strength." },
+
+            // Interior & Convenience
+            "Power Seats": { icon: "fas fa-chair", desc: "Electrically adjustable seats use small motors to move the cushion forward/back, raise or lower the seat, and adjust the backrest angle — all with the touch of a button and far more precision than a manual lever. Many systems also include lumbar support adjustment and can store multiple seat position presets for different drivers." },
+            "Memory Seats": { icon: "fas fa-memory", desc: "Memory Seats store the exact seat position (and often mirror and steering column position) for multiple drivers. When a different person drives and then you return, one button restores your exact setup instantly — particularly useful when the car is shared between people of very different heights." },
+            "Leather Seats": { icon: "fas fa-couch", desc: "Leather upholstery is a premium seating material prized for its soft feel, durability, and ease of cleaning compared to fabric. It is more breathable in hot weather with ventilation, and ages into a characterful patina over time. Perforated leather improves airflow and is often paired with heating and ventilation functions." },
+            "Third Row Seating": { icon: "fas fa-users", desc: "A third row of seats (a bench or two individual seats) in the rearmost part of an SUV or minivan allows the vehicle to carry up to seven or eight passengers. On many vehicles the third row folds flat into the floor to restore extra cargo space when not in use." },
+            "Cargo Cover": { icon: "fas fa-box", desc: "A retractable cargo cover is a roller blind or rigid panel that conceals items in the boot from view. It prevents opportunistic theft by hiding bags and valuables from sight through the rear glass, and gives the cabin a tidier appearance." },
+            "Panoramic Rear Camera": { icon: "fas fa-camera", desc: "A panoramic rear camera uses a very wide angle lens to capture a much broader view behind the car than a standard rear camera. This reduces or eliminates the blind zones at the edges of the bumper, making it easier to spot cyclists or pedestrians approaching from the sides while reversing." },
+
+            // Hybrid & Electric
+            "Hybrid": { icon: "fas fa-leaf", desc: "A hybrid vehicle uses both a conventional internal combustion engine and one or more electric motors, drawing power from a high-voltage battery pack. The battery is charged by regenerative braking and the engine. The system automatically switches between or combines power sources to maximise efficiency, significantly reducing fuel consumption and emissions in city driving." },
+            "Plug-In Hybrid": { icon: "fas fa-charging-station", desc: "A Plug-In Hybrid (PHEV) works like a standard hybrid but has a larger battery that can be charged from an external power socket. This gives a meaningful all-electric range (typically 30–80 km) for short commutes, while the petrol or diesel engine eliminates range anxiety on longer trips." },
+            "Regenerative Braking": { icon: "fas fa-sync", desc: "Regenerative braking recovers kinetic energy that would otherwise be wasted as heat in conventional brakes. When you lift your foot off the accelerator or apply the brakes, the electric motor acts as a generator, converting the car's motion back into electrical energy that recharges the battery. This is a key reason electric and hybrid vehicles achieve longer range." },
+
+            // Fallback
+            "default": { icon: "fas fa-star", desc: "This is a premium feature included with this vehicle. Please contact our team or consult the vehicle's specification sheet for full details on this specific attribute." }
+        };
+
+        function openFeatureModal(featureName) {
+            const data = FEATURE_DATA[featureName] || FEATURE_DATA["default"];
+            document.getElementById('featureModalTitle').textContent = featureName;
+            document.getElementById('featureModalDesc').textContent = data.desc;
+            const iconEl = document.getElementById('featureModalIcon');
+            iconEl.className = data.icon;
+            document.getElementById('featureModalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFeatureModal() {
+            document.getElementById('featureModalOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeFeatureModalOnOverlay(event) {
+            if (event.target === document.getElementById('featureModalOverlay')) {
+                closeFeatureModal();
+            }
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeFeatureModal();
         });
 
         // Favorite Button Functionality

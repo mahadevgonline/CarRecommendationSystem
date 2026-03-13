@@ -1,17 +1,30 @@
 from django.shortcuts import render,redirect
 from .models import *
-from .forms import RegisterForm, SellerRegisterForm, LoginForm, AddPartForm, CheckoutForm, ProfileForm
+from .forms import RegisterForm, SellerRegisterForm, LoginForm, AddPartForm, CheckoutForm, ProfileForm, validate_password
 from django.db.models import F, Q, Min, Max, Count, Sum
 import json
 from django.db.models.functions import Cast
 from django.db.models import IntegerField
 from django.db import transaction
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.mail import send_mail
+from django.utils import timezone
+from django.views.decorators.cache import never_cache
+from django.http import HttpResponse
+import random
+import datetime
+import urllib.parse
 
 def index(request):
     return render(request, "index.html")
 
+@never_cache
 def register(request):
+    # Already logged in → push them to their dashboard
+    if 'uid' in request.session:
+        return redirect('/user/')
+    if 'sid' in request.session:
+        return redirect('/seller/')
     form = RegisterForm(request.POST or None)
     if request.method == "POST":
         if form.is_valid():
@@ -28,7 +41,10 @@ def register(request):
             )
             reg.save()
             return redirect('/login/')
-    return render(request, "register.html", {'form': form})
+    response = render(request, "register.html", {'form': form})
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    return response
 
 def seller_register(request):
     form = SellerRegisterForm(request.POST or None)
@@ -50,7 +66,13 @@ def seller_register(request):
             return redirect('/login/')
     return render(request, "seller_register.html", {'form': form})
 
+@never_cache
 def login(request):
+    # Already logged in → push them to their dashboard
+    if 'uid' in request.session:
+        return redirect('/user/')
+    if 'sid' in request.session:
+        return redirect('/seller/')
     form = LoginForm(request.POST or None)
     msg = ''
     if request.method == "POST":
@@ -61,8 +83,8 @@ def login(request):
             # Check Register users (supports both hashed and plaintext passwords)
             user = Register.objects.filter(email=email).first()
             if user:
-                password_valid = check_password(password, user.password) or (password == user.password)
-                if password_valid:
+                # SECURE: only use Django's hashed password check — no plaintext fallback
+                if check_password(password, user.password):
                     if user.rights == 'User':
                         request.session['uid'] = user.id
                         return redirect('/user/')
@@ -70,11 +92,10 @@ def login(request):
                         request.session['uid'] = user.id
                         return redirect('/adminp/')
 
-            # Check Seller users (supports both hashed and plaintext passwords)
+            # Check Seller users
             seller = Seller.objects.filter(email=email).first()
             if seller:
-                password_valid = check_password(password, seller.password) or (password == seller.password)
-                if password_valid:
+                if check_password(password, seller.password):
                     if seller.rights == 'Seller':
                         request.session['sid'] = seller.id
                         return redirect('/seller/')
@@ -87,7 +108,121 @@ def login(request):
                     msg = 'Invalid'
         else:
             msg = 'Invalid'
-    return render(request, "login.html", {'msg': msg, 'form': form})
+    response = render(request, "login.html", {'msg': msg, 'form': form})
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    return response
+
+
+@never_cache
+def forgot_password(request):
+    """Step 1: User enters email → OTP sent to that email."""
+    message = None
+    error = None
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        user = Register.objects.filter(email=email).first()
+        if user:
+            # Generate a strict 6-digit OTP, zero-padded if necessary
+            otp = str(random.randrange(1000000)).zfill(6)
+            expiry = timezone.now() + datetime.timedelta(minutes=10)
+            Register.objects.filter(id=user.id).update(
+                otp=otp,
+                otp_expiry=expiry
+            )
+            send_mail(
+                subject='ClassicAuto — Password Reset OTP',
+                message=(
+                    f'Hi {user.name},\n\n'
+                    f'Your one-time password (OTP) to reset your ClassicAuto password is:\n\n'
+                    f'    {otp}\n\n'
+                    f'This OTP is valid for 10 minutes. Do not share it with anyone.\n\n'
+                    f'If you did not request this, please ignore this email.\n\n'
+                    f'— ClassicAuto Team'
+                ),
+                from_email='noreply@classicauto.com',
+                recipient_list=[email],
+                fail_silently=False,
+            )
+        # Always show "sent" message — never reveal if email exists
+        message = 'sent'
+        # Encode email in URL so OTP verify page knows which user to look up
+        encoded_email = urllib.parse.quote(email)
+        return redirect(f'/verify-otp/?e={encoded_email}')
+    return render(request, 'forgot-password.html', {'message': message, 'error': error})
+
+
+@never_cache
+def verify_otp(request):
+    """Step 2: User enters the 6-digit OTP they received."""
+    encoded_email = request.GET.get('e', '')
+    email = urllib.parse.unquote(encoded_email)
+    error = None
+
+    if request.method == 'POST':
+        otp_entered = request.POST.get('otp', '').strip()
+        email = request.POST.get('email', '').strip()
+        now = timezone.now()
+        user = Register.objects.filter(
+            email=email,
+            otp=otp_entered,
+            otp_expiry__gt=now
+        ).first()
+        if user:
+            # OTP correct — go to set new password page
+            encoded_email = urllib.parse.quote(email)
+            return redirect(f'/reset-password/?e={encoded_email}&otp={otp_entered}')
+        else:
+            error = 'Invalid or expired OTP. Please try again.'
+
+    return render(request, 'verify-otp.html', {'email': email, 'error': error})
+
+
+@never_cache
+def reset_password(request):
+    """Step 3: User sets a new password after OTP is verified."""
+    encoded_email = request.GET.get('e', '')
+    otp = request.GET.get('otp', '')
+    email = urllib.parse.unquote(encoded_email)
+    error = None
+
+    # Validate OTP is still valid before showing the form
+    now = timezone.now()
+    user = Register.objects.filter(
+        email=email,
+        otp=otp,
+        otp_expiry__gt=now
+    ).first()
+
+    if not user:
+        return render(request, 'reset-password.html', {'invalid': True})
+
+    if request.method == 'POST':
+        new_password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if new_password != confirm_password:
+            error = 'Passwords do not match.'
+        else:
+            # Run through our password validator
+            pw_error = validate_password(new_password)
+            if pw_error:
+                error = pw_error
+
+        if not error:
+            hashed = make_password(new_password)
+            Register.objects.filter(id=user.id).update(
+                password=hashed,
+                otp=None,
+                otp_expiry=None
+            )
+            return render(request, 'reset-password.html', {'success': True})
+
+    return render(request, 'reset-password.html', {
+        'email': encoded_email,
+        'otp': otp,
+        'error': error
+    })
 
 def user(request):
     cars = Car.objects.all()
@@ -226,6 +361,17 @@ def edit_car(request,id):
         return redirect(f'/edit-car/{id}/')
     return render(request, "admin/edit-car.html",{'car':car,'msg':msg})
 
+def update_car_image(request,id):
+    if 'uid' not in request.session:
+        return redirect('/login/')
+    if request.method == "POST":
+        image = request.FILES.get('image')
+        if image:
+            car = Car.objects.get(id=id)
+            car.image = image
+            car.save()
+    return redirect(f'/view-car/{id}/')
+
 def delete_car(request,id):
     Car.objects.filter(id=id).delete()
     return redirect('/cars/')
@@ -360,13 +506,80 @@ def delete_part(request,id):
     return redirect('/parts/')
 
 def vehicle_parts(request):
-    parts= VehiclePart.objects.select_related('vehicle').all()
-    cars=Car.objects.all()
-    return render(request, "user/vehicle-parts.html",{'parts':parts,'vehicles':cars})
+    parts = VehiclePart.objects.select_related('vehicle', 'seller').all()
+    cars = Car.objects.all()
 
-def part_details(request,id):
-    part=VehiclePart.objects.get(id=id)
-    return render(request, "user/part-details.html",{'part':part})
+    # Build a list of categories with their counts for the template
+    category_counts = {}
+    for p in parts:
+        cat = p.category if p.category else 'Other'
+        category_counts[cat] = category_counts.get(cat, 0) + 1
+
+    # List of dicts: [{name: 'Engine Parts', key: 'engine parts', count: 5}, ...]
+    categories_with_counts = [
+        {'name': cat, 'key': cat.lower(), 'count': count}
+        for cat, count in category_counts.items()
+    ]
+
+    return render(request, "user/vehicle-parts.html", {
+        'parts': parts,
+        'vehicles': cars,
+        'categories_with_counts': categories_with_counts,
+    })
+
+def part_details(request, id):
+    try:
+        part = VehiclePart.objects.select_related('vehicle', 'seller').get(id=id)
+    except VehiclePart.DoesNotExist:
+        return HttpResponse("Part not found", status=404)
+
+    # Compatible cars (same category, different primary vehicle)
+    compatible_car_ids = (
+        VehiclePart.objects
+        .filter(category=part.category)
+        .exclude(vehicle_id=part.vehicle_id)
+        .values_list('vehicle_id', flat=True)
+        .distinct()
+    )
+    compatible_cars = Car.objects.filter(id__in=compatible_car_ids)
+
+    # Related parts – same category, exclude current part
+    related_parts = (
+        VehiclePart.objects
+        .filter(category=part.category)
+        .exclude(id=id)
+        .select_related('vehicle')[:6]
+    )
+
+    # Reviews & rating
+    reviews = part.reviews.all()[:10]
+    total_reviews = part.reviews.count()
+    avg_rating = 0
+    rating_dist = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+    if total_reviews:
+        all_reviews = list(part.reviews.all())
+        avg_rating = round(sum(r.rating for r in all_reviews) / total_reviews, 1)
+        for r in all_reviews:
+            rating_dist[r.rating] = rating_dist.get(r.rating, 0) + 1
+
+    # Check if user already requested notify
+    user_email = request.session.get('email', '')
+    already_notified = False
+    if user_email and part.stock == 0:
+        already_notified = PartNotifyRequest.objects.filter(part=part, email=user_email).exists()
+
+    return render(request, "user/part-details.html", {
+        'part': part,
+        'compatible_cars': compatible_cars,
+        'related_parts': related_parts,
+        'reviews': reviews,
+        'total_reviews': total_reviews,
+        'avg_rating': avg_rating,
+        'rating_dist': rating_dist,
+        'already_notified': already_notified,
+        'user_email': user_email,
+    })
+
 
 def cart(request):
     if 'uid' not in request.session:
@@ -537,116 +750,413 @@ def sellers(request):
     sell=Seller.objects.filter(rights='Seller')
     return render(request, "admin/sellers.html",{'sell':sell})
 
+@never_cache
 def logout(request):
     """Clear session and redirect to login"""
     request.session.flush()
-    return redirect('/login/')
+    response = redirect('/login/')
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    return response
 
-def recommendation(request):
-    cars = Car.objects.all()
 
-    # --- 1. SEARCH ---
-    q = request.GET.get('q')
-    if q:
-        cars = cars.filter(
-            Q(make__icontains=q) | 
-            Q(model__icontains=q) | 
-            Q(category__icontains=q) | 
-            Q(description__icontains=q)
-        )
 
-    # --- 2. FILTERS ---
-    
-    # categories (multi-select)
-    categories = request.GET.getlist('category')
-    if categories:
-        cars = cars.filter(category__in=categories)
 
-    # fuel_type (multi-select)
-    fuel_types = request.GET.getlist('fuel_type')
-    if fuel_types:
-        cars = cars.filter(fuel_type__in=fuel_types)
 
-    # transmission (multi-select)
-    transmissions = request.GET.getlist('transmission')
-    if transmissions:
-        cars = cars.filter(transmission__in=transmissions)
+# ─────────────────────────────────────────────────────────────────
+#  NOTIFY ME (AJAX POST, out-of-stock parts)
+# ─────────────────────────────────────────────────────────────────
+from django.views.decorators.http import require_POST
+from django.http import JsonResponse
+import re as _re
 
-    # price range
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-    if min_price:
-        cars = cars.filter(price__gte=int(min_price))
-    if max_price:
-        cars = cars.filter(price__lte=int(max_price))
-
-    # year range
-    min_year = request.GET.get('min_year')
-    max_year = request.GET.get('max_year')
-    if min_year:
-        cars = cars.filter(year__gte=int(min_year))
-    if max_year:
-        cars = cars.filter(year__lte=int(max_year))
-
-    # horse_power range
-    min_hp = request.GET.get('min_hp')
-    max_hp = request.GET.get('max_hp')
-    if min_hp:
-        cars = cars.filter(horse_power__gte=int(min_hp))
-    if max_hp:
-        cars = cars.filter(horse_power__lte=int(max_hp))
-        
-    # mpg range (handling CharField by casting to int if possible)
-    # Note: If casting fails due to strict SQL mode or bad data, this might need error handling.
-    # We will attempt to filter simply for now, or annotate.
-    # Given SQLite, implicit casting usually works well enough or we can use lte/gte on strings if format matches,
-    # but "20" > "100" in string. Let's try to be safe and use annotation.
+@require_POST
+def notify_part(request, id):
     try:
-        cars = cars.annotate(mpg_city_int=Cast('mpg_city', IntegerField()))
-        
-        min_mpg = request.GET.get('min_mpg')
-        if min_mpg:
-             cars = cars.filter(mpg_city_int__gte=int(min_mpg))
-    except:
-        pass # Fallback or ignore if casting fails
-        
-    # --- 3. SORTING ---
-    sort_by = request.GET.get('sort', '')
-    if sort_by == 'price_low':
-        cars = cars.order_by('price')
-    elif sort_by == 'price_high':
-        cars = cars.order_by('-price')
-    elif sort_by == 'year_new':
-        cars = cars.order_by('-year')
-    elif sort_by == 'year_old':
-        cars = cars.order_by('year')
-    elif sort_by == 'hp_high':
-        cars = cars.order_by('-horse_power')
-    elif sort_by == 'mpg_high':
-        # Rely on the annotation if successful, else raw field
-        cars = cars.order_by('-mpg_city') # This might do string sort "30" > "20", but "9" > "10" is false. 
+        part = VehiclePart.objects.select_related('seller').get(id=id)
+    except VehiclePart.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'Part not found'}, status=404)
 
-    # --- 4. DATA FOR UI FILTERS (Global Min/Max) ---
-    # We need the global min/max for the sliders based on ALL cars, not just filtered ones
-    all_cars = Car.objects.all()
-    filter_data = all_cars.aggregate(
-        min_price_global=Min('price'), max_price_global=Max('price'),
-        min_year_global=Min('year'), max_year_global=Max('year'),
-        min_hp_global=Min('horse_power'), max_hp_global=Max('horse_power'),
+    if part.stock > 0:
+        return JsonResponse({'ok': False, 'error': 'Part is already in stock'})
+
+    email = request.POST.get('email', '').strip().lower()
+
+    # Validate email format
+    if not _re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return JsonResponse({'ok': False, 'error': 'Please enter a valid email address'})
+
+    # Prevent duplicates (race-condition-safe)
+    obj, created = PartNotifyRequest.objects.get_or_create(part=part, email=email)
+
+    if not created:
+        return JsonResponse({'ok': True, 'already': True,
+                             'message': "You're already on the notification list for this part!"})
+
+    # Email seller about the demand
+    try:
+        if part.seller and part.seller.email:
+            send_mail(
+                subject=f'📦 Restock Demand: {part.name}',
+                message=(
+                    f'Hi {part.seller.name},\n\n'
+                    f'A customer ({email}) has requested to be notified when '
+                    f'"{part.name}" (Part #{part.number}) is back in stock.\n\n'
+                    f'This part currently has 0 units in stock. Consider restocking!\n\n'
+                    f'— ClassicAuto Marketplace'
+                ),
+                from_email=None,
+                recipient_list=[part.seller.email],
+                fail_silently=True,
+            )
+    except Exception:
+        pass
+
+    return JsonResponse({'ok': True, 'already': False,
+                         'message': "Got it! We'll notify you the moment this part is back in stock."})
+
+
+# ─────────────────────────────────────────────────────────────────
+#  SUBMIT REVIEW
+# ─────────────────────────────────────────────────────────────────
+from django.utils.html import strip_tags
+
+ALLOWED_IMAGE_TYPES = {'image/jpeg', 'image/png', 'image/webp'}
+MAX_IMAGE_SIZE = 2 * 1024 * 1024  # 2 MB
+
+@require_POST
+def submit_review(request, id):
+    try:
+        part = VehiclePart.objects.get(id=id)
+    except VehiclePart.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'Part not found'}, status=404)
+
+    user_name = strip_tags(request.POST.get('user_name', '').strip())[:100]
+    user_email = request.POST.get('user_email', '').strip().lower()
+    comment = strip_tags(request.POST.get('comment', '').strip())
+
+    # Validate rating
+    try:
+        rating = int(request.POST.get('rating', 0))
+        if not 1 <= rating <= 5:
+            raise ValueError
+    except (ValueError, TypeError):
+        return JsonResponse({'ok': False, 'error': 'Rating must be between 1 and 5'})
+
+    # Validate email
+    if not _re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', user_email):
+        return JsonResponse({'ok': False, 'error': 'Please enter a valid email address'})
+
+    if not user_name:
+        return JsonResponse({'ok': False, 'error': 'Name is required'})
+    if not comment:
+        return JsonResponse({'ok': False, 'error': 'Comment is required'})
+
+    # Check duplicate
+    if PartReview.objects.filter(part=part, user_email=user_email).exists():
+        return JsonResponse({'ok': False, 'error': 'You have already reviewed this part.'})
+
+    # Handle image upload
+    image_file = request.FILES.get('image')
+    if image_file:
+        if image_file.content_type not in ALLOWED_IMAGE_TYPES:
+            return JsonResponse({'ok': False, 'error': 'Only JPG, PNG, and WebP images are allowed'})
+        if image_file.size > MAX_IMAGE_SIZE:
+            return JsonResponse({'ok': False, 'error': 'Image must be smaller than 2MB'})
+
+    review = PartReview(
+        part=part,
+        user_name=user_name,
+        user_email=user_email,
+        rating=rating,
+        comment=comment,
     )
-    
-    # Get unique values for checkboxes
-    unique_categories = Car.objects.values_list('category', flat=True).distinct()
-    unique_fuels = Car.objects.values_list('fuel_type', flat=True).distinct()
-    unique_transmissions = Car.objects.values_list('transmission', flat=True).distinct()
+    if image_file:
+        review.image = image_file
+    review.save()
 
-    context = {
-        'cars': cars,
-        'unique_categories': unique_categories,
-        'unique_fuels': unique_fuels,
-        'unique_transmissions': unique_transmissions,
-        'filter_data': filter_data,
-        'current_filters': request.GET # Pass QueryDict for maintaining state in basic UI methods
-    }
+    image_url = review.image.url if review.image else ''
+    return JsonResponse({
+        'ok': True,
+        'review': {
+            'user_name': review.user_name,
+            'rating': review.rating,
+            'comment': review.comment,
+            'image_url': image_url,
+            'created_at': review.created_at.strftime('%b %d, %Y'),
+        }
+    })
+
+
+# ─────────────────────────────────────────────────────────────────
+#  SELLER UNAVAILABLE (funny page)
+# ─────────────────────────────────────────────────────────────────
+def seller_unavailable(request):
+    seller_id = request.GET.get('seller', '')
+    part_id = request.GET.get('part', '')
+    return render(request, "user/seller-unavailable.html", {
+        'seller_id': seller_id,
+        'part_id': part_id,
+    })
+
+
+# ─────────────────────────────────────────────────────────────────
+#  QR CODE — generate a QR image (cached in memory)
+# ─────────────────────────────────────────────────────────────────
+import qrcode
+import io
+import socket
+
+_qr_cache = {}   # simple in-process cache
+
+def _get_lan_ip():
+    """Return the machine's LAN IP so QR codes work across devices on the same WiFi."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return '127.0.0.1'
+
+def part_qr(request, id):
+    try:
+        part = VehiclePart.objects.get(id=id)
+    except VehiclePart.DoesNotExist:
+        return HttpResponse("Part not found", status=404)
+
+    uid = request.GET.get('u', '')
+    cache_key = f"{id}_{part.price}_{uid}"
     
-    return render(request, "user/recommendations.html", context)
+    if cache_key not in _qr_cache:
+        port = request.META.get('SERVER_PORT', '8000')
+        lan_ip = _get_lan_ip()
+        
+        uid_param = f"?u={uid}" if uid else ""
+        payment_url = f'http://{lan_ip}:{port}/part-payment/{id}/{uid_param}'
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
+            box_size=8,
+            border=3,
+        )
+        qr.add_data(payment_url)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color='#3e2723', back_color='#f5f1e6')
+        buf = io.BytesIO()
+        img.save(buf, format='PNG')
+        _qr_cache[cache_key] = buf.getvalue()
+
+    return HttpResponse(_qr_cache[cache_key], content_type='image/png')
+
+
+# ─────────────────────────────────────────────────────────────────
+#  QR PAYMENT INFO PAGE (opened when QR is scanned)
+# ─────────────────────────────────────────────────────────────────
+def part_payment_info(request, id):
+    # If opened from a phone scanning the QR code, adopt the session
+    u = request.GET.get('u')
+    if u:
+        request.session['uid'] = u
+        
+    try:
+        part = VehiclePart.objects.select_related('vehicle', 'seller').get(id=id)
+    except VehiclePart.DoesNotExist:
+        return HttpResponse("Part not found", status=404)
+
+    port = request.META.get('SERVER_PORT', '8000')
+    lan_ip = _get_lan_ip()
+    
+    uid = request.session.get('uid', '')
+    uid_param = f"?u={uid}" if uid else ""
+    qr_url = f'/part-qr/{id}/{uid_param}'
+    pay_url = f'http://{lan_ip}:{port}/part-payment-success/{id}/'
+
+    return render(request, "user/part-payment.html", {
+        'part': part,
+        'qr_url': qr_url,
+        'pay_url': pay_url,
+        'lan_ip': lan_ip,
+        'port': port,
+    })
+
+
+# ─────────────────────────────────────────────────────────────────
+#  PAYMENT SUCCESS PAGE
+# ─────────────────────────────────────────────────────────────────
+def part_payment_success(request, id):
+    try:
+        part = VehiclePart.objects.select_related('vehicle', 'seller').get(id=id)
+    except VehiclePart.DoesNotExist:
+        return HttpResponse("Part not found", status=404)
+        
+    uid = request.session.get('uid')
+    order = None
+    guest = True
+    session_key = f'qr_paid_{id}'
+    
+    if uid:
+        try:
+            reg = Register.objects.get(id=uid)
+            guest = False
+            
+            # Prevent duplicate orders if user refreshes the success page
+            if not request.session.get(session_key):
+                from django.db import transaction
+                with transaction.atomic():
+                    order = Order.objects.create(
+                        user=reg,
+                        fname=reg.name.split()[0] if reg.name else 'Buyer',
+                        lname=reg.name.split()[-1] if len(reg.name.split()) > 1 else '',
+                        email=reg.email,
+                        phone=reg.phone,
+                        address='Digital / QR Payment',
+                        city='-', state='-', zip='-', country='-',
+                        payment_method='QR/UPI',
+                        status='Processing'
+                    )
+                    OrderItems.objects.create(order=order, item=part, quantity=1)
+                    
+                    if part.stock > 0:
+                        part.stock -= 1
+                        part.save()
+                        
+                    if part.seller:
+                        Notification.objects.create(
+                            seller=part.seller,
+                            order=order,
+                            message=f"New QR payment order #{order.id} received for {part.name}. Please review."
+                        )
+                request.session[session_key] = order.id
+            else:
+                # Retrieve the already-created order if they just refreshed
+                order_id = request.session.get(session_key)
+                order = Order.objects.filter(id=order_id).first()
+                
+        except Register.DoesNotExist:
+            guest = True
+
+    return render(request, "user/payment-success.html", {
+        'part': part, 
+        'order': order, 
+        'guest': guest
+    })
+
+
+# ─────────────────────────────────────────────────────────────────
+#  AI CAR FINDER — Gemini-powered recommendations
+# ─────────────────────────────────────────────────────────────────
+import google.generativeai as genai
+from django.conf import settings
+
+def ai_car_finder(request):
+    """Render the AI Car Finder page."""
+    return render(request, "user/ai-car-finder.html")
+
+
+@require_POST
+def ai_car_recommend(request):
+    """AJAX endpoint: send user query to Gemini, return car recommendations as JSON."""
+    import json as _json
+
+    query = request.POST.get('query', '').strip()
+    if not query:
+        return JsonResponse({'ok': False, 'error': 'Please describe what kind of car you are looking for.'})
+
+    api_key = getattr(settings, 'GEMINI_API_KEY', '')
+    if not api_key:
+        return JsonResponse({'ok': False, 'error': 'Gemini API key is not configured. Please add your key in settings.py.'})
+
+    try:
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-flash-latest')
+
+        prompt = f"""You are an expert automotive advisor. A user is looking for car recommendations.
+
+User's request: "{query}"
+
+Based on this request, recommend exactly 5 cars from anywhere in the world that best match their needs.
+
+Return ONLY a valid JSON array of 5 objects (no markdown, no code fences, no explanation text). Each object must have these exact keys:
+- "make": string (manufacturer name)
+- "model": string (model name)
+- "year_range": string (e.g. "2020-2024")
+- "price_min": integer (estimated minimum price in USD)
+- "price_max": integer (estimated maximum price in USD)
+- "horsepower": integer (approximate hp)
+- "engine": string (e.g. "2.0L Turbo I4", "5.0L V8", "Electric")
+- "transmission": string (e.g. "Automatic", "Manual", "CVT", "Dual-Clutch")
+- "fuel_type": string (e.g. "Gasoline", "Diesel", "Electric", "Hybrid")
+- "body_type": string (e.g. "Sedan", "SUV", "Sports Car", "Truck", "Hatchback", "Coupe")
+- "mpg": string (e.g. "25 city / 32 hwy" or "N/A" for electric)
+- "top_speed": string (e.g. "155 mph")
+- "zero_to_sixty": string (e.g. "5.2 seconds")
+- "drivetrain": string (e.g. "AWD", "RWD", "FWD", "4WD")
+- "why_recommended": string (2-3 sentence explanation of why this car matches the user's needs)
+- "pros": array of 3 strings (key advantages)
+- "cons": array of 2 strings (potential drawbacks)
+- "match_score": integer (1-100, how well it matches the request)
+
+Sort by match_score descending. Return ONLY the JSON array, nothing else."""
+
+        response = model.generate_content(prompt)
+        raw_text = response.text.strip()
+
+        # Clean up the response — remove markdown code fences if present
+        if raw_text.startswith('```'):
+            # Remove ```json or ``` at start and ``` at end
+            lines = raw_text.split('\n')
+            if lines[0].startswith('```'):
+                lines = lines[1:]
+            if lines and lines[-1].strip() == '```':
+                lines = lines[:-1]
+            raw_text = '\n'.join(lines)
+
+        cars_data = _json.loads(raw_text)
+
+        # Cross-reference with our database
+        for car in cars_data:
+            car['in_database'] = False
+            car['db_id'] = None
+            car['parts'] = []
+
+            # Try to find this car in our database (fuzzy match on make + model)
+            db_match = Car.objects.filter(
+                Q(make__icontains=car.get('make', '')) &
+                Q(model__icontains=car.get('model', ''))
+            ).first()
+
+            if db_match:
+                car['in_database'] = True
+                car['db_id'] = db_match.id
+                car['db_price'] = db_match.price
+                car['db_image'] = db_match.image.url if db_match.image else None
+
+                # Find parts available for this car
+                parts_qs = VehiclePart.objects.filter(
+                    vehicle=db_match, stock__gt=0
+                ).select_related('seller')[:6]
+                car['parts'] = [
+                    {
+                        'id': p.id,
+                        'name': p.name,
+                        'brand': p.brand,
+                        'price': p.price,
+                        'category': p.category,
+                        'image': p.image.url if p.image else None,
+                    }
+                    for p in parts_qs
+                ]
+
+        return JsonResponse({'ok': True, 'cars': cars_data})
+
+    except _json.JSONDecodeError:
+        return JsonResponse({'ok': False, 'error': 'AI returned an invalid response format. Please try again.'})
+    except Exception as e:
+        error_str = str(e)
+        if '429' in error_str or 'Quota exceeded' in error_str:
+            return JsonResponse({'ok': False, 'error': 'The AI service is currently very busy. Please wait about 30-60 seconds and try again!'})
+        return JsonResponse({'ok': False, 'error': f'An error occurred: {error_str}'})

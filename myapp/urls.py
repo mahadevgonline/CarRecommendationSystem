@@ -13,6 +13,7 @@ urlpatterns = [
     path('cars/', views.cars),
     path('view-car/<id>/', views.view_car),
     path('edit-car/<id>/', views.edit_car),
+    path('update-car-image/<id>/', views.update_car_image),
     path('delete-car/<id>/', views.delete_car),
     path('car-detail/<id>/', views.car_detail),
     path('compare/', views.compare),
@@ -39,8 +40,19 @@ urlpatterns = [
     path('approve-seller/<id>/', views.approve_seller),
     path('reject-seller/<id>/', views.reject_seller),
     path('sellers/', views.sellers),
-    path('recommendations/', views.recommendation, name='recommendations'),
     path('logout/', views.logout),
     path('mark-notification/<id>/', views.mark_notification_read),
+    path('forgot-password/', views.forgot_password),
+    path('verify-otp/', views.verify_otp),
+    path('reset-password/', views.reset_password),
+    # Part detail features
+    path('part-notify/<int:id>/', views.notify_part),
+    path('part-review/<int:id>/', views.submit_review),
+    path('seller-unavailable/', views.seller_unavailable),
+    path('part-qr/<int:id>/', views.part_qr),
+    path('part-payment/<int:id>/', views.part_payment_info),
+    path('part-payment-success/<int:id>/', views.part_payment_success),
+    # AI Car Finder
+    path('ai-car-finder/', views.ai_car_finder),
+    path('ai-car-recommend/', views.ai_car_recommend),
 ]
-    # path('ship-item/<id>/', views.ship_item), # Removed in favor of update-order-status
