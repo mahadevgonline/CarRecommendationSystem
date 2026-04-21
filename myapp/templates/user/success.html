@@ -622,6 +622,40 @@
                 font-size: 1.5rem;
             }
         }
+    
+        [data-theme="dark"] {
+            --vintage-dark: #f5f1e6;
+            --vintage-brown: #d7ccc8;
+            --vintage-light: #5d4037;
+            --vintage-gold: #c9a96e;
+            --vintage-cream: #1a1008;
+            --vintage-red: #ff7043;
+            --vintage-green: #4caf50;
+        }
+
+    
+        /* -- EXPLICIT CONTRACT FIX -- */
+        h1, h2, h3, h4, h5, h6, p, label, td, th, li, span:not([class*="badge"]), div:not([class*="btn"]):not([class*="icon"]):not([class*="badge"]) {
+            color: var(--text-color, var(--vintage-dark)) !important;
+        }
+        .gray-text, .text-muted, .activity-time, .stat-info p, .activity-details p, .page-title p {
+            color: var(--gray, var(--vintage-brown)) !important;
+        }
+        input, textarea, select {
+            background-color: var(--bg-color, var(--vintage-cream)) !important;
+            color: var(--text-color, var(--vintage-dark)) !important;
+            border: 1px solid var(--light, var(--vintage-light)) !important;
+        }
+        .btn, .btn-primary, .btn-submit, .badge, .status {
+            color: #ffffff !important;
+        }
+        .btn-outline {
+            color: var(--secondary, var(--vintage-gold)) !important;
+        }
+        .btn-outline:hover {
+            color: #ffffff !important;
+        }
+
     </style>
 </head>
 <body>
@@ -639,7 +673,8 @@
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/marketplace/">Marketplace</a></li>
-                        <li><a href="/cart/">Cart</a></li>
+                        <li><button id="themeToggleBtn" onclick="toggleTheme()" style="background:transparent; border:none; color:var(--vintage-gold); font-size:1.2rem; cursor:pointer; margin-right:15px;" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
+                <a href="/cart/">Cart</a></li>
                     </ul>
                 </nav>
                 <div class="user-actions">
@@ -832,5 +867,28 @@
             }
         });
     </script>
+
+    <script>
+        (function() {
+            var saved = localStorage.getItem('classicauto_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = (current === 'dark') ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('classicauto_theme', next);
+            var btn = document.getElementById('themeToggleBtn');
+            if (btn) btn.innerHTML = (next === 'dark') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var saved = localStorage.getItem('classicauto_theme') || 'light';
+            var btn = document.getElementById('themeToggleBtn');
+            if (btn) btn.innerHTML = (saved === 'dark') ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+    </script>
+
 </body>
 </html>

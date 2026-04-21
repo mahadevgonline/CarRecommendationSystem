@@ -565,6 +565,127 @@
                 padding: 20px;
             }
         }
+    
+        /* ── CLASSICAUTO VINTAGE THEME OVERRIDES ── */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:wght@400;500;600&display=swap');
+
+        :root {
+            --primary: #3e2723;
+            --primary-dark: #2a1a17;
+            --secondary: #c9a96e;
+            --light: #d7ccc8;
+            --dark: #3e2723;
+            --gray: #5d4037;
+            --bg-color: #f5f1e6;
+            --surface: #ffffff;
+            --text-color: #3e2723;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary: #120a04;
+            --primary-dark: #000000;
+            --secondary: #c9a96e;
+            --light: #5d4037;
+            --dark: #f5f1e6;
+            --gray: #d7ccc8;
+            --bg-color: #1a1008;
+            --surface: #2a1a10;
+            --text-color: #f5f1e6;
+        }
+
+        body {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            font-family: 'Lora', serif !important;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        h1, h2, h3, h4, h5, .sidebar-header h2, th {
+            font-family: 'Cinzel', serif !important;
+        }
+
+        .sidebar {
+            background: var(--primary) !important;
+        }
+        
+        .sidebar-header {
+            background: var(--primary-dark) !important;
+            border-bottom: 1px solid rgba(201, 169, 110, 0.2) !important;
+        }
+
+        .header, .stat-card, .chart-container, .recent-activity, .top-cars, .card, .form-container, form, table, .seller-registration {
+            background-color: var(--surface) !important;
+            border-color: var(--light) !important;
+        }
+
+        input, select, textarea {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--light) !important;
+        }
+
+        /* Force text visibility */
+        .header-left h1, .stat-info h3, .page-title h2, .activity-details h4, .table-header h3, th, td, label {
+            color: var(--text-color) !important;
+        }
+        
+        .stat-info p, .page-title p, .activity-details p, .activity-time {
+            color: var(--gray) !important;
+        }
+
+        .menu-item {
+            color: var(--gray) !important;
+        }
+
+        .menu-item.active, .menu-item:hover {
+            color: var(--secondary) !important;
+            background: rgba(201, 169, 110, 0.1) !important;
+            border-left-color: var(--secondary) !important;
+        }
+
+        .btn-primary, .btn-submit {
+            background: var(--secondary) !important;
+            color: var(--primary-dark) !important;
+            font-family: 'Cinzel', serif !important;
+        }
+
+        .theme-toggle {
+            background: var(--secondary);
+            border: none;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 1rem;
+            cursor: pointer;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+    
+        /* -- EXPLICIT CONTRACT FIX -- */
+        h1, h2, h3, h4, h5, h6, p, label, td, th, li, span:not([class*="badge"]), div:not([class*="btn"]):not([class*="icon"]):not([class*="badge"]) {
+            color: var(--text-color, var(--vintage-dark)) !important;
+        }
+        .gray-text, .text-muted, .activity-time, .stat-info p, .activity-details p, .page-title p {
+            color: var(--gray, var(--vintage-brown)) !important;
+        }
+        input, textarea, select {
+            background-color: var(--bg-color, var(--vintage-cream)) !important;
+            color: var(--text-color, var(--vintage-dark)) !important;
+            border: 1px solid var(--light, var(--vintage-light)) !important;
+        }
+        .btn, .btn-primary, .btn-submit, .badge, .status {
+            color: #ffffff !important;
+        }
+        .btn-outline {
+            color: var(--secondary, var(--vintage-gold)) !important;
+        }
+        .btn-outline:hover {
+            color: #ffffff !important;
+        }
+
     </style>
 </head>
 
@@ -608,6 +729,7 @@
                     <h1>Add Vehicle Part</h1>
                 </div>
                 <div class="header-right">
+                    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
                     <div class="search-box">
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search parts...">
@@ -863,6 +985,29 @@
     {% if msg %}
     <script>alert('Part Added Successfully');</script>
     {% endif %}
+
+    <script>
+        (function() {
+            var saved = localStorage.getItem('classicauto_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = (current === 'dark') ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('classicauto_theme', next);
+            var btn = document.getElementById('themeToggle');
+            if (btn) btn.innerHTML = (next === 'dark') ? '\u2600\uFE0F' : '\uD83C\uDF19';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var saved = localStorage.getItem('classicauto_theme') || 'light';
+            var btn = document.getElementById('themeToggle');
+            if (btn) btn.innerHTML = (saved === 'dark') ? '\u2600\uFE0F' : '\uD83C\uDF19';
+        });
+    </script>
+
 </body>
 
 </html>
