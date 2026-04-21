@@ -8,6 +8,7 @@ class Register(models.Model):
     rights=models.CharField(max_length=100,default='User')
     otp=models.CharField(max_length=6, null=True, blank=True)
     otp_expiry=models.DateTimeField(null=True, blank=True)
+    profile_image=models.ImageField(upload_to='profile_images/', null=True, blank=True)
     def __str__(self):
         return self.name
 

@@ -1,4 +1,4 @@
-﻿{% load currency_filters %}
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1453,8 +1453,14 @@
                     <div class="summary-details">
                         <div class="summary-row">
                             <span>Subtotal</span>
-                            <span id="summarySubtotal">{{total|inr}}</span>
+                            <span id="summarySubtotal">{{subtotal|inr}}</span>
                         </div>
+                        {% if discount %}
+                        <div class="summary-row">
+                            <span>Discount (20%)</span>
+                            <span id="summaryDiscount" style="color:var(--vintage-green);">-{{discount|inr}}</span>
+                        </div>
+                        {% endif %}
                         <div class="summary-row">
                             <span>Shipping</span>
                             <span id="summaryShipping">FREE</span>

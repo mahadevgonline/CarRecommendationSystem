@@ -1,4 +1,4 @@
-﻿{% load currency_filters %}
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,7 +53,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -162,7 +162,7 @@
         nav ul {
             display: flex;
             list-style: none;
-            gap: 30px;
+            gap: 15px;
         }
 
         nav a {
@@ -254,6 +254,7 @@
         .cart-section {
             padding: 60px 0;
             background: var(--vintage-cream);
+            min-height: 60vh;
         }
 
         .section-header {
@@ -833,19 +834,22 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
-                        <li><a href="/marketplace/">Marketplace</a></li>
-                        <li><a href="/cart/" class="active">Cart</a></li>
+                        <li><a href="/favorites/">Favorite</a></li>
+                        <li><a href="/vehicle-parts/">Parts</a></li>
+                        <li><a href="/orders/">Orders</a></li>
+                        <li><a href="/cart/" style="color:var(--vintage-gold);">Cart</a></li>
                     </ul>
                 </nav>
                 <div class="user-actions">
-                    <div class="cart-icon">
+                    <div class="cart-icon" onclick="window.location.href='/cart/'" style="cursor:pointer;">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
-                        <div class="cart-count" id="cartCount">3</div>
+                        {% if cart %}<div class="cart-count">{{ cart|length }}</div>{% endif %}
                     </div>
-                    <a href="/profile/" class="btn btn-gold btn-sm">Profile</a>
+                    <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
                 </div>
             </div>
         </div>
@@ -857,7 +861,7 @@
             <div class="breadcrumb-links">
                 <a href="/user/">Home</a>
                 <i class="fas fa-chevron-right"></i>
-                <a href="/marketplace/">Marketplace</a>
+                <a href="/vehicle-parts/">Parts</a>
                 <i class="fas fa-chevron-right"></i>
                 <span>Shopping Cart</span>
             </div>
@@ -942,7 +946,7 @@
                         <h3>Your Cart is Empty</h3>
                         <p>Looks like you haven't added any vintage auto parts to your cart yet. Browse our collection
                             to find the perfect parts for your classic car.</p>
-                        <a href="/marketplace/" class="btn btn-gold">
+                        <a href="/vehicle-parts/" class="btn btn-gold">
                             <i class="fas fa-car"></i> Browse Parts
                         </a>
                     </div>
@@ -958,12 +962,18 @@
                     <div class="summary-details">
                         <div class="summary-row">
                             <span class="summary-label">Subtotal</span>
-                            <span class="summary-value" id="subtotal">{{ total|inr }}</span>
+                            <span class="summary-value" id="subtotal">{{ subtotal|inr }}</span>
                         </div>
+                        {% if discount %}
+                        <div class="summary-row">
+                            <span class="summary-label">Discount (20%)</span>
+                            <span class="summary-value" id="discount" style="color:var(--vintage-green);">-{{ discount|inr }}</span>
+                        </div>
+                        {% endif %}
                         <div class="summary-row">
                             <span class="summary-label">Shipping</span>
                             <span class="summary-value" id="shipping">
-                                FREE
+                                NORMAL RATE
                             </span>
                         </div>
                         <div class="summary-row">
@@ -979,19 +989,30 @@
 
                     <!-- Discount Section -->
                     <div class="discount-section">
-                        <h4>Have a promo code?</h4>
-                        <div class="discount-input">
-                            <input type="text" id="promoCode" placeholder="Enter code">
-                            <button class="btn btn-sm" onclick="applyPromoCode()">Apply</button>
-                        </div>
-                        <div id="promoMessage" style="margin-top: 10px; font-size: 0.9rem;"></div>
+                        <h4>Have a promo code? (Hint: VINTAGE20)</h4>
+                        <form method="post" class="discount-input">
+                            {% csrf_token %}
+                            <input type="text" name="promo_code" id="promoCode" placeholder="Enter code" value="{{ request.session.promo|default:'' }}">
+                            <button type="submit" class="btn btn-sm">Apply</button>
+                        </form>
+                        {% if promo_success %}
+                        <div id="promoMessage" style="margin-top: 10px; font-size: 0.9rem; color: var(--vintage-green);">{{ promo_success }}</div>
+                        {% elif promo_error %}
+                        <div id="promoMessage" style="margin-top: 10px; font-size: 0.9rem; color: red;">{{ promo_error }}</div>
+                        {% endif %}
                     </div>
 
                     <!-- Checkout Button -->
                     <div class="summary-actions">
+                        {% if cart %}
                         <button class="btn btn-gold" onclick="window.location.href='/checkout/'">
                             <i class="fas fa-lock"></i> Proceed to Checkout
                         </button>
+                        {% else %}
+                        <button class="btn" style="background:var(--vintage-light); color:var(--vintage-brown); cursor:not-allowed;" disabled>
+                            <i class="fas fa-exclamation-circle"></i> Cart is Empty
+                        </button>
+                        {% endif %}
                         <a href="/vehicle-parts/" class="btn btn-outline">
                             <i class="fas fa-shopping-bag"></i> Continue Shopping
                         </a>

@@ -1,4 +1,4 @@
-﻿{% load currency_filters %}
+{% load currency_filters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -952,7 +952,8 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="/user/">Home</a></li>`n                        <li><a href="/ai-car-finder/">AI Finder</a></li>
+                        <li><a href="/user/">Home</a></li>
+                        <li><a href="/ai-car-finder/">AI Finder</a></li>
                         <li><a href="/collections/">Collection</a></li>
                         <li><a href="/compare/">Compare</a></li>
                         <li><a href="/favorites/">Favorite</a></li>
@@ -1053,7 +1054,7 @@
     <div class="modal-overlay" id="vehicleModal">
         <div class="vehicle-modal">
             <div class="modal-header">
-                <h3>Select Vehicles to Compare</h3>
+                <h3>Select Up to 2 Vehicles to Compare</h3>
                 <button class="modal-close" id="modalClose">
                     <i class="fas fa-times"></i>
                 </button>
@@ -1131,24 +1132,24 @@
         // Sample vehicle data with new fields
         const vehicleData = [
             {% for i in cars %}
-        {
-            id: { { i.id } },
-            make: "{{i.make}}",
+            {
+                id: {{i.id}},
+                make: "{{i.make}}",
                 model: "{{i.model}}",
-                    year: { { i.year } },
-            price: "{{i.price|inr}}",
+                year: {{i.year}},
+                price: "{{i.price|inr}}",
                 category: "{{i.category}}",
-                    fuelType: "{{i.fuel_type}}",
-                        description: "{{i.description|truncatewords:15}}",
-                            engine: "{{i.engine}}",
-                                horsePower: "{{i.horse_power}} HP",
-                                    transmission: "{{i.transmission}}",
-                                        mpgCity: "{{i.mpg_city}}",
-                                            mpgHighway: "{{i.mpg_hway}}",
-                                                features: { { i.features | safe } },
-            image: "{{i.image.url}}",
-        } {% if not forloop.last %}, {% endif %}
-        {% endfor %}
+                fuelType: "{{i.fuel_type}}",
+                description: "{{i.description|truncatewords:15}}",
+                engine: "{{i.engine}}",
+                horsePower: "{{i.horse_power}} HP",
+                transmission: "{{i.transmission}}",
+                mpgCity: "{{i.mpg_city}}",
+                mpgHighway: "{{i.mpg_hway}}",
+                features: {{i.features|safe}},
+                image: "{{i.image.url}}",
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
         ];
 
         // Currently selected vehicles
@@ -1217,17 +1218,20 @@
             updateComparisonDisplay();
         }
 
-        // Toggle vehicle selection in the modal
+        // Toggle vehicle selection in the modal (max 2 cars)
         function toggleVehicleSelection(vehicleId) {
             const index = tempSelectedVehicles.indexOf(vehicleId);
 
             if (index === -1) {
-                // Add vehicle if we have less than 4 selected
-                if (tempSelectedVehicles.length < 4) {
+                if (tempSelectedVehicles.length < 2) {
+                    tempSelectedVehicles.push(vehicleId);
+                } else {
+                    // Swap out the oldest selection to keep it at exactly 2
+                    tempSelectedVehicles.shift();
                     tempSelectedVehicles.push(vehicleId);
                 }
             } else {
-                // Remove vehicle
+                // Deselect
                 tempSelectedVehicles.splice(index, 1);
             }
 
@@ -1261,10 +1265,16 @@
             });
 
             // Update confirm button text
-            confirmSelection.textContent = `Compare ${tempSelectedVehicles.length} Vehicle${tempSelectedVehicles.length !== 1 ? 's' : ''}`;
+            if (tempSelectedVehicles.length === 2) {
+                confirmSelection.textContent = 'Compare These 2 Cars';
+            } else if (tempSelectedVehicles.length === 1) {
+                confirmSelection.textContent = 'Select 1 More Car…';
+            } else {
+                confirmSelection.textContent = 'Select 2 Cars to Compare';
+            }
 
-            // Disable confirm button if no vehicles selected
-            confirmSelection.disabled = tempSelectedVehicles.length === 0;
+            // Disable confirm button if fewer than 2 cars selected
+            confirmSelection.disabled = tempSelectedVehicles.length < 2;
         }
 
         // Update the comparison display based on selected vehicles
@@ -1534,33 +1544,147 @@
             featuresGrid.appendChild(featureCategory);
         }
 
-        // Update the summary section
+        // ── Smart dynamic summary (works for exactly 2 cars) ──────────────────
         function updateSummarySection() {
             const summaryContent = document.getElementById('summaryContent');
             summaryContent.innerHTML = '';
 
-            selectedVehicles.forEach((vehicleId, index) => {
-                const vehicle = vehicleData.find(v => v.id === vehicleId);
-                if (vehicle) {
-                    const summaryCard = document.createElement('div');
-                    summaryCard.className = 'summary-card';
+            if (selectedVehicles.length !== 2) {
+                // Fallback: just show individual cards
+                selectedVehicles.forEach(vehicleId => {
+                    const v = vehicleData.find(x => x.id === vehicleId);
+                    if (v) {
+                        const card = document.createElement('div');
+                        card.className = 'summary-card';
+                        card.innerHTML = `<h4>${v.year} ${v.make} ${v.model}</h4>
+                            <a href="/car-detail/${v.id}/" class="btn btn-gold btn-sm">View Details</a>`;
+                        summaryContent.appendChild(card);
+                    }
+                });
+                return;
+            }
 
-                    // Default summary content
-                    const bestFor = 'Classic car collectors seeking a timeless automotive icon.';
-                    const highlights = 'Historical significance, timeless design, investment potential.';
-                    const considerations = 'Older technology, potential maintenance challenges, limited practicality.';
+            const [idA, idB] = selectedVehicles;
+            const a = vehicleData.find(v => v.id === idA);
+            const b = vehicleData.find(v => v.id === idB);
 
-                    summaryCard.innerHTML = `
-                        <h4>${vehicle.year} ${vehicle.make} ${vehicle.model}</h4>
-                        <p><strong>Best For:</strong> ${bestFor}</p>
-                        <p><strong>Highlights:</strong> ${highlights}</p>
-                        <p><strong>Considerations:</strong> ${considerations}</p>
-                        <a href="/car-detail/${vehicle.id}/" class="btn btn-gold btn-sm">View Details</a>
-                    `;
+            // ── Helper: parse price string → number ──
+            const parsePrice = str => parseInt((str || '0').replace(/[^0-9]/g, ''), 10) || 0;
+            const parseHP    = str => parseInt((str || '0').replace(/[^0-9]/g, ''), 10) || 0;
+            const parseMPG   = str => parseFloat((str || '0').replace(/[^0-9.]/g, '')) || 0;
 
-                    summaryContent.appendChild(summaryCard);
-                }
+            const priceA  = parsePrice(a.price);  const priceB  = parsePrice(b.price);
+            const hpA     = parseHP(a.horsePower); const hpB     = parseHP(b.horsePower);
+            const mpgA    = parseMPG(a.mpgCity);   const mpgB    = parseMPG(b.mpgCity);
+            const featA   = Array.isArray(a.features) ? a.features.length : 0;
+            const featB   = Array.isArray(b.features) ? b.features.length : 0;
+
+            // ── Score each car (higher = better winner) ──
+            let scoreA = 0, scoreB = 0;
+            if (priceA  < priceB)  scoreA++; else if (priceB  < priceA)  scoreB++;
+            if (hpA     > hpB)     scoreA++; else if (hpB     > hpA)     scoreB++;
+            if (mpgA    > mpgB)    scoreA++; else if (mpgB    > mpgA)    scoreB++;
+            if (featA   > featB)   scoreA++; else if (featB   > featA)   scoreB++;
+
+            // ── Build human-readable verdicts per car ──
+            const buildBestFor = (v, other_v, vHP, otherHP, vPrice, otherPrice, vMPG, otherMPG, vFeat, otherFeat) => {
+                const items = [];
+                if (vPrice  < otherPrice)  items.push('budget-conscious buyers');
+                if (vHP     > otherHP)     items.push('performance & power enthusiasts');
+                if (vMPG    > otherMPG)    items.push('fuel efficiency & long drives');
+                if (vFeat   > otherFeat)   items.push('those who want more features');
+                if (v.transmission === 'Manual') items.push('driving purists who love manual control');
+                if (v.fuelType === 'Electric' || v.fuelType === 'Hybrid') items.push('eco-friendly driving');
+                if (v.category === 'SUV') items.push('families & off-road adventures');
+                if (v.category === 'Sports' || v.category === 'Coupe') items.push('spirited sports driving');
+                if (v.category === 'Sedan') items.push('everyday commuting & comfort');
+                if (v.category === 'Truck') items.push('hauling, towing & utility tasks');
+                return items.length > 0 ? items.slice(0, 3).join(', ') : 'general-purpose driving';
+            };
+
+            const buildHighlights = (v, other_v, vHP, otherHP, vPrice, otherPrice, vMPG, otherMPG) => {
+                const h = [];
+                if (vPrice < otherPrice) h.push(`More affordable by ₹${(otherPrice - vPrice).toLocaleString()}`);
+                if (vHP    > otherHP)    h.push(`${vHP - otherHP} more HP`);
+                if (vMPG   > otherMPG)   h.push(`Better fuel economy (${v.mpgCity} city)`);
+                h.push(`${v.engine} engine`);
+                return h.slice(0, 3).join(' • ');
+            };
+
+            const buildConsiderations = (v, other_v, vHP, otherHP, vPrice, otherPrice, vMPG, otherMPG) => {
+                const c = [];
+                if (vPrice > otherPrice) c.push('Higher price tag');
+                if (vHP    < otherHP)    c.push('Less horsepower');
+                if (vMPG   < otherMPG)   c.push('Lower fuel efficiency');
+                return c.length > 0 ? c.join(' • ') : 'No major drawbacks vs. the other car';
+            };
+
+            const overallWinner = scoreA > scoreB ? a : scoreB > scoreA ? b : null;
+
+            // ── Render card for each car ──
+            [a, b].forEach((v, i) => {
+                const other    = i === 0 ? b : a;
+                const vHP      = i === 0 ? hpA    : hpB;
+                const otherHP  = i === 0 ? hpB    : hpA;
+                const vPrice   = i === 0 ? priceA : priceB;
+                const otherP   = i === 0 ? priceB : priceA;
+                const vMPG     = i === 0 ? mpgA   : mpgB;
+                const otherMPG = i === 0 ? mpgB   : mpgA;
+                const vFeat    = i === 0 ? featA  : featB;
+                const otherFeat= i === 0 ? featB  : featA;
+
+                const isWinner = overallWinner && overallWinner.id === v.id;
+                const card = document.createElement('div');
+                card.className = 'summary-card';
+                card.style.cssText = isWinner
+                    ? 'border: 2px solid var(--vintage-gold); position:relative;'
+                    : 'position:relative;';
+
+                const winnerBadge = isWinner
+                    ? `<div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+                           background:var(--vintage-gold);color:var(--vintage-dark);
+                           padding:3px 14px;border-radius:20px;font-size:0.8rem;
+                           font-family:'Cinzel',serif;font-weight:700;white-space:nowrap;">
+                           ⭐ Better Overall
+                       </div>` : '';
+
+                card.innerHTML = `
+                    ${winnerBadge}
+                    <h4 style="margin-bottom:16px;">${v.year} ${v.make} ${v.model}</h4>
+                    <div style="text-align:left;">
+                        <p style="margin-bottom:10px;"><strong>✅ Best For:</strong><br>
+                            ${buildBestFor(v, other, vHP, otherHP, vPrice, otherP, vMPG, otherMPG, vFeat, otherFeat)}
+                        </p>
+                        <p style="margin-bottom:10px;"><strong>🌟 Highlights:</strong><br>
+                            ${buildHighlights(v, other, vHP, otherHP, vPrice, otherP, vMPG, otherMPG)}
+                        </p>
+                        <p style="margin-bottom:18px;"><strong>⚠️ Considerations:</strong><br>
+                            ${buildConsiderations(v, other, vHP, otherHP, vPrice, otherP, vMPG, otherMPG)}
+                        </p>
+                    </div>
+                    <a href="/car-detail/${v.id}/" class="btn btn-gold btn-sm">View Full Details</a>
+                `;
+                summaryContent.appendChild(card);
             });
+
+            // ── Overall verdict banner ──
+            if (overallWinner) {
+                const verdict = document.createElement('div');
+                verdict.style.cssText = 'grid-column:1/-1;background:var(--vintage-dark);color:var(--vintage-cream);border-radius:5px;padding:20px 30px;text-align:center;border:2px solid var(--vintage-gold);';
+                verdict.innerHTML = `
+                    <h4 style="font-family:\'Cinzel\',serif;color:var(--vintage-gold);margin-bottom:8px;">📊 Our Verdict</h4>
+                    <p>The <strong>${overallWinner.year} ${overallWinner.make} ${overallWinner.model}</strong> edges ahead overall
+                    — winning on ${scoreA > scoreB ? scoreA : scoreB} out of 4 key metrics.
+                    ${ scoreA === scoreB ? 'However, both cars are evenly matched — your choice depends on personal preference.' : '' }</p>
+                `;
+                summaryContent.appendChild(verdict);
+            } else {
+                const verdict = document.createElement('div');
+                verdict.style.cssText = 'grid-column:1/-1;background:var(--vintage-dark);color:var(--vintage-cream);border-radius:5px;padding:20px 30px;text-align:center;border:2px solid var(--vintage-gold);';
+                verdict.innerHTML = `<h4 style="font-family:\'Cinzel\',serif;color:var(--vintage-gold);margin-bottom:8px;">📊 Our Verdict</h4>
+                    <p>These two cars are very evenly matched across all key metrics. Your final choice comes down to personal style and intended use.</p>`;
+                summaryContent.appendChild(verdict);
+            }
         }
     </script>
 

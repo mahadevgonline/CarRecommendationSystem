@@ -418,28 +418,18 @@ def remove_favorite(request,id):
 def profile(request):
     if 'uid' not in request.session:
         return redirect('/login/')
-    uid=request.session['uid']
-    reg=Register.objects.get(id=uid)
-    form = ProfileForm(request.POST or None, initial={'name': reg.name, 'email': reg.email, 'phone': reg.phone})
-    if request.method=="POST":
-        if form.is_valid():
-            password = form.cleaned_data.get('password')
-            if password:
-                hashed_password = make_password(password)
-                Register.objects.filter(id=uid).update(
-                    name=form.cleaned_data['name'],
-                    email=form.cleaned_data['email'],
-                    phone=form.cleaned_data['phone'],
-                    password=hashed_password
-                )
-            else:
-                Register.objects.filter(id=uid).update(
-                    name=form.cleaned_data['name'],
-                    email=form.cleaned_data['email'],
-                    phone=form.cleaned_data['phone']
-                )
-            return redirect('/profile/')
-    return render(request, "user/profile.html", {'reg': reg, 'form': form})
+    uid = request.session['uid']
+    reg = Register.objects.get(id=uid)
+    if request.method == "POST":
+        reg.name  = request.POST.get('name', reg.name).strip()
+        reg.email = request.POST.get('email', reg.email).strip()
+        reg.phone = request.POST.get('phone', reg.phone)
+        image = request.FILES.get('profile_image')
+        if image:
+            reg.profile_image = image
+        reg.save()
+        return redirect('/profile/')
+    return render(request, "user/profile.html", {'reg': reg})
 
 def add_parts(request):
     if 'sid' not in request.session:
@@ -587,15 +577,36 @@ def cart(request):
     uid=request.session['uid']
     reg=Register.objects.get(id=uid)
     cart=Cart.objects.filter(user=reg).select_related('part')
-    total=0
+    subtotal=0
     for i in cart:
-        total+=i.total_price
+        subtotal+=i.total_price
+    
+    promo_success = None
+    promo_error = None
     if request.method=="POST":
-        qn=request.POST.get("quantity")
-        cid=request.POST.get("cid")
-        Cart.objects.filter(id=cid).update(quantity=qn)
-        return redirect('/cart/')
-    return render(request, "user/cart.html",{'cart':cart,'total':total})
+        if "promo_code" in request.POST:
+            code = request.POST.get("promo_code").strip().upper()
+            if "20" in code:
+                request.session['promo'] = "VINTAGE20"
+                promo_success = f"Code '{code}' applied! 20% discount."
+            else:
+                request.session.pop('promo', None)
+                if code:
+                    promo_error = "Invalid promo code."
+                else:
+                    promo_success = "Promo code removed."
+        else:
+            qn=request.POST.get("quantity")
+            cid=request.POST.get("cid")
+            Cart.objects.filter(id=cid).update(quantity=qn)
+            return redirect('/cart/')
+            
+    discount = 0
+    if request.session.get('promo') == 'VINTAGE20':
+        discount = subtotal * 0.20
+        
+    total = subtotal - discount
+    return render(request, "user/cart.html",{'cart':cart,'subtotal':subtotal,'discount':discount,'total':total,'promo_success':promo_success,'promo_error':promo_error})
 
 def add_cart(request,id):
     if 'uid' not in request.session:
@@ -626,9 +637,18 @@ def checkout(request):
     uid=request.session['uid']
     reg=Register.objects.get(id=uid)
     cart=Cart.objects.filter(user=reg).select_related('part')
+    if not cart.exists():
+        return redirect('/cart/')
     total = 0
     for i in cart:
         total += i.total_price
+        
+    subtotal = total
+    discount = 0
+    if request.session.get('promo') == 'VINTAGE20':
+        discount = subtotal * 0.20
+    
+    total = subtotal - discount
     form = CheckoutForm(request.POST or None)
     if request.method=="POST":
         if form.is_valid():
@@ -664,7 +684,7 @@ def checkout(request):
                             message=f"New order #{ord.id} received from {reg.name}. Please review and accept."
                         )
             return redirect('/success/')
-    return render(request, "user/checkout.html", {'cart': cart, 'total': total, 'form': form})
+    return render(request, "user/checkout.html", {'cart': cart, 'subtotal': subtotal, 'discount': discount, 'total': total, 'form': form})
 
 def success(request):
     return render(request, "user/success.html")
