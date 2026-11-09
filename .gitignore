@@ -23,6 +23,8 @@ media/
 venv/
 env/
 .venv/
+oc_bin/
+staticfiles/
 
 # Utility / build scripts
 apply_*.py
