@@ -225,8 +225,11 @@ def reset_password(request):
     })
 
 def user(request):
+    """User homepage — displays all cars for browsing."""
+    if 'uid' not in request.session:
+        return redirect('/login/')
     cars = Car.objects.all()
-    return render(request, "user/user.html",{'cars':cars})
+    return render(request, "user/user.html", {'cars': cars})
 
 def admin(request):
     if 'uid' not in request.session:
@@ -292,6 +295,9 @@ def admin(request):
 
 
 def seller(request):
+    """Seller dashboard — requires seller authentication."""
+    if 'sid' not in request.session:
+        return redirect('/login/')
     return render(request, "seller/seller.html")
 
 def add_car(request):
@@ -672,8 +678,6 @@ def checkout(request):
                 cart.delete()
                 # Send a notification to each relevant seller
                 sellers_notified = set()
-                for i in Cart.objects.filter(user=reg).select_related('part__seller'):
-                    pass  # cart already deleted above, use ord items
                 for op_item in OrderItems.objects.filter(order=ord).select_related('item__seller'):
                     seller_obj = op_item.item.seller
                     if seller_obj and seller_obj.id not in sellers_notified:
@@ -755,19 +759,31 @@ def mark_notification_read(request, id):
 
 
 def new_sellers(request):
-    sell=Seller.objects.filter(rights='New Seller')
+    """Admin view — list sellers awaiting approval."""
+    if 'uid' not in request.session:
+        return redirect('/login/')
+    sell = Seller.objects.filter(rights='New Seller')
     return render(request, "admin/new-sellers.html",{'sell':sell})
 
-def approve_seller(request,id):
+def approve_seller(request, id):
+    """Admin action — approve a pending seller."""
+    if 'uid' not in request.session:
+        return redirect('/login/')
     Seller.objects.filter(id=id).update(rights='Seller')
     return redirect('/new-sellers/')
 
-def reject_seller(request,id):
+def reject_seller(request, id):
+    """Admin action — reject a pending seller."""
+    if 'uid' not in request.session:
+        return redirect('/login/')
     Seller.objects.filter(id=id).update(rights='Rejected')
     return redirect('/new-sellers/')
 
 def sellers(request):
-    sell=Seller.objects.filter(rights='Seller')
+    """Admin view — list all approved sellers."""
+    if 'uid' not in request.session:
+        return redirect('/login/')
+    sell = Seller.objects.filter(rights='Seller')
     return render(request, "admin/sellers.html",{'sell':sell})
 
 @never_cache
@@ -1069,7 +1085,10 @@ def part_payment_success(request, id):
 # ─────────────────────────────────────────────────────────────────
 #  AI CAR FINDER — Gemini-powered recommendations
 # ─────────────────────────────────────────────────────────────────
-import google.generativeai as genai
+try:
+    import google.generativeai as genai
+except ImportError:
+    genai = None
 from django.conf import settings
 
 def ai_car_finder(request):
@@ -1081,6 +1100,9 @@ def ai_car_finder(request):
 def ai_car_recommend(request):
     """AJAX endpoint: send user query to Gemini, return car recommendations as JSON."""
     import json as _json
+
+    if genai is None:
+        return JsonResponse({'ok': False, 'error': 'Gemini AI library is not installed in this environment.'})
 
     query = request.POST.get('query', '').strip()
     if not query:

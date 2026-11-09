@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoselect
+  namespace: mahadevg2028-dev
+  labels:
+    app: autoselect
+spec:
+  selector:
+    app: autoselect
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: autoselect
+  namespace: mahadevg2028-dev
+  labels:
+    app: autoselect
+spec:
+  to:
+    kind: Service
+    name: autoselect
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect

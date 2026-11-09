@@ -1004,13 +1004,24 @@
         document.getElementById('registrationForm').addEventListener('submit', function (e) {
             const pw = passwordInput.value;
             const cpw = confirmInput.value;
+            
+            if (calcStrength(pw) < 4) {
+                e.preventDefault();
+                passwordInput.style.borderColor = '#c0392b';
+                passwordInput.focus();
+                alert("Password is too weak. It must be at least 8 characters long, contain an uppercase letter, a number, and a special symbol.");
+                return;
+            }
+
             if (pw !== cpw) {
                 e.preventDefault();
                 confirmInput.style.borderColor = '#c0392b';
                 confirmInput.focus();
                 alert("Passwords don't match. Please try again.");
             } else {
-                this.submit();
+                // Clear any red borders
+                passwordInput.style.borderColor = 'var(--vintage-light)';
+                confirmInput.style.borderColor = 'var(--vintage-light)';
             }
         });
 

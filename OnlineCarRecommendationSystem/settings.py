@@ -20,12 +20,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#($vm97g=cnc8yoo4@**17lakos66q1992i@=@6rlo&c@g-%22"
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-#($vm97g=cnc8yoo4@**17lakos66q1992i@=@6rlo&c@g-%22")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files in production
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -117,16 +118,30 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# WhiteNoise: serve static files efficiently in production
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Email Configuration (Console Backend for testing without SMTP)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email Configuration (Real SMTP Backend)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# To make this work, the user must provide their Gmail and an App Password.
+# Google no longer allows basic passwords. You must generate an App Password.
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER', 'your.email@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS', 'your-16-digit-app-password')
 
 # Google Gemini API Key for AI Car Recommendations
 # Get your free key from: https://aistudio.google.com/apikey
-GEMINI_API_KEY = 'AIzaSyDUPQ0FT8XJHVUFJVijfBcIk_7trV8jcKE'  # <-- Paste your Gemini API key here
+# Best practice: set GEMINI_API_KEY as an environment variable
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyDUPQ0FT8XJHVUFJVijfBcIk_7trV8jcKE')

@@ -1,0 +1,47 @@
+# .dockerignore — keep image lean
+.git
+.gitignore
+.idea/
+.vscode/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Large binary files
+ffmpeg.exe
+ffmpeg.zip
+ffmpeg_new.zip
+ffmpeg-master-latest-win64-gpl/
+
+# Dev / test files
+*.log
+db.sqlite3
+media/
+test_*.js
+test_*.py
+rendered_*.html
+*.txt
+dollar_search.txt
+remainder_dollars.txt
+
+# Scratch / utility scripts
+apply_*.py
+clean_*.py
+cleanup_*.py
+find_*.py
+fix_*.py
+get_*.py
+replace_*.py
+add_cars.py
+check_cars.py
+fetch_error.py
+test_gemini.py
+test_render.py
+error.html
+error4.html

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoselect
+  namespace: mahadevg2028-dev
+  labels:
+    app: autoselect
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoselect
+  template:
+    metadata:
+      labels:
+        app: autoselect
+    spec:
+      containers:
+        - name: autoselect
+          image: image-registry.openshift-image-registry.svc:5000/mahadevg2028-dev/autoselect:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: autoselect-secrets
+                  key: SECRET_KEY
+            - name: DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: autoselect-secrets
+                  key: DEBUG
+            - name: ALLOWED_HOSTS
+              valueFrom:
+                secretKeyRef:
+                  name: autoselect-secrets
+                  key: ALLOWED_HOSTS
+            - name: EMAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: autoselect-secrets
+                  key: EMAIL_USER
+            - name: EMAIL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: autoselect-secrets
+                  key: EMAIL_PASS
+            - name: GEMINI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: autoselect-secrets
+                  key: GEMINI_API_KEY
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /user/
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /user/
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 20

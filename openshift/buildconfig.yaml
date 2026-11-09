@@ -1,0 +1,32 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: autoselect
+  namespace: mahadevg2028-dev
+  labels:
+    app: autoselect
+spec:
+  source:
+    type: Git
+    git:
+      uri: "https://github.com/mahadevgonline/CarRecommendationSystem.git"
+      ref: "main"
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "autoselect:latest"
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: autoselect
+  namespace: mahadevg2028-dev
+  labels:
+    app: autoselect

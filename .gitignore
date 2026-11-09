@@ -1,12 +1,34 @@
-﻿ffmpeg.exe
-*.zip
-*.mp4
-ffmpeg-master-latest-win64-gpl/
-*.pyc
+# Python
 __pycache__/
-test_*.py
-get_meme.py
-fetch_error.py
-replace_currency.py
-cleanup_dollars.py
-find_dollars.py
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Django
+db.sqlite3
+*.log
+media/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+venv/
+env/
+.venv/
+
+# Utility / build scripts
+apply_*.py
+
+# Large files not needed in container
+ffmpeg.exe
+ffmpeg.zip
+ffmpeg_new.zip
+ffmpeg-master-latest-win64-gpl/
