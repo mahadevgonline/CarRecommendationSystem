@@ -38,7 +38,7 @@ EXPOSE 8080
 
 # Copy and use entrypoint script (runs migrations + starts Gunicorn)
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh && chown 0:0 /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh && chown 0:0 /app/entrypoint.sh
 
 EXPOSE 8080
 

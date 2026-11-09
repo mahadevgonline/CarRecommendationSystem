@@ -18,6 +18,9 @@ ffmpeg.exe
 ffmpeg.zip
 ffmpeg_new.zip
 ffmpeg-master-latest-win64-gpl/
+oc.zip
+oc_bin/
+docs/
 
 # Dev / test files
 *.log
@@ -26,7 +29,6 @@ media/
 test_*.js
 test_*.py
 rendered_*.html
-*.txt
 dollar_search.txt
 remainder_dollars.txt
 
