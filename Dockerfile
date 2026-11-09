@@ -1,5 +1,5 @@
-# Use official Python slim image
-FROM python:3.11-slim
+# Use official Python 3.12 slim image (Django 6 requires Python >= 3.12)
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
