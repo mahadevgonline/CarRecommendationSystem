@@ -677,11 +677,16 @@
                         <li><a href="/profile/">Profile</a></li>
                     </ul>
                 </nav>
-                <div class="user-actions">
-                    <div class="cart-icon" onclick="window.location.href='/cart/'">
+                <div class="user-actions" style="display: flex; align-items: center; gap: 12px;">
+                    {% if request.session.uid %}
+                    <div class="cart-icon" onclick="window.location.href='/cart/'" title="View Cart">
                         <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
                     </div>
                     <a href="/logout/" class="btn btn-gold btn-sm">Logout</a>
+                    {% else %}
+                    <a href="/login/" class="btn btn-gold btn-sm"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                    <a href="/register/" class="btn btn-sm" style="border: 1px solid var(--vintage-gold); color: var(--vintage-gold);"><i class="fas fa-user-plus"></i> Register</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

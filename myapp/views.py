@@ -16,7 +16,8 @@ import datetime
 import urllib.parse
 
 def index(request):
-    return render(request, "index.html")
+    cars = Car.objects.all()
+    return render(request, "user/user.html", {"cars": cars})
 
 @never_cache
 def register(request):
@@ -226,8 +227,6 @@ def reset_password(request):
 
 def user(request):
     """User homepage — displays all cars for browsing."""
-    if 'uid' not in request.session:
-        return redirect('/login/')
     cars = Car.objects.all()
     return render(request, "user/user.html", {'cars': cars})
 

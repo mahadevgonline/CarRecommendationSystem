@@ -917,6 +917,24 @@
                 </div>
                 {% endif %}
 
+                                <!-- Demo Logins Banner -->
+                <div style="background: rgba(201, 169, 110, 0.15); border: 1px dashed var(--vintage-gold); border-radius: 6px; padding: 10px 14px; margin-bottom: 18px; font-size: 0.85rem;">
+                    <div style="font-weight: 600; margin-bottom: 6px; color: var(--vintage-dark);"><i class="fas fa-key"></i> Quick Demo Logins:</div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button type="button" onclick="fillDemo('admin@classicauto.com', 'Admin@1234')" style="background: var(--vintage-brown); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">Admin</button>
+                        <button type="button" onclick="fillDemo('seller@classicauto.com', 'Seller@1234')" style="background: var(--vintage-brown); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">Seller</button>
+                        <button type="button" onclick="fillDemo('user@classicauto.com', 'User@1234')" style="background: var(--vintage-brown); color: #fff; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.78rem; cursor: pointer;">User</button>
+                    </div>
+                </div>
+                <script>
+                    function fillDemo(e, p) {
+                        var em = document.getElementById('email');
+                        var pw = document.getElementById('password');
+                        if (em) em.value = e;
+                        if (pw) pw.value = p;
+                    }
+                </script>
+
                 <form method="post">
                     {% csrf_token %}
 
