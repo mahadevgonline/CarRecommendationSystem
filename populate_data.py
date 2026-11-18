@@ -64,6 +64,7 @@ def seed():
                 "transmission": "4-Speed Manual",
                 "mpg_city": "11",
                 "mpg_hway": "16",
+                "features": ["390 FE V8", "4-Speed Toploader", "Dual Exhaust", "Classic Dash", "Brembo Upgrade"],
                 "image": "images/mustang67.jpg"
             },
             {
@@ -79,6 +80,7 @@ def seed():
                 "transmission": "4-Speed Manual",
                 "mpg_city": "12",
                 "mpg_hway": "17",
+                "features": ["Split Rear Window", "L76 V8", "Knock-off Wheels", "Positraction", "Leather Trim"],
                 "image": "images/corvette63.jpg"
             },
             {
@@ -94,6 +96,7 @@ def seed():
                 "transmission": "5-Speed Manual",
                 "mpg_city": "16",
                 "mpg_hway": "22",
+                "features": ["Ducktail Spoiler", "Mechanical Fuel Injection", "Fuchs Alloys", "Lightweight Chassis"],
                 "image": "images/porsche911.jpg"
             },
             {
@@ -109,6 +112,7 @@ def seed():
                 "transmission": "4-Speed Manual",
                 "mpg_city": "14",
                 "mpg_hway": "19",
+                "features": ["Gullwing Doors", "Tubular Spaceframe", "Bosch Direct Injection", "Plaid Wool Interior"],
                 "image": "images/mercedes300sl.jpg"
             },
             {
@@ -124,6 +128,7 @@ def seed():
                 "transmission": "4-Speed Manual",
                 "mpg_city": "15",
                 "mpg_hway": "21",
+                "features": ["Glass-Covered Headlights", "Triple SU Carburetors", "Wire Wheels", "Independent Rear Suspension"],
                 "image": "images/jaguaretype.jpg"
             },
             {
@@ -139,6 +144,7 @@ def seed():
                 "transmission": "3-Speed TorqueFlite",
                 "mpg_city": "10",
                 "mpg_hway": "14",
+                "features": ["440 Magnum V8", "Hidden Headlights", "Bumblebee Stripes", "Dual Exhaust", "Sure-Grip Differential"],
                 "image": "images/charger69.jpg"
             },
             {
@@ -154,6 +160,7 @@ def seed():
                 "transmission": "8-Speed M Steptronic",
                 "mpg_city": "16",
                 "mpg_hway": "23",
+                "features": ["M Carbon Bucket Seats", "Head-Up Display", "Harman Kardon Audio", "M Drive Professional", "Carbon Roof"],
                 "image": "images/bmwm4.jpg"
             },
             {
@@ -169,6 +176,7 @@ def seed():
                 "transmission": "eCVT",
                 "mpg_city": "51",
                 "mpg_hway": "53",
+                "features": ["Hybrid Powertrain", "Panoramic Sunroof", "JBL Premium Sound", "Toyota Safety Sense 3.0", "Wireless CarPlay"],
                 "image": "images/camry.jpg"
             },
             {
@@ -184,6 +192,7 @@ def seed():
                 "transmission": "Single-Speed Fixed Gear",
                 "mpg_city": "124 MPGe",
                 "mpg_hway": "115 MPGe",
+                "features": ["Tri-Motor All-Wheel Drive", "1,020 Horsepower", "Yoke Steering", "17-Inch Cinematic Display", "Autopilot"],
                 "image": "images/models.jpg"
             },
             {
@@ -199,6 +208,7 @@ def seed():
                 "transmission": "8-Speed Automatic",
                 "mpg_city": "16",
                 "mpg_hway": "23",
+                "features": ["Executive Rear Class Seating", "Meridian Signature Sound", "Active Noise Cancellation", "Air Suspension"],
                 "image": "images/rangerover.jpg"
             }
         ]
