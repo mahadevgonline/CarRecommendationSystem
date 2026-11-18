@@ -222,54 +222,69 @@ def seed():
         first_car = Car.objects.first()
         parts_data = [
             {
-                "part_name": "Holley 4-Barrel 650 CFM Carburetor",
-                "part_number": "HLY-0-80457S",
+                "name": "Holley 4-Barrel 650 CFM Carburetor",
+                "number": "HLY-0-80457S",
+                "brand": "Holley",
+                "condition": "New",
                 "category": "Engine",
-                "price": 489.99,
+                "price": 490,
                 "stock": 14,
                 "description": "Classic gold dichromate finish with electric choke and vacuum secondaries for smooth, responsive muscle car power delivery.",
                 "vehicle": first_car,
-                "seller": seller_demo
+                "seller": seller_demo,
+                "image": "images/carburetor.jpg"
             },
             {
-                "part_name": "Wilwood Dynalite Front Disc Brake Conversion Kit",
-                "part_number": "WIL-140-11071",
+                "name": "Wilwood Dynalite Front Disc Brake Conversion Kit",
+                "number": "WIL-140-11071",
+                "brand": "Wilwood",
+                "condition": "New",
                 "category": "Brakes",
-                "price": 899.00,
+                "price": 899,
                 "stock": 8,
                 "description": "4-piston forged billet aluminum calipers with 11-inch slotted rotors for modern stopping power on classic spindles.",
                 "vehicle": first_car,
-                "seller": seller_demo
+                "seller": seller_demo,
+                "image": "images/brakes.jpg"
             },
             {
-                "part_name": "Moto-Lita Classic 15-inch Wood Rim Steering Wheel",
-                "part_number": "ML-W15-CL",
+                "name": "Moto-Lita Classic 15-inch Wood Rim Steering Wheel",
+                "number": "ML-W15-CL",
+                "brand": "Moto-Lita",
+                "condition": "New",
                 "category": "Interior",
-                "price": 320.00,
+                "price": 320,
                 "stock": 12,
                 "description": "Handcrafted mahogany rim with polished aluminum spokes and period-correct horn push button.",
                 "vehicle": first_car,
-                "seller": seller_demo
+                "seller": seller_demo,
+                "image": "images/steering.jpg"
             },
             {
-                "part_name": "Borla S-Type Cat-Back Stainless Exhaust System",
-                "part_number": "BOR-140742",
+                "name": "Borla S-Type Cat-Back Stainless Exhaust System",
+                "number": "BOR-140742",
+                "brand": "Borla",
+                "condition": "New",
                 "category": "Exhaust",
-                "price": 1240.00,
+                "price": 1240,
                 "stock": 5,
                 "description": "Aerospace-grade T-304 austenitic stainless steel with aggressive muscle sound and zero cabin drone.",
                 "vehicle": first_car,
-                "seller": seller_demo
+                "seller": seller_demo,
+                "image": "images/exhaust.jpg"
             },
             {
-                "part_name": "Bilstein B6 Performance Shock Absorbers (Set of 4)",
-                "part_number": "BIL-B6-SET",
+                "name": "Bilstein B6 Performance Shock Absorbers",
+                "number": "BIL-B6-SET",
+                "brand": "Bilstein",
+                "condition": "New",
                 "category": "Suspension",
-                "price": 640.00,
+                "price": 640,
                 "stock": 9,
                 "description": "Monotube gas-pressure dampers engineered for maximum road adhesion and spirited touring stability.",
                 "vehicle": first_car,
-                "seller": seller_demo
+                "seller": seller_demo,
+                "image": "images/shocks.jpg"
             }
         ]
 
